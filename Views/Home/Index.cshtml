@@ -36,8 +36,8 @@
 
             
 
-            @* Verifica si el usuario es Admin *@
-            @if (roles.Contains("Admin"))
+            @* Verifica si el usuario es Admin o no tiene rol asignado *@
+            @if (roles.Contains("Admin")  || !roles.Any())
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
             <h2 class="title">
