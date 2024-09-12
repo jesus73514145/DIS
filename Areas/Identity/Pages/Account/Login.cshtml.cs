@@ -64,16 +64,14 @@ namespace proyecto.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            // Validación para el campo de Email con mensajes personalizados en español
+            [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+            [EmailAddress(ErrorMessage = "Por favor, introduce un correo electrónico válido.")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
+            // Validación para el campo de Password con mensajes personalizados en español
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
+            [DataType(DataType.Password, ErrorMessage = "El formato de la contraseña es incorrecto.")]
             public string Password { get; set; }
 
             /// <summary>
