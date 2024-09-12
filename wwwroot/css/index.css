@@ -5,7 +5,7 @@ body {
     background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaACgqLHY9bwh8YAvHUVwPo5nE5t8ENiyMUPPW1jiCUKDFxtuKlOuNEsbq1oM8If7phorGarEQuMOWUWwcMnuM-q3RYXfA=w1908-h897");
     background-attachment: fixed;
     background-size: cover;
-    color: #FFFFFF;
+    color: #000000;
 }
 
 :root {
@@ -27,7 +27,7 @@ body {
 }
 
 .bienvenida .codigo {
-    color: #FFFFFF;
+    color: #000000;
     font-size: 18px;
 }
 

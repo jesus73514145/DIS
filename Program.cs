@@ -25,6 +25,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Configuración de la autenticación y autorización
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Configura la cookie de autenticación para redirigir a la página de inicio de sesión
@@ -65,13 +66,13 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthentication(); // Asegúrate de incluir esto
 app.UseAuthorization();  // Asegúrate de incluir esto
+
+app.UseStaticFiles();
+app.UseHttpsRedirection();
 
 app.MapControllerRoute(
     name: "custom",

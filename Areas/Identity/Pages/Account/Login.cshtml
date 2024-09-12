@@ -2,13 +2,13 @@
 @model proyecto.Areas.Identity.Pages.Account.LoginModel
 
 @{
-    ViewData["Title"] = "Inicio de Sesión";
+    ViewData["Title"] = "Iniciar Sesión";
 
     Layout = null;
 }
 
 <head>
-    <title>Login</title>
+    <title>INICIO DE SESIÓN</title>
     <link rel="icon" href="~/images/locode.jpeg" />
     <link rel="stylesheet" href="~/css/formularios.css" />
     <link rel="stylesheet" href="~/css/login.css" />
@@ -25,7 +25,7 @@
         <hr id="line" />
         <div class="inputBox">
             <div class="input" id="input-email">
-                <span>Email</span>
+                <span>Correo</span>
                 <input type="text" asp-for="Input.Email" autocomplete="username" aria-required="true" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
@@ -41,29 +41,29 @@
             </div>
         </div>
 
-        <div class="inputBox">
+        <!--<div class="inputBox">
             <div class="checkbox">
                 <label asp-for="Input.RememberMe" class="form-label">
                     <input class="form-check-input" asp-for="Input.RememberMe" />
-                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    @@Html.DisplayNameFor(m => m.Input.RememberMe)
                 </label>
             </div>
-        </div>
+        </div>-->
 
-        <input type="submit" value="Ingresar" class="btn"></input>
+        <input type="submit" value="INGRESAR" class="btn"></input>
 
         <div class="login-options">
             <div class="input">
-                <a id="forgot-password" asp-page="./ForgotPassword">¿Olvidaste tu contraseña?</a>
+                <a id="forgot-password" asp-page="./ForgotPassword">Recuperar Contraseña</a>
             </div>
             <div class="input">
                 <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registrarse como nuevo
                     usuario</a>
             </div>
-            <div class="input">
+            <!--<div class="input">
                 <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmación por
                     correo electrónico</a>
-            </div>
+            </div>-->
         </div>
     </form>
 </div>

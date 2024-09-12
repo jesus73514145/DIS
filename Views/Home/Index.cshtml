@@ -6,17 +6,26 @@
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="~/css/index.css" />
-
-@if (TempData["MessageLOGUEARSE"] != null)
-{
-    <div class="alerta">
-        @TempData["MessageLOGUEARSE"]
-    </div>
-}
+<link rel="stylesheet" href="~/css/body.css" />
+<link rel="stylesheet" href="~/css/boton.css" />
 
 <style>
-        
+      
 </style>
+@{
+    ApplicationUser myidentity = null;
+    IList<string> roles = new List<string>();
+
+    if (User.Identity.IsAuthenticated)
+    {
+        myidentity = await UserManager.GetUserAsync(User);
+        if (myidentity != null)
+        {
+            roles = await UserManager.GetRolesAsync(myidentity);
+        }
+    }
+}
+
 
 <body>
     <section class="content bienvenida">
@@ -25,13 +34,43 @@
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
             var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
 
-            // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
+            
+
+            @* Verifica si el usuario es Admin *@
+            @if (roles.Contains("Admin"))
+            {
+                // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
             <h2 class="title">
-                <span class="wellcome">¡Bienvenido, @user.Nombres @user.ApellidoPat!</span>
+                <span class="wellcome">¡Bienvenido, Administrador @user.Nombres @user.ApellidoPat!</span>
             </h2>
             <p class="codigo">COD. DE USUARIO: @user.Dni</p>
-            <!--<p>Obtenga información <a href="https://docs.microsoft.com/aspnet/core">sobre cómo crear aplicaciones web con
-                                                ASP.NET Core</a>.</p>-->
+
+            <div class="boton-container">
+                    <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
+                    <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
+                    <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
+                </div>
+            }
+
+            @* Verifica si el usuario es Gerente *@
+            @if (roles.Contains("Gerente"))
+            {
+                // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
+            <h2 class="title">
+                <span class="wellcome">¡Bienvenido, Gerente @user.Nombres @user.ApellidoPat!</span>
+            </h2>
+            <p class="codigo">COD. DE USUARIO: @user.Dni</p>
+            }
+
+            @* Verifica si el usuario es Empleado *@
+            @if (roles.Contains("Empleado"))
+            {
+                // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
+            <h2 class="title">
+                <span class="wellcome">¡Bienvenido, Empleado @user.Nombres @user.ApellidoPat!</span>
+            </h2>
+            <p class="codigo">COD. DE USUARIO: @user.Dni</p>
+            }
         }
         else
         {
@@ -39,8 +78,6 @@
             <h1 class="title">
                 <span class="wellcome">Bienvenido</span>
             </h1>
-            <!--<p>Obtenga información <a href="https://docs.microsoft.com/aspnet/core">sobre cómo crear aplicaciones web con
-                                                ASP.NET Core</a>.</p>-->
         }
     </section>
 
