@@ -1,10 +1,10 @@
 # Usar la imagen oficial de .NET
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
 # Usar la imagen SDK para construir la app
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["proyecto.csproj", "./"]
 RUN dotnet restore "./proyecto.csproj"
