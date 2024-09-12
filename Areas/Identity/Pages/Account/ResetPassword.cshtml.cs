@@ -41,33 +41,33 @@ namespace proyecto.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El campo de correo electrónico es obligatorio.")]
+            [EmailAddress(ErrorMessage = "El formato del correo electrónico es inválido.")]
             public string Email { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Este API soporta la infraestructura predeterminada de la interfaz de usuario de ASP.NET Core Identity y no está destinado
+            ///     a ser utilizado directamente desde su código. Este API puede cambiar o ser removido en versiones futuras.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "El {0} debe tener al menos {2} y un máximo de {1} caracteres.", MinimumLength = 6)]
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
+            [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} y un máximo de {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Este API soporta la infraestructura predeterminada de la interfaz de usuario de ASP.NET Core Identity y no está destinado
+            ///     a ser utilizado directamente desde su código. Este API puede cambiar o ser removido en versiones futuras.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
+            [Display(Name = "Confirmar contraseña")]
+            [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
             public string ConfirmPassword { get; set; }
 
             /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
+            ///     Este API soporta la infraestructura predeterminada de la interfaz de usuario de ASP.NET Core Identity y no está destinado
+            ///     a ser utilizado directamente desde su código. Este API puede cambiar o ser removido en versiones futuras.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "El código es obligatorio.")]
             public string Code { get; set; }
 
         }

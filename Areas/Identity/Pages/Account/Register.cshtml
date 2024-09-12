@@ -32,8 +32,7 @@
             </div>
             <div class="input">
                 <span>Apellido Paterno</span>
-                <input asp-for="Input.ApellidoPat" autocomplete="on" aria-required="true" placeholder="Ejm. Rosales"
-                    required />
+                <input asp-for="Input.ApellidoPat" autocomplete="on" aria-required="true" placeholder="Ejm. Rosales" />
                 <span asp-validation-for="Input.Nombres"></span>
             </div>
         </div>
@@ -42,13 +41,13 @@
             <div class="input">
                 <span>Apellido Materno</span>
                 <input asp-for="Input.ApellidoMat" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. Perez" required />
+                    placeholder="Ejm. Perez"  />
                 <span asp-validation-for="Input.ApellidoMat"></span>
             </div>
             <div class="input">
                 <span>D.N.I.</span>
                 <input asp-for="Input.Dni" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. 76543210" required />
+                    placeholder="Ejm. 76543210"  />
                 <span asp-validation-for="Input.Dni"></span>
             </div>
         </div>
@@ -57,12 +56,12 @@
             <div class="input">
                 <span>Celular</span>
                 <input asp-for="Input.Celular" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. 987 654 321" required />
+                    placeholder="Ejm. 987 654 321"  />
                 <span asp-validation-for="Input.Celular" ></span>
             </div>
             <div class="input">
                 <span>Genero</span>
-                <select asp-for="Input.Genero" required>
+                <select asp-for="Input.Genero">
                     <option value="" disabled selected>*Selecciona un género*</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
@@ -73,7 +72,7 @@
 
         <div class="inputBox">
             <div class="input">
-                <span>Email</span>
+                <span>Correo Electrónico</span>
                 <input asp-for="Input.Email" autocomplete="username" aria-required="true"
                     placeholder="nombre@ejemplo.com" />
                 <span asp-validation-for="Input.Email"></span>
