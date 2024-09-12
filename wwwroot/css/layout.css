@@ -1,14 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
 
-body{
+body {
     margin: 0;
 }
 
 :root {
     --white: #FFFFFF;
     --black: #000000;
-    --blue: #00004B;
-    --grey-blue: #00796B;
 }
 
 * {
@@ -33,43 +31,54 @@ section {
 
 /*--------------------------------------------- HEADER --------------------------------------------------*/
 
-.header { /*IMPORTANTE*/
+.header {
+    /*IMPORTANTE*/
     position: sticky;
     top: 0;
     left: 0;
     right: 0;
     z-index: 999;
-    background: linear-gradient(to bottom, #87CEEB, #00BFFF);
+    background: linear-gradient(to bottom, #ffffff, #eeeeee);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.3rem 5%; /*AJUSTAR LOS ESPACIOS VACIOS EN EL HEADER*/
+    padding: 1.3rem 5%;
+    /*AJUSTAR LOS ESPACIOS VACIOS EN EL HEADER*/
     box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
 }
 
-.header .logo { /*TEXTO DEL LOGO "INKAMANU"*/
+.header .logo {
+    /*TEXTO DEL LOGO "ATHLETIX"*/
     font-size: 30px;
-    color: var(--blue);
+    color: var(--black);
     font-weight: bolder;
 }
 
-.header .navbar a { /*PAGINAS EN EL NAVBAR "CATALOGO, PRODUCTOS Y CONTACTAME"*/
+.header .navbar a {
+    /*PAGINAS EN EL NAVBAR "CATALOGO, PRODUCTOS Y CONTACTAME"*/
     font-size: 2.1rem;
     margin: 0 1rem;
-    color: var(--blue);
-    display: inline-block; /* Para que la transición funcione correctamente */
-    transition: transform 0.3s, text-decoration 0.3s, border-bottom 0.3s, border-left 0.3s, border-right 0.3s, border-radius 0.3s; /* Duración de la transición de 0.3 segundos (ajusta según desees) */
-    text-decoration: none; /* Elimina la línea debajo del texto por defecto */
+    color: var(--black);
+    display: inline-block;
+    /* Para que la transición funcione correctamente */
+    transition: transform 0.3s, text-decoration 0.3s, border-bottom 0.3s, border-left 0.3s, border-right 0.3s, border-radius 0.3s;
+    /* Duración de la transición de 0.3 segundos (ajusta según desees) */
+    text-decoration: none;
+    /* Elimina la línea debajo del texto por defecto */
     border-bottom: 1px solid transparent;
 }
 
-.header .navbar a:hover { /*IMPORTANTE*/
+.header .navbar a:hover {
+    /*IMPORTANTE*/
     cursor: pointer;
-    transform: scale(1.2); /* Aumenta el tamaño al 120% al pasar el cursor por encima */
-    text-decoration: underline; /* Agrega un subrayado al pasar el cursor por encima */
+    transform: scale(1.2);
+    /* Aumenta el tamaño al 120% al pasar el cursor por encima */
+    text-decoration: underline;
+    /* Agrega un subrayado al pasar el cursor por encima */
 }
 
-#menu-btn {/*IMPORTANTE PARA EL BOTON DE MENU EN CELULAR*/
+#menu-btn {
+    /*IMPORTANTE PARA EL BOTON DE MENU EN CELULAR*/
     font-size: 2.5rem;
     padding: 0.7rem 0.92rem;
     color: var(--black);
@@ -86,7 +95,7 @@ section {
 /*--------------------------------------------- FOOTER --------------------------------------------------*/
 
 .footer {
-    background: linear-gradient(to top, #87CEEB, #00BFFF);
+    background: linear-gradient(to bottom, #ffffff, #eeeeee);
     color: var(--black);
     box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -130,20 +139,20 @@ section {
     font-size: 2rem;
 }
 
-.box .footer-h3{
+.box .footer-h3 {
     font-size: 30px;
 }
 
-.box .footer-a{
+.box .footer-a {
     color: var(--white);
     font-size: 8rem;
 }
 
-.credit{
-    color: var(--white)
+.credit {
+    color: var(--black)
 }
 
-#detalles-footer{
+#detalles-footer {
     color: var(--black)
 }
 
@@ -183,7 +192,8 @@ section {
     }
 
     .header .navbar.active {
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);/*ACTIVA NAVBAR PARA LOS CELULARES*/
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        /*ACTIVA NAVBAR PARA LOS CELULARES*/
     }
 
     .header .navbar a {
@@ -195,16 +205,18 @@ section {
 
 @media (max-width:450px) {
     html {
-        font-size: 50%; /* ese codigo es hasta aca arriba */
+        font-size: 50%;
+        /* ese codigo es hasta aca arriba */
     }
 }
 
+/*
 @media (max-width: 600px) {
-    .logo-text {
+    #imgLogoEmpresa{
         display: none;
     }
-
 }
+*/
 
 /*---------------------------------------------- MAIN ----------------------------------------------------*/
 
@@ -215,52 +227,54 @@ section {
 
 /*-----------------------------------------ICONOS DEL HEADER----------------------------------------------*/
 
-.iconos{
+.iconos {
     display: flex;
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
+    justify-content: center;
+    /* Centrar horizontalmente */
+    align-items: center;
+    /* Centrar verticalmente */
 }
 
-.icono-user a{
+.icono-user a {
     font-size: 15px;
     padding: 1.2rem;
-    color: var(--white);
+    color: var(--black);
     border-radius: .7rem;
     margin: 0 1rem;
 }
 
-.icono-user a:hover{
-    color: var(--black);
-    background-color: var(--white);
+.icono-user a:hover {
+    color: var(--white);
+    background-color: var(--black);
 }
 
-.icono-login a{
+.icono-login a {
     font-size: 2.2rem;
     padding: 1.2rem;
-    color: var(--white);
+    color: var(--black);
     border-radius: .7rem;
     margin: 0 1rem;
 }
 
-.icono-login a:hover{
-    color: var(--black);
-    background-color: var(--white);
+.icono-login a:hover {
+    color: var(--white);
+    background-color: var(--black);
 }
 
-.icono-logout a{
+.icono-logout a {
     font-size: 2.2rem;
     padding: 1.2rem;
-    color: var(--white);
+    color: var(--black);
     border-radius: .7rem;
     margin: 0 1rem;
 }
 
-.icono-logout a:hover{
-    color: var(--black);
-    background-color: var(--white);
+.icono-logout a:hover {
+    color: var(--white);
+    background-color: var(--black);
 }
 
-#img-div{
+#img-div {
     display: inline-block;
 }
 
