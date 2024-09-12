@@ -1,0 +1,73 @@
+.formulario {
+    background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaCadtT2rUNpBItGgUAkiCCdJ0nf3aTOqGzUmpMOjPRGWrsKf7UpDjRimPo3nSkltNUt-v45ymbzr9BDyrokOkIonY_QGg=w1908-h897");
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.formulario form {
+    width: 50%;
+}
+
+.formulario form .inputBox .input {
+    width: 50%;
+    margin: auto;
+}
+
+.checkbox {
+    margin: auto;
+    font-size: 1.7rem;
+}
+
+.login-options .input a {
+    display: block;
+    padding: .5rem 0;
+    font-size: 1.6rem;
+}
+
+.formulario form .inputBox .input input {
+    text-transform: none;
+    margin-bottom: 1rem;
+    width: 100%;
+    border: .15rem solid var(--white);
+}
+
+@media (max-width: 600px) {
+    #title h1 {
+        font-size: 3.75rem;
+    }
+
+    .formulario h2{
+        font-size: 2rem;
+    }
+
+    .formulario {
+        display: block;
+        padding: 0 4rem;
+        background: #ffffff;
+    }
+
+    .formulario form {
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        display: block;
+        margin: 3rem auto;
+    }
+
+    .formulario form .inputBox .input {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .formulario form .login-options .input a {
+        font-size: 2rem;
+        padding: 1rem;
+    }
+
+    .formulario form .btn {
+        font-size: 2rem;
+        width: 75%;
+        margin: 2% 12.5%;
+        margin-bottom: 1rem;
+    }
+}

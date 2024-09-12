@@ -1,0 +1,107 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Registrarse";
+    Layout = null;
+}
+
+<head>
+    <title>Register</title>
+    <link rel="icon" href="~/images/locode.jpeg" />
+    <link rel="stylesheet" href="~/css/formularios.css" />
+    <link rel="stylesheet" href="~/css/register.css" />
+    <link rel="stylesheet" href="~/css/body.css" />
+</head>
+
+<div class="formulario">
+    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div id="title">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <h2>Crea una cuenta nueva.</h2>
+        <hr id="line" />
+
+        <div asp-validation-summary="ModelOnly" role="alert"></div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Nombres</span>
+                <input type="text" asp-for="Input.Nombres" placeholder="Ejm. Jose Luís" />
+                <span asp-validation-for="Input.Nombres"></span>
+            </div>
+            <div class="input">
+                <span>Apellido Paterno</span>
+                <input asp-for="Input.ApellidoPat" autocomplete="on" aria-required="true" placeholder="Ejm. Rosales"
+                    required />
+                <span asp-validation-for="Input.Nombres"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Apellido Materno</span>
+                <input asp-for="Input.ApellidoMat" autocomplete="on" aria-required="true"
+                    placeholder="Ejm. Perez" required />
+                <span asp-validation-for="Input.ApellidoMat"></span>
+            </div>
+            <div class="input">
+                <span>D.N.I.</span>
+                <input asp-for="Input.Dni" autocomplete="on" aria-required="true"
+                    placeholder="Ejm. 76543210" required />
+                <span asp-validation-for="Input.Dni"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Celular</span>
+                <input asp-for="Input.Celular" autocomplete="on" aria-required="true"
+                    placeholder="Ejm. 987 654 321" required />
+                <span asp-validation-for="Input.Celular" ></span>
+            </div>
+            <div class="input">
+                <span>Genero</span>
+                <select asp-for="Input.Genero" required>
+                    <option value="" disabled selected>*Selecciona un género*</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+                <span asp-validation-for="Input.Genero"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Email</span>
+                <input asp-for="Input.Email" autocomplete="username" aria-required="true"
+                    placeholder="nombre@ejemplo.com" />
+                <span asp-validation-for="Input.Email"></span>
+            </div>
+
+                        <div class="input">
+                <span>Contraseña</span>
+                <input asp-for="Input.Password" autocomplete="new-password" aria-required="true"
+                    placeholder="************" />
+                <span asp-validation-for="Input.Password"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+
+            <div class="input">
+                <span>Confirmar Contraseña</span>
+                <input asp-for="Input.ConfirmPassword" autocomplete="new-password"
+                    aria-required="true" placeholder="************" />
+                <span asp-validation-for="Input.ConfirmPassword"></span>
+            </div>
+        </div>
+
+        <input type="submit" value="Registrar" class="btn">
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+</div>

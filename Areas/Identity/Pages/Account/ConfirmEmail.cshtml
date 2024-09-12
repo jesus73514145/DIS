@@ -1,0 +1,36 @@
+﻿@page
+@model proyecto.Areas.Identity.Pages.Account.ConfirmEmailModel
+@{
+    ViewData["Title"] = "¡Gracias por confirmar su correo electrónico.!";
+    Layout = null;
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/formularios.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+
+<div class="formulario">
+    <form method="post">
+        <div id="title">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <div class="imagen">
+            <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaAqA_hMC5d8ZuGY41UK_NmpY1S8Ustlmn_KKGp5JY3f0aTeVrR4l_HSCxFgcnlSCrzUo1Nia9JQFYqISWU8N2Bdgk2Qiw=w1908-h897">
+        </div>
+    </form>
+</div>
+
+<style>
+    .imagen{
+        margin: 2rem;
+    }
+    .imagen img{
+        border-radius: 2rem;
+        width: 60%;
+        height: 60%;
+    }
+    #confirm-link{
+        font-size: 18px;
+    }
+</style>

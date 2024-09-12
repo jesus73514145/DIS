@@ -1,0 +1,28 @@
+﻿@page
+@model proyecto.Areas.Identity.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Cerrar sesión";
+    Layout = null;
+}
+
+<header>
+    <h1>@ViewData["Title"]</h1>
+    @{
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                <button type="submit" class="nav-link btn btn-link text-dark">Click aqui para salir</button>
+            </form>
+        }
+        else
+        {
+            <p>Ha cerrado sesión exitosamente en la aplicación.</p>
+        }
+    }
+
+    <!-- dotnet aspnet-codegenerator identity -dc proyecto_inkamanu_net.Data.ApplicationDbContext
+     con este comando genero todos los archivos del identity pero todavia no lo uso porque quizas y se borra algunas cosas que yo ya hice en el register.cs 
+     
+     
+     dotnet aspnet-codegenerator identity -dc proyecto_inkamanu_net.Data.ApplicationDbContext --force-->
+</header>

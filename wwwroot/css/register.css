@@ -1,0 +1,21 @@
+span #a{
+    font-size: 1rem;
+}
+
+span #b{
+    font-size: 1rem;
+    color: brown;
+}
+
+.formulario {
+    background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaCk9YD8q1jAwx03R_dwUEOe_rVLugnEPlKmo_UeSOABSuwbISgy1GoXXAVLkc7tJqZ7nwvqFEW3_pBByl8OlBy5QdIRQg=w1908-h897");
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+@media (max-width: 600px) {
+    .formulario {
+        display: block;
+        background: #ffffff;
+    }
+}

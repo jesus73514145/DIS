@@ -1,0 +1,165 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using proyecto.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lo-code</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="icon" href="~/images/locode.jpeg" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/proyecto.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/layout.css" />
+    <link rel="stylesheet" href="~/css/mensajes.css" />
+</head>
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    //var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
+}
+
+<body>
+    <!---------------------------- header section stars ---------------------------->
+    <header class="header">
+        <div id="menu-btn" class="fas fa-bars"></div>
+        <a class="logo" style="text-decoration: none;" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="~/images/locode.jpeg" alt="Logo" style="height: 40px; width: 40px; border-radius:50%;"
+                id="imgLogoEmpresa"> <!-- Añadiendo el logo al costado del nombre de la empresa -->
+            <span class="span-logo">Lo</span><span class="span-logo" style="color: white;">-Code</span>
+        </a>
+        <nav class="navbar">
+           
+        </nav>
+        <div class="iconos">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                
+                <div class="icono-logout">
+                    <button id="mostrarTarjeta">
+                        <a class="fas fa-sign-out-alt" style="text-decoration: none;"></a>
+                    </button>
+                </div>
+
+                <div class="tarjeta" id="tarjeta">
+                    <div id="tarjeta-sesion">
+                        <div id="cerrar-sesion">
+                            <h1>¿Deseas cerrar sesión?</h1>
+                        </div>
+                        <div id="botones">
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+                                asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                <button type="submit">Cerrar Sesión</button>
+                            </form>
+                            <button id="cerrarTarjeta">Mantener Sesión</button>
+                        </div>
+                    </div>
+                </div>
+
+                <script src="~/js/script.js"></script>
+
+                <style>
+                        @@media (max-width: 600px) {
+                            #imgLogoEmpresa {
+                                display: none;
+                            }
+                        }
+                </style>
+            }
+            else
+            {
+                <div class="icono-login">
+                    <a class="fas fa-user-plus" style="text-decoration: none;" asp-area="Identity"
+                        asp-page="/Account/Register"></a>
+                </div>
+                <div class="icono-logout">
+                    <a class="fas fa-sign-in-alt" style="text-decoration: none;" asp-area="Identity"
+                        asp-page="/Account/Login"></a>
+                </div>
+                <style>
+                        @@media (max-width: 600px) {
+                            #imgLogoEmpresa {
+                                display: none;
+                            }
+                        }
+                </style>
+            }
+        </div>
+    </header>
+    <!---------------------------- header section ends ---------------------------->
+    <div class="container-fluid">
+        <main role="main" class="p-0">
+            @RenderBody()
+        </main>
+    </div>
+    <!---------------------------- footer section stars  ---------------------------->
+    <section class="footer">
+        <div class="box-container">
+            <div class="box">
+                <h3 class="footer-h3">Enlaces Rápidos</h3>
+                <a id="detalles-footer" asp-area="" asp-controller="Home" asp-action="Index"> <i class="fas fa-arrow-right"></i> Principal
+                </a>
+
+            </div>
+
+            <div class="box">
+                <h3>Datos De Contacto</h3>
+                <a id="detalles-footer" > <i class="fas fa-phone"></i> +51 927 572 267 </a>
+                <a id="detalles-footer" > <i class="fas fa-envelope"></i> jesus_soria@usmp.pe </a>
+                <a id="detalles-footer"> <i class="fas fa-map-marker-alt"></i> La Molina, Av. la Fontana 1250, Lima 15024 </a>
+            </div>
+
+            <div class="box">
+                <h3>Redes</h3>
+                <a id="detalles-footer" href="https://www.facebook.com/profile.php?id=61552108551409"> <i class="fab fa-facebook-f"></i>
+                    Facebook </a>
+                <a id="detalles-footer" href="https://api.whatsapp.com/send?phone=927572267" target="_blank"><i class="fab fa-whatsapp"></i>
+                    WhatsApp</a>
+
+                <h3 style="margin-top: 2rem;" >Legal</h3>
+                <a id="detalles-footer" href="https://usmppe-my.sharepoint.com/:b:/g/personal/kristell_flores_usmp_pe/EfV9JOOj-AlDgWp05erVrdUBGm1LmTAl6swl3DMjNWw7Pg?e=IPs6ED">
+                    <i class="fa fa-gavel"></i> Términos y Condiciones </a>
+                <a id="detalles-footer" href="https://usmppe-my.sharepoint.com/:b:/g/personal/kristell_flores_usmp_pe/ES4JN6-xJLRHuqRkKrOMwnsBpnhXgHAlQk7ii0GmIRbp5Q?e=tJDQI8">
+                    <i class="fa fa-lock"></i> Politicas de privacidad </a>
+            </div>
+
+            <div class="box">
+                <h3>Desarrolladores</h3>
+                <a id="detalles-footer"> <i class="fas fa-code"></i> Arturo T. Aliaga Silva </a>
+                <a id="detalles-footer"> <i class="fas fa-laptop-code"></i> Matias N. Araujo Vera </a>
+                <a id="detalles-footer"> <i class="fas fa-cogs"></i> Yasser M. Avalos Montero </a>
+                <a id="detalles-footer"> <i class="fas fa-terminal"></i> Lucas A. Espinoza Laurente </a>
+                <a id="detalles-footer"> <i class="fas fa-laptop"></i> Kristell Y. Flores Huamani </a>
+                <a id="detalles-footer"> <i class="fas fa-user-cog"></i> Jesús A. Soria Llantoy </a>
+            </div>
+        </div>
+        <div class="credit">@@Copyright - Todos los derechos reservados - Grupo 2</div>
+    </section>
+    <!---------------------------- footer section ends  ---------------------------->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+    <script>
+        let menu = document.querySelector('#menu-btn');
+        let navbar = document.querySelector('.navbar');
+
+        menu.onclick = () => {
+            menu.classList.toggle('fa-times');
+            navbar.classList.toggle('active');
+        }
+
+        /**/
+
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

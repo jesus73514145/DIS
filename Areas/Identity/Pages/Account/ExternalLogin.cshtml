@@ -1,0 +1,38 @@
+﻿@page
+@model proyecto.Areas.Identity.Pages.Account.ExternalLoginModel
+@{
+    ViewData["Title"] = "External Login";
+    Layout = null;
+}
+
+<head>
+    <title>External Login</title>
+    <link rel="icon" href="~/images/locode.jpeg" />
+</head>
+<h1>@ViewData["Title"]</h1>
+<h2 id="external-login-title">Asocie su @Model.ProviderDisplayName cuenta.</h2>
+<hr />
+
+<p id="external-login-description" class="text-info">
+    Te has autenticado correctamente con <strong>@Model.ProviderDisplayName</strong>.
+    Ingrese una dirección de correo electrónico para este sitio a continuación y haga clic en el botón Registrarse para finalizar.
+    Iniciando sesión.
+</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Por favor introduzca su email."/>
+                <label asp-for="Input.Email" class="form-label"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Registrar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

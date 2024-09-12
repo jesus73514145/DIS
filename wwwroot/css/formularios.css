@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+:root {
+    --my-blue: #0074E4;
+    --light-my-blue: #6FA6FF;
+    /* Aquí defines el tono más claro */
+    --celeste: #00BFFF;
+    --light-celeste: hsl(177, 72%, 70%);
+    --amarillo: #7bdeff;
+    --verde: #369681;
+    --verde-claro: #5ed091;
+    --black: #130f40;
+    --light-color: #666;
+    --border: ;
+    --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+    --white: #eee;
+}
+
+#title {
+    width: 100%;
+    text-align: center;
+}
+
+#title h1 {
+    font-size: 3rem;
+}
+
+.formulario {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formulario form {
+    text-align: center;
+    max-width: 55%;
+    border-radius: .6rem;
+    box-shadow: .1rem solid rgba(0, 0, 0, .1);
+    border: .1rem solid rgba(0, 0, 0, .2);
+    background: #fff;
+    padding: 3rem;
+    padding-bottom: 1.5rem;
+    margin: 3.5rem auto;
+    overflow-y: auto;
+    /* Agregar desplazamiento vertical cuando el contenido excede la altura */
+    width: 80%;
+}
+
+.formulario form .inputBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.formulario form .btn {
+    display: block;
+    width: 50%;
+    margin: 2% 25%;
+    background-color: var(--celeste);
+    /* Cambia el color de fondo */
+    color: var(--black);
+    /* Cambia el color del texto */
+    border: none;
+    border-radius: .5rem;
+    padding: 1rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.formulario form .btn:hover {
+    background-color: var(--amarillo);
+    /* Cambia el color de fondo al pasar el mouse */
+}
+
+.formulario form .inputBox .input {
+    width: 49%;
+}
+
+.formulario form .inputBox .input span {
+    display: block;
+    padding: .5rem 0;
+    font-size: 1.8rem;
+    color: var(--light-color);
+}
+
+.formulario form .inputBox .input input {
+    background: #eee;
+    border-radius: .5rem;
+    padding: 1rem;
+    padding-left: 1.5rem;
+    font-size: 1.8rem;
+    color: var(--black);
+    text-transform: none;
+    margin-bottom: 1rem;
+    width: 100%;
+    border: .15rem solid var(--white);
+}
+
+.formulario .inputBox .input input:focus {
+    border: .15rem solid var(--celeste);
+}
+
+.formulario form .inputBox .input select {
+    background: #eee;
+    border-radius: .5rem;
+    padding: 1rem;
+    font-size: 1.8rem;
+    color: var(--black);
+    text-transform: none;
+    margin-bottom: 1rem;
+    width: 100%;
+    border: .15rem solid var(--white);
+}
+
+.formulario form .inputBox .input select:focus {
+    border: .15rem solid var(--celeste);
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+    #title h1 {
+        font-size: 3.75rem;
+    }
+
+    .formulario h2{
+        font-size: 2rem;
+    }
+
+    .formulario {
+        width: 100%;
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .formulario form {
+        max-width: 100%;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        padding-bottom: 0;
+        margin: 3rem auto;
+    }
+
+    .formulario form .inputBox .input span {
+        font-size: 2rem;
+    }
+
+    .formulario form .inputBox .input input {
+        font-size: 1.9rem;
+    }
+
+    .formulario form .inputBox .input select {
+        font-size: 1.9rem;
+    }
+
+    .formulario form .inputBox .input {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .formulario form .btn {
+        font-size: 2rem;
+        width: 75%;
+        margin: 4% 12.5%;
+        margin-bottom: 1rem;
+    }
+}
+
+#alerta {
+    background-color: var(--verde-claro);
+    border-radius: 1rem;
+    border: .2rem solid var(--verde);
+    font-size: 2.5cap;
+    padding: 1rem;
+    margin: 0 auto;
+    margin-top: 2.5rem;
+    width: fit-content;
+}
+
+#line {
+    margin: 1.75rem 0;
+}

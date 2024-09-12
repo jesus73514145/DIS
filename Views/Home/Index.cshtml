@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Textil";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="~/css/index.css" />
+
+@if (TempData["MessageLOGUEARSE"] != null)
+{
+    <div class="alerta">
+        @TempData["MessageLOGUEARSE"]
+    </div>
+}
+
+<style>
+        
+</style>
+
+<body>
+    <section class="content bienvenida">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
+            var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
+
+            // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
+            <h2 class="title">
+                <span class="wellcome">¡Bienvenido, @user.Nombres @user.ApellidoPat!</span>
+            </h2>
+            <p class="codigo">COD. DE USUARIO: @user.Dni</p>
+            <!--<p>Obtenga información <a href="https://docs.microsoft.com/aspnet/core">sobre cómo crear aplicaciones web con
+                                                ASP.NET Core</a>.</p>-->
+        }
+        else
+        {
+            // Si el usuario no está autenticado, muestra un mensaje de bienvenida genérico
+            <h1 class="title">
+                <span class="wellcome">Bienvenido</span>
+            </h1>
+            <!--<p>Obtenga información <a href="https://docs.microsoft.com/aspnet/core">sobre cómo crear aplicaciones web con
+                                                ASP.NET Core</a>.</p>-->
+        }
+    </section>
+
+</body>
