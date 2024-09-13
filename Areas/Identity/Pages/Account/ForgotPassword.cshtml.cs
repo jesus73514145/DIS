@@ -74,7 +74,7 @@ namespace proyecto.Areas.Identity.Pages.Account
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Restablecer la contraseña",
-                    $"Por favor restablezca su contraseña <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' style='text-decoration:none; color:blue;'>haciendo clic aquí</a>."; // Asegúrate de que el método permita contenido HTML.
+                    $"Por favor restablezca su contraseña <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' style='text-decoration:none; color:blue;'>haciendo clic aquí</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
