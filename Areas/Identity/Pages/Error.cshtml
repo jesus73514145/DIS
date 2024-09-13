@@ -1,27 +1,55 @@
 ﻿@page
 @model proyecto.Areas.Identity.Pages.ErrorModel
+
 @{
     ViewData["Title"] = "Error";
     Layout = null;
 }
+
 <head>
     <title>Error</title>
     <link rel="icon" href="~/images/locode.jpeg" />
+    <link rel="stylesheet" href="~/css/formularios.css" />
+    <link rel="stylesheet" href="~/css/register.css" />
+    <link rel="stylesheet" href="~/css/body.css" />
 </head>
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">Se produjo un error al procesar su solicitud.</h2>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>ID de solicitud:</strong> <code>@Model.RequestId</code>
-    </p>
+<div class="formulario">
+    <form>
+        <div id="title">
+            <h1 class="text-danger">@ViewData["Title"]</h1>
+        </div>
+        <h2 class="text-danger">Se produjo un error al procesar su solicitud.</h2>
+        <hr id="line" />
+
+        @if (Model.ShowRequestId)
+        {
+            <div class="inputBox">
+                <div class="input">
+                    <p><strong>ID de solicitud:</strong> <code>@Model.RequestId</code></p>
+                </div>
+            </div>
+        }
+
+        <div class="inputBox">
+            <div class="input">
+                <h3>Modo de desarrollo</h3>
+                <p>
+                    Al cambiar al entorno <strong>Desarrollo</strong> se mostrará información más detallada sobre el error ocurrido.
+                </p>
+                <p>
+                    <strong>El entorno de desarrollo no debe habilitarse en las aplicaciones implementadas</strong>, ya que puede mostrar información confidencial de excepciones a los usuarios finales. Para la depuración local, el entorno de desarrollo se puede habilitar configurando la variable de entorno <strong>ASPNETCORE_ENVIRONMENT</strong> en <strong>Desarrollo</strong>, y reiniciando la aplicación.
+                </p>
+            </div>
+        </div>
+
+        <div class="input">
+            <a asp-page="./Login" class="btn">Volver al Login</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
 
-<h3>Modo de desarrollo</h3>
-<p>
-    Al cambiar al entorno <strong>Desarrollo</strong> se mostrará información más detallada sobre el error ocurrido.
-</p>
-<p>
-    <strong>El entorno de desarrollo no debe habilitarse en las aplicaciones implementadas</strong>, ya que puede dar como resultado que se muestre información confidencial de excepciones a los usuarios finales. Para la depuración local, el entorno de desarrollo se puede habilitar configurando la variable de entorno <strong>ASPNETCORE_ENVIRONMENT</strong> en <strong>Desarrollo</strong>, y reiniciando la aplicación.
-</p>
