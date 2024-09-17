@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using proyecto.Models;
 using Microsoft.Extensions.Logging;
 using proyecto.Data;
-using proyecto.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;

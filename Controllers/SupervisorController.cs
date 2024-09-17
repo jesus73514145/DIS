@@ -1,0 +1,33 @@
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using proyecto.Models;
+using Microsoft.Extensions.Logging;
+using proyecto.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+
+namespace proyecto.Controllers
+{
+        [Authorize]  // Agrega esto a tu controlador o acción
+    public class SupervisorController : Controller
+    {
+        private readonly ILogger<SupervisorController> _logger;
+
+        public SupervisorController(ILogger<SupervisorController> logger)
+        {
+            _logger = logger;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View("Error!");
+        }
+    }
+}
