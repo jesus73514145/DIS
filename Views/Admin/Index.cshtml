@@ -10,7 +10,11 @@
 <link rel="stylesheet" href="~/css/boton.css" />
 
 <style>
-      
+      .custom-alert {
+    font-size: 2.0em; /* Aumenta el tamaño del texto */
+    padding: 20px; /* Aumenta el relleno interno */
+    border-radius: 5px; /* Redondea los bordes de la alerta */
+}
 </style>
 @{
     @*ApplicationUser myidentity = null;
@@ -70,6 +74,14 @@
                 <span class="wellcome">Bienvenido</span>
             </h1>
         }
+        <br><br><br>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success custom-alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
     </section>
 
 </body>

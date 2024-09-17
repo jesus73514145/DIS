@@ -24,6 +24,21 @@ namespace proyecto.Controllers
             return View();
         }
 
+        public IActionResult IngMat()
+        {
+            return View();
+        }
+
+        public IActionResult CostPrend()
+        {
+            return View();
+        }
+
+        public IActionResult SalPrend()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

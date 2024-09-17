@@ -1,0 +1,162 @@
+@using Microsoft.AspNetCore.Identity
+@model proyecto.Models.UserRegistrationViewModel
+
+@{
+    ViewData["Title"] = "ROL: GERENTE";
+}
+
+<head>
+    <title>Register</title>
+    <link rel="icon" href="~/images/locode.jpeg" />
+    <link rel="stylesheet" href="~/css/formularios.css" />
+    <link rel="stylesheet" href="~/css/register.css" />
+    <link rel="stylesheet" href="~/css/body.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .text-danger {
+            color: red !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#TipoDocumento').change(function () {
+                validateNumeroDocumento();
+            });
+
+            $('#NumeroDocumento').on('input', function () {
+                validateNumeroDocumento();
+            });
+
+            function validateNumeroDocumento() {
+                var tipoDocumento = $('#TipoDocumento').val();
+                var numeroDocumento = $('#NumeroDocumento').val();
+                var errorMessage = '';
+
+                if (tipoDocumento === 'DNI' && numeroDocumento.length !== 8) {
+                    errorMessage = 'El DNI debe tener 8 dígitos.';
+                } else if (tipoDocumento === 'Carnet' && numeroDocumento.length !== 7) {
+                    errorMessage = 'El Carnet debe tener 7 dígitos.';
+                } else if (tipoDocumento === 'Pasaporte' && numeroDocumento.length !== 9) {
+                    errorMessage = 'El Pasaporte debe tener 9 dígitos.';
+                }
+
+                if (errorMessage) {
+                    $('#NumeroDocumento').addClass('input-error');
+                    $('#NumeroDocumento').siblings('.error-message').text(errorMessage);
+                } else {
+                    $('#NumeroDocumento').removeClass('input-error');
+                    $('#NumeroDocumento').siblings('.error-message').text('');
+                }
+            }
+        });
+    </script>
+</head>
+
+<div class="formulario">
+    <form asp-action="AgregUsuGer" method="post">
+        <div id="title">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <hr id="line" />
+
+        <div asp-validation-summary="ModelOnly" role="alert" class="text-danger"></div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Nombres</span>
+                <input type="text" asp-for="Nombres" placeholder="Ejm. Jose Luís" />
+                <span asp-validation-for="Nombres" class="text-danger"></span>
+            </div>
+            <div class="input">
+                <span>Apellido Paterno</span>
+                <input asp-for="ApellidoPat" autocomplete="on" aria-required="true" placeholder="Ejm. Rosales" />
+                <span asp-validation-for="ApellidoPat" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Apellido Materno</span>
+                <input asp-for="ApellidoMat" autocomplete="on" aria-required="true" placeholder="Ejm. Perez" />
+                <span asp-validation-for="ApellidoMat" class="text-danger"></span>
+            </div>
+
+
+            <div class="input">
+                <span>Celular</span>
+                <input asp-for="Celular" autocomplete="on" aria-required="true" placeholder="Ejm. 987 654 321" />
+                <span asp-validation-for="Celular" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Tipo de Documento</span>
+                <select asp-for="TipoDocumento" id="TipoDocumento">
+                    <option value="" disabled selected>*Selecciona un Tipo de Documento*</option>
+                    <option value="DNI">DNI</option>
+                    <option value="Carnet">Carnet</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                </select>
+                <span asp-validation-for="TipoDocumento" class="text-danger"></span>
+            </div>
+            <div class="input">
+                <span>Numero de Documento</span>
+                <input asp-for="NumeroDocumento" id="NumeroDocumento" autocomplete="on" aria-required="true"
+                    placeholder="Ejm. 76543210" />
+                <span class="error-message"></span>
+                <span asp-validation-for="NumeroDocumento" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Genero</span>
+                <select asp-for="Genero">
+                    <option value="" disabled selected>*Selecciona un género*</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+                <span asp-validation-for="Genero" class="text-danger"></span>
+            </div>
+            <div class="input">
+                <span>Correo Electrónico</span>
+                <input asp-for="Email" autocomplete="username" aria-required="true"
+                    placeholder="nombre@ejemplo.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="inputBox">
+            <div class="input">
+                <span>Contraseña</span>
+                <input asp-for="Password" autocomplete="new-password" aria-required="true"
+                    placeholder="************" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="input">
+                <span>Confirmar Contraseña</span>
+                <input asp-for="ConfirmPassword" autocomplete="new-password" aria-required="true"
+                    placeholder="************" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <input type="submit" value="Registrar" class="btn">
+
+        @if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
