@@ -13,7 +13,7 @@
       
 </style>
 @{
-    ApplicationUser myidentity = null;
+    @*ApplicationUser myidentity = null;
     IList<string> roles = new List<string>();
 
     if (User.Identity.IsAuthenticated)
@@ -22,6 +22,17 @@
         if (myidentity != null)
         {
             roles = await UserManager.GetRolesAsync(myidentity);
+        }
+    }*@ 
+    ApplicationUser myidentity = null;
+    string rolId = null;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        myidentity = await UserManager.GetUserAsync(User);
+        if (myidentity != null)
+        {
+            rolId = myidentity.RolId;  // Obtiene el RolId directamente del usuario
         }
     }
 }
@@ -37,13 +48,13 @@
             
 
             @* Verifica si el usuario es Admin o no tiene rol asignado *@
-            @if (roles.Contains("Admin")  || !roles.Any())
+            @if (rolId == "1")  // Si el RolId es "Admin"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
             <h2 class="title">
                 <span class="wellcome">¡Bienvenido, Administrador @user.Nombres @user.ApellidoPat!</span>
             </h2>
-            <p class="codigo">COD. DE USUARIO: @user.Dni</p>
+            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
 
             <div class="boton-container">
                     <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
@@ -53,23 +64,23 @@
             }
 
             @* Verifica si el usuario es Gerente *@
-            @if (roles.Contains("Gerente"))
+            if (rolId == "2")  // Si el RolId es "Gerente"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
             <h2 class="title">
                 <span class="wellcome">¡Bienvenido, Gerente @user.Nombres @user.ApellidoPat!</span>
             </h2>
-            <p class="codigo">COD. DE USUARIO: @user.Dni</p>
+            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
             }
 
             @* Verifica si el usuario es Empleado *@
-            @if (roles.Contains("Empleado"))
+            if (rolId == "3")  // Si el RolId es "Supervisor"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
             <h2 class="title">
-                <span class="wellcome">¡Bienvenido, Empleado @user.Nombres @user.ApellidoPat!</span>
+                <span class="wellcome">¡Bienvenido, Supervisor @user.Nombres @user.ApellidoPat!</span>
             </h2>
-            <p class="codigo">COD. DE USUARIO: @user.Dni</p>
+            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
             }
         }
         else

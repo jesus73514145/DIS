@@ -28,7 +28,7 @@ namespace proyecto.Models
         public async Task SendEmailAsync(string recipient, string subject, string body)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Empresa Textil", "yisusoria@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("Empresa Textil", "locode@gmail.com"));
             emailMessage.To.Add(new MailboxAddress("", recipient));
             emailMessage.Subject = subject;
 

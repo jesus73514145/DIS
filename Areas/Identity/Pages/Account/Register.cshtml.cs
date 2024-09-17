@@ -19,8 +19,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using proyecto.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using proyecto.Data;
 
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace proyecto.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
@@ -32,12 +35,17 @@ namespace proyecto.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IMyEmailSender _emailSender;
 
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _dbContext;
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IMyEmailSender emailSender)
+            IMyEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +53,8 @@ namespace proyecto.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -66,6 +76,8 @@ namespace proyecto.Areas.Identity.Pages.Account
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
+        public SelectList TipoDocumentos { get; set; }
+        public SelectList Roles { get; set; }  // Cambiar de List<string> a SelectList
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -107,11 +119,16 @@ namespace proyecto.Areas.Identity.Pages.Account
             [Display(Name = "Apellido Materno")]
             public string ApellidoMat { get; set; }
 
-            [Required(ErrorMessage = "El DNI es obligatorio.")]
-            [StringLength(8, ErrorMessage = "El DNI debe tener exactamente 8 dígitos.", MinimumLength = 8)]
-            [RegularExpression("^[0-9]*$", ErrorMessage = "El DNI debe contener solo números.")]
-            [Display(Name = "DNI")]
-            public string Dni { get; set; }
+
+            [Required]
+            [Display(Name = "Tipo de Documento")]
+            public string TipoDocumento { get; set; }
+
+            [Required(ErrorMessage = "El Numero de Documento es obligatorio.")]
+            [Display(Name = "Numero de Documento")]
+            public string NumeroDocumento { get; set; }
+
+
 
             [Required(ErrorMessage = "Por favor, selecciona un género.")]
             [Display(Name = "Género")]
@@ -121,6 +138,15 @@ namespace proyecto.Areas.Identity.Pages.Account
             [RegularExpression(@"^(\d{9})$", ErrorMessage = "El número de celular debe tener 9 dígitos.")]
             [Display(Name = "Celular")]
             public string Celular { get; set; }
+
+            // Campo para Estado
+            [Required]
+            public bool Activo { get; set; }
+
+            // Campo para Rol
+            [Required(ErrorMessage = "El rol es obligatorio.")]
+            [Display(Name = "Rol")]
+            public string RolId { get; set; }
         }
 
 
@@ -128,6 +154,9 @@ namespace proyecto.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            // Llama al método para cargar los datos necesarios
+            await LoadDataAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -136,6 +165,27 @@ namespace proyecto.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                // Verificar si el número de documento ya existe en la base de datos
+                var existingUser = await _dbContext.Users
+                    .FirstOrDefaultAsync(u => u.NumeroDocumento == Input.NumeroDocumento);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
+                    await LoadDataAsync();
+                    return Page();
+                }
+
+                // Verificar si el correo electrónico ya existe en la base de datos
+                var existingUserByEmail = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (existingUserByEmail != null)
+                {
+                    ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
+                    await LoadDataAsync();
+                    return Page();
+                }
+
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -145,6 +195,8 @@ namespace proyecto.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("El usuario creó una nueva cuenta con contraseña.");
+
+
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -174,6 +226,9 @@ namespace proyecto.Areas.Identity.Pages.Account
                 }
             }
 
+            // Si falló la validación, vuelve a cargar las listas desplegables
+            await LoadDataAsync();
+
             // If we got this far, something failed, redisplay form
             return Page();
         }
@@ -186,12 +241,14 @@ namespace proyecto.Areas.Identity.Pages.Account
                 user.Nombres = Input.Nombres;
                 user.ApellidoPat = Input.ApellidoPat;
                 user.ApellidoMat = Input.ApellidoMat;
-                user.Dni = Input.Dni;
+                user.TipoDocumento = Input.TipoDocumento;
+                user.NumeroDocumento = Input.NumeroDocumento;
                 user.Celular = Input.Celular;
                 user.Genero = Input.Genero;
-
+                user.RolId = Input.RolId;
                 user.fechaDeRegistro = DateTime.Now.ToUniversalTime();
                 user.fechaDeActualizacion = null;
+                user.Activo = true; // esta línea es para asignar
                 return user;
             }
             catch
@@ -215,5 +272,23 @@ namespace proyecto.Areas.Identity.Pages.Account
             }
             return emailStore;
         }
+
+        private async Task LoadDataAsync()
+        {
+            // Cargar roles
+            var roles = await _roleManager.Roles.ToListAsync();
+            Roles = new SelectList(roles, "Id", "Name");
+
+            // Cargar tipos de documentos
+            var tiposDocumentos = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "DNI", Text = "DNI" },
+        new SelectListItem { Value = "Carnet", Text = "Carnet" },
+        new SelectListItem { Value = "Pasaporte", Text = "Pasaporte" },
+        // Agrega aquí más tipos de documentos según sea necesario
+    };
+            TipoDocumentos = new SelectList(tiposDocumentos, "Value", "Text");
+        }
+
     }
 }

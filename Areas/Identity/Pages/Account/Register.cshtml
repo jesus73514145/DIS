@@ -12,6 +12,45 @@
     <link rel="stylesheet" href="~/css/formularios.css" />
     <link rel="stylesheet" href="~/css/register.css" />
     <link rel="stylesheet" href="~/css/body.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .text-danger {
+            color: red !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#TipoDocumento').change(function () {
+                validateNumeroDocumento();
+            });
+
+            $('#NumeroDocumento').on('input', function () {
+                validateNumeroDocumento();
+            });
+
+            function validateNumeroDocumento() {
+                var tipoDocumento = $('#TipoDocumento').val();
+                var numeroDocumento = $('#NumeroDocumento').val();
+                var errorMessage = '';
+
+                if (tipoDocumento === 'DNI' && numeroDocumento.length !== 8) {
+                    errorMessage = 'El DNI debe tener 8 dígitos.';
+                } else if (tipoDocumento === 'Carnet' && numeroDocumento.length !== 7) {
+                    errorMessage = 'El Carnet debe tener 7 dígitos.';
+                } else if (tipoDocumento === 'Pasaporte' && numeroDocumento.length !== 9) {
+                    errorMessage = 'El Pasaporte debe tener 9 dígitos.';
+                }
+
+                if (errorMessage) {
+                    $('#NumeroDocumento').addClass('input-error');
+                    $('#NumeroDocumento').siblings('.error-message').text(errorMessage);
+                } else {
+                    $('#NumeroDocumento').removeClass('input-error');
+                    $('#NumeroDocumento').siblings('.error-message').text('');
+                }
+            }
+        });
+    </script>
 </head>
 
 <div class="formulario">
@@ -22,43 +61,55 @@
         <h2>Crea una cuenta nueva.</h2>
         <hr id="line" />
 
-        <div asp-validation-summary="ModelOnly" role="alert"></div>
+        <div asp-validation-summary="ModelOnly" role="alert" class="text-danger"></div>
 
         <div class="inputBox">
             <div class="input">
                 <span>Nombres</span>
                 <input type="text" asp-for="Input.Nombres" placeholder="Ejm. Jose Luís" />
-                <span asp-validation-for="Input.Nombres"></span>
+                <span asp-validation-for="Input.Nombres" class="text-danger"></span>
             </div>
             <div class="input">
                 <span>Apellido Paterno</span>
                 <input asp-for="Input.ApellidoPat" autocomplete="on" aria-required="true" placeholder="Ejm. Rosales" />
-                <span asp-validation-for="Input.Nombres"></span>
+                <span asp-validation-for="Input.ApellidoPat" class="text-danger"></span>
             </div>
         </div>
 
         <div class="inputBox">
             <div class="input">
                 <span>Apellido Materno</span>
-                <input asp-for="Input.ApellidoMat" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. Perez"  />
-                <span asp-validation-for="Input.ApellidoMat"></span>
+                <input asp-for="Input.ApellidoMat" autocomplete="on" aria-required="true" placeholder="Ejm. Perez" />
+                <span asp-validation-for="Input.ApellidoMat" class="text-danger"></span>
             </div>
+
+
             <div class="input">
-                <span>D.N.I.</span>
-                <input asp-for="Input.Dni" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. 76543210"  />
-                <span asp-validation-for="Input.Dni"></span>
+                <span>Celular</span>
+                <input asp-for="Input.Celular" autocomplete="on" aria-required="true" placeholder="Ejm. 987 654 321" />
+                <span asp-validation-for="Input.Celular" class="text-danger"></span>
             </div>
         </div>
 
         <div class="inputBox">
             <div class="input">
-                <span>Celular</span>
-                <input asp-for="Input.Celular" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. 987 654 321"  />
-                <span asp-validation-for="Input.Celular" ></span>
+                <span>Tipo de Documento</span>
+                <select asp-for="Input.TipoDocumento" asp-items="Model.TipoDocumentos" id="TipoDocumento">
+                    <option value="" disabled selected>*Selecciona un Tipo de Documento*</option>
+                </select>
+                <span asp-validation-for="Input.TipoDocumento" class="text-danger"></span>
             </div>
+            <div class="input">
+                <span>Numero de Documento</span>
+                <input asp-for="Input.NumeroDocumento" id="NumeroDocumento" autocomplete="on" aria-required="true"
+                    placeholder="Ejm. 76543210" />
+                <span class="error-message"></span>
+                <span asp-validation-for="Input.NumeroDocumento" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="inputBox">
             <div class="input">
                 <span>Genero</span>
                 <select asp-for="Input.Genero">
@@ -66,33 +117,38 @@
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
                 </select>
-                <span asp-validation-for="Input.Genero"></span>
+                <span asp-validation-for="Input.Genero" class="text-danger"></span>
             </div>
-        </div>
-
-        <div class="inputBox">
             <div class="input">
                 <span>Correo Electrónico</span>
                 <input asp-for="Input.Email" autocomplete="username" aria-required="true"
                     placeholder="nombre@ejemplo.com" />
-                <span asp-validation-for="Input.Email"></span>
-            </div>
-
-                        <div class="input">
-                <span>Contraseña</span>
-                <input asp-for="Input.Password" autocomplete="new-password" aria-required="true"
-                    placeholder="************" />
-                <span asp-validation-for="Input.Password"></span>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
         </div>
 
         <div class="inputBox">
+            <div class="input">
+                <span>Rol</span>
+                <select asp-for="Input.RolId" asp-items="Model.Roles">
+                    <option value="" disabled selected>*Selecciona un rol*</option>
 
+                </select>
+                <span asp-validation-for="Input.RolId" class="text-danger"></span>
+            </div>
+            <div class="input">
+                <span>Contraseña</span>
+                <input asp-for="Input.Password" autocomplete="new-password" aria-required="true"
+                    placeholder="************" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="inputBox"> 
             <div class="input">
                 <span>Confirmar Contraseña</span>
-                <input asp-for="Input.ConfirmPassword" autocomplete="new-password"
-                    aria-required="true" placeholder="************" />
-                <span asp-validation-for="Input.ConfirmPassword"></span>
+                <input asp-for="Input.ConfirmPassword" autocomplete="new-password" aria-required="true"
+                    placeholder="************" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
         </div>
 
