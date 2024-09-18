@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="~/css/index.css" />
 <link rel="stylesheet" href="~/css/body.css" />
 <link rel="stylesheet" href="~/css/boton.css" />
+<link rel="stylesheet" href="~/css/modal-styles.css" />
 
 <style>
 
@@ -45,8 +46,6 @@ roles = await UserManager.GetRolesAsync(myidentity);
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
             var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
 
-
-
             @* Verifica si el usuario es Gerente *@
             if (rolId == "2") // Si el RolId es "Gerente"
             {
@@ -57,19 +56,26 @@ roles = await UserManager.GetRolesAsync(myidentity);
                 <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
                 <div class="boton-container">
                     <a href="/Textil/Gerente/IngMat" class="boton">INGRESO DE MATERIALES</a>
-                    <a href="/Textil/Gerente/CostPrend" class="boton">COSTEO DE PRENDAS</a>
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal">COSTEO DE PRENDAS</a>
                     <a href="/Textil/Gerente/SalPrend" class="boton">SALIDA DE PRENDAS</a>
                 </div>
-            }
 
+                <!-- Aquí incluyes la vista parcial del modal -->
+                @await Html.PartialAsync("_CostPren")
+            }
         }
         else
         {
-            // Si el usuario no está autenticado, muestra un mensaje de bienvenida genérico
             <h1 class="title">
                 <span class="wellcome">Bienvenido</span>
             </h1>
         }
     </section>
 
+     <!-- Scripts necesarios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/showmodal.js"></script> <!-- Asegúrate de que la ruta es correcta -->
+
 </body>
+

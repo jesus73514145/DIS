@@ -39,6 +39,11 @@ namespace proyecto.Controllers
             return View();
         }
 
+        public IActionResult VerCostPrev()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
