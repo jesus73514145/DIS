@@ -1,0 +1,234 @@
+<!-- Modal Costeo -->
+<div class="modal fade" id="costeoModal" tabindex="-1" aria-labelledby="costeoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="costeoModalLabel">Costeo de Prendas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Primer fila: GERENTE -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h6>GERENTE</h6>
+                    </div>
+                </div>
+
+                <!-- Segunda fila: Nombre de la empresa y prendas -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="empresaNombre">Nombre de la Empresa</label>
+                            <input type="text" class="form-control" id="empresaNombre"
+                                placeholder="Nombre de la Empresa">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="prendas">Prendas</label>
+                            <input type="text" class="form-control" id="prendas" placeholder="Prendas">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tercera fila: Tela 1 -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h6>Tela 1</h6>
+                    </div>
+                </div>
+
+                <!-- Cuarta fila: Nombre de la tela y botón convertir -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="nombreTela1">Nombre de la Tela</label>
+                            <input type="text" class="form-control" id="nombreTela1" placeholder="Nombre de la Tela">
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" class="btn btn-primary">Convertir</button>
+                    </div>
+                </div>
+
+                <!-- Fila: Precio, cantidad y costo -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="precioTela1">Precio</label>
+                            <input type="text" class="form-control" id="precioTela1" placeholder="Precio">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cantidadTela1">Cantidad</label>
+                            <input type="text" class="form-control" id="cantidadTela1" placeholder="Cantidad">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="costoTela1">Costo</label>
+                            <input type="text" class="form-control" id="costoTela1" placeholder="Costo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Siguiente fila: Tela 2 -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h6>Tela 2</h6>
+                    </div>
+                </div>
+
+                <!-- Fila: Nombre de la tela 2 y botón convertir -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="nombreTela2">Nombre de la Tela 2</label>
+                            <input type="text" class="form-control" id="nombreTela2" placeholder="Nombre de la Tela 2">
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" class="btn btn-primary">Convertir</button>
+                    </div>
+                </div>
+
+                <!-- Fila: Precio, cantidad y costo de la tela 2 -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="precioTela2">Precio</label>
+                            <input type="text" class="form-control" id="precioTela2" placeholder="Precio">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cantidadTela2">Cantidad</label>
+                            <input type="text" class="form-control" id="cantidadTela2" placeholder="Cantidad">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="costoTela2">Costo</label>
+                            <input type="text" class="form-control" id="costoTela2" placeholder="Costo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Siguiente fila: Costes de elaboración -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h6>Costes de Elaboración</h6>
+                    </div>
+                </div>
+
+                <!-- Fila: Campos de costes de elaboración -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="molde">Molde</label>
+                            <input type="text" class="form-control" id="molde" placeholder="Molde">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="tizado">Tizado</label>
+                            <input type="text" class="form-control" id="tizado" placeholder="Tizado">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="corte">Corte</label>
+                            <input type="text" class="form-control" id="corte" placeholder="Corte">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="confeccion">Confección</label>
+                            <input type="text" class="form-control" id="confeccion" placeholder="Confección">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="botones">Botones</label>
+                            <input type="text" class="form-control" id="botones" placeholder="Botones">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="pegadoBoton">Pegado de Botón</label>
+                            <input type="text" class="form-control" id="pegadoBoton" placeholder="Pegado de Botón">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="avios">Avíos</label>
+                            <input type="text" class="form-control" id="avios" placeholder="Avíos">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="tricotex">Tricotex</label>
+                            <input type="text" class="form-control" id="tricotex" placeholder="Tricotex">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="acabados">Acabados</label>
+                            <input type="text" class="form-control" id="acabados" placeholder="Acabados">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="otros">Otros</label>
+                            <input type="text" class="form-control" id="otros" placeholder="Otros">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Siguiente fila: Costo de Transporte -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h6>Costo de Transporte</h6>
+                    </div>
+                </div>
+
+                <!-- Fila: Campo de transporte y botón convertir -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="transporte">Costo de Transporte</label>
+                            <input type="text" class="form-control" id="transporte" placeholder="Costo de Transporte">
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" class="btn btn-primary">Convertir</button>
+                    </div>
+                </div>
+
+                <!-- Fila: Costo Total y botones -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="costoTotal">Costo Total</label>
+                            <input type="text" class="form-control" id="costoTotal" placeholder="Costo Total" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary"
+                            onclick="window.location.href='@Url.Action("ResCosteo", "Gerente")'">Guardar
+                            Cambios</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 /* modal-styles.css */
 .modal-dialog {
     max-width: 30%; /* Ajusta el ancho máximo del modal */
-    margin: 35.5rem auto; /* Centra verticalmente con un margen ajustado */
+    margin: 7.5rem auto; /* Centra verticalmente con un margen ajustado */
 }
 
 .modal-content {

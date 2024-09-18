@@ -29,7 +29,7 @@ namespace proyecto.Controllers
             return View();
         }
 
-        public IActionResult CostPrend()
+        public IActionResult ResCosteo()
         {
             return View();
         }

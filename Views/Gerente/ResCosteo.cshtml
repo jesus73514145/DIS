@@ -1,0 +1,206 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Resultado del Costeo";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="~/css/index.css" />
+<link rel="stylesheet" href="~/css/body.css" />
+<link rel="stylesheet" href="~/css/boton.css" />
+
+<style>
+    /* Estilos generales */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        padding-bottom: 2rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .price-display {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-top: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+        margin-bottom: 1rem;
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid #dee2e6;
+        margin: 1rem 0;
+    }
+
+    .btn {
+        font-size: 1.25rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.5rem;
+    }
+
+    .btn-success {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    /* Ajustes de contenedor */
+    .container {
+        max-width: 1000px;
+        padding: 0 15px;
+    }
+
+    /* Márgenes para separar elementos */
+    .row {
+        margin-bottom: 1.5rem;
+    }
+
+    .row:last-child {
+        margin-bottom: 3rem; /* Espacio adicional al final */
+    }
+
+    .col-md-4 {
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+@{
+    ApplicationUser myidentity = null;
+    IList<string> roles = new List<string>();
+
+    if (User.Identity.IsAuthenticated)
+    {
+        myidentity = await UserManager.GetUserAsync(User);
+        if (myidentity != null)
+        {
+            roles = await UserManager.GetRolesAsync(myidentity);
+        }
+    }
+}
+
+<body>
+    <div class="container mt-5">
+        <!-- Primera fila: Título principal -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1>RESULTADO DEL COSTEO</h1>
+            </div>
+        </div>
+
+        <!-- Segunda fila: Dos contenedores con títulos, separador y precios -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Título 1</h3>
+                        <hr>
+                        <p class="price-display">$1234.56</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Título 2</h3>
+                        <hr>
+                        <p class="price-display">$789.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tercer fila: Dos contenedores con títulos, separador y precios -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Título 3</h3>
+                        <hr>
+                        <p class="price-display">$456.78</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Título 4</h3>
+                        <hr>
+                        <p class="price-display">$321.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cuarta fila: Dos contenedores con títulos, separador y precios -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Título 5</h3>
+                        <hr>
+                        <p class="price-display">$654.32</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Título 6</h3>
+                        <hr>
+                        <p class="price-display">$987.65</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quinta fila: Botones -->
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <button class="btn btn-success w-100">Exportar en Excel</button>
+            </div>
+            <div class="col-md-4 text-center">
+                <button class="btn btn-danger w-100">Exportar en PDF</button>
+            </div>
+            <div class="col-md-4 text-center">
+                <a href="@Url.Action("Index", "Gerente")" class="btn btn-secondary w-100">Regresar</a>
+            </div>
+        </div>
+    </div>
+</body>

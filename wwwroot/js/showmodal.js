@@ -1,13 +1,29 @@
-// Asegúrate de incluir jQuery y Bootstrap en tu proyecto
-// Puedes usar los siguientes CDN si aún no los has incluido
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-// <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
 $(document).ready(function () {
+    // Código para abrir el primer modal
     $('#btnOpenModal').click(function () {
         var modal = new bootstrap.Modal(document.getElementById('exampleModal'), {
             keyboard: false
         });
         modal.show();
+    });
+
+    // Código para abrir el modal de costeo
+    $('#btnOpenCosteoModal').click(function () {
+        var modal = new bootstrap.Modal(document.getElementById('costeoModal'), {
+            keyboard: false
+        });
+        modal.show();
+    });
+
+    // Maneja el cierre del primer modal
+    $('#exampleModal').on('hidden.bs.modal', function (e) {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+
+    // Maneja el cierre del modal de costeo
+    $('#costeoModal').on('hidden.bs.modal', function (e) {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
     });
 });
