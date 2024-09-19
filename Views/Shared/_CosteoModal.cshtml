@@ -1,3 +1,5 @@
+@model proyecto.Models.Costeo
+
 <!-- Modal Costeo -->
 <div class="modal fade" id="costeoModal" tabindex="-1" aria-labelledby="costeoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -13,222 +15,266 @@
                         <h6>GERENTE</h6>
                     </div>
                 </div>
+                <form asp-action="RegistrarCosteo" method="POST" id="costeoForm">
+                  
+                    <!-- Segunda fila: Nombre de la empresa y prendas -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Empresa">Nombre de la Empresa</label>
+                                <input type="text" asp-for="Empresa" class="form-control" id="Empresa"
+                                    placeholder="Nombre de la Empresa">
+                                <span asp-validation-for="Empresa" class="text-danger"></span>
 
-                <!-- Segunda fila: Nombre de la empresa y prendas -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="empresaNombre">Nombre de la Empresa</label>
-                            <input type="text" class="form-control" id="empresaNombre"
-                                placeholder="Nombre de la Empresa">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="prendas">Cantidad de Prendas</label>
-                            <input type="text" class="form-control" id="prendas" placeholder="Prendas">
-                        </div>
-                    </div>
-                </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Cantidad_Prendas">Cantidad de Prendas</label>
+                                <input type="number" step="1" asp-for="Cantidad_Prendas" class="form-control" id="Cantidad_Prendas" placeholder="Prendas">
+                                <span asp-validation-for="Cantidad_Prendas" class="text-danger"></span>
 
-                <!-- Tercera fila: Tela 1 -->
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <h6>Tela 1</h6>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Cuarta fila: Nombre de la tela y botón convertir -->
-                <div class="row mb-3">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="nombreTela1">Nombre de la Tela</label>
-                            <input type="text" class="form-control" id="nombreTela1" placeholder="Nombre de la Tela">
+                    <!-- Tercera fila: Tela 1 -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6>Tela 1</h6>
                         </div>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <button type="button" class="btn btn-primary">Convertir</button>
-                    </div>
-                </div>
 
-                <!-- Fila: Precio, cantidad y costo -->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="precioTela1">Precio</label>
-                            <input type="text" class="form-control" id="precioTela1" placeholder="Precio">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="cantidadTela1">Cantidad</label>
-                            <input type="text" class="form-control" id="cantidadTela1" placeholder="Cantidad">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="costoTela1">Costo</label>
-                            <input type="text" class="form-control" id="costoTela1" placeholder="Costo">
-                        </div>
-                    </div>
-                </div>
+                    <!-- Cuarta fila: Nombre de la tela y botón convertir -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="Tela1_Nombre">Nombre de la Tela</label>
+                                <input type="text" asp-for="Tela1_Nombre" class="form-control" id="Tela1_Nombre"
+                                    placeholder="Nombre de la Tela">
+                                <span asp-validation-for="Tela1_Nombre" class="text-danger"></span>
 
-                <!-- Siguiente fila: Tela 2 -->
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <h6>Tela 2</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-primary">Convertir</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Fila: Nombre de la tela 2 y botón convertir -->
-                <div class="row mb-3">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="nombreTela2">Nombre de la Tela 2</label>
-                            <input type="text" class="form-control" id="nombreTela2" placeholder="Nombre de la Tela 2">
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <button type="button" class="btn btn-primary">Convertir</button>
-                    </div>
-                </div>
+                    <!-- Fila: Precio, cantidad y costo -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Precio_Tela1">Precio</label>
+                                <input type="number" step="0.01" asp-for="Precio_Tela1" class="form-control" id="Precio_Tela1" placeholder="Precio">
+                                <span asp-validation-for="Precio_Tela1" class="text-danger"></span>
 
-                <!-- Fila: Precio, cantidad y costo de la tela 2 -->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="precioTela2">Precio</label>
-                            <input type="text" class="form-control" id="precioTela2" placeholder="Precio">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="cantidadTela2">Cantidad</label>
-                            <input type="text" class="form-control" id="cantidadTela2" placeholder="Cantidad">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="costoTela2">Costo</label>
-                            <input type="text" class="form-control" id="costoTela2" placeholder="Costo">
-                        </div>
-                    </div>
-                </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Tela1_Cantidad">Cantidad</label>
+                                <input type="number" step="0.01" asp-for="Tela1_Cantidad" class="form-control" id="Tela1_Cantidad" placeholder="Cantidad">
+                                <span asp-validation-for="Tela1_Cantidad" class="text-danger"></span>
 
-                <!-- Siguiente fila: Costes de elaboración -->
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <h6>Costes de Elaboración</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Tela1_Costo">Costo</label>
+                                <input type="number" step="0.01" asp-for="Tela1_Costo" class="form-control" id="Tela1_Costo" placeholder="Costo">
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Fila: Campos de costes de elaboración -->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="molde">Molde</label>
-                            <input type="text" class="form-control" id="molde" placeholder="Molde">
+                    <!-- Siguiente fila: Tela 2 -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6>Tela 2</h6>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="tizado">Tizado</label>
-                            <input type="text" class="form-control" id="tizado" placeholder="Tizado">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="corte">Corte</label>
-                            <input type="text" class="form-control" id="corte" placeholder="Corte">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="confeccion">Confección</label>
-                            <input type="text" class="form-control" id="confeccion" placeholder="Confección">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="botones">Botones</label>
-                            <input type="text" class="form-control" id="botones" placeholder="Botones">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="pegadoBoton">Pegado de Botón</label>
-                            <input type="text" class="form-control" id="pegadoBoton" placeholder="Pegado de Botón">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="avios">Avíos</label>
-                            <input type="text" class="form-control" id="avios" placeholder="Avíos">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="tricotex">Tricotex</label>
-                            <input type="text" class="form-control" id="tricotex" placeholder="Tricotex">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="acabados">Acabados</label>
-                            <input type="text" class="form-control" id="acabados" placeholder="Acabados">
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="otros">Otros</label>
-                            <input type="text" class="form-control" id="otros" placeholder="Otros">
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Siguiente fila: Costo de Transporte -->
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <h6>Costo de Transporte</h6>
-                    </div>
-                </div>
+                    <!-- Fila: Nombre de la tela 2 y botón convertir -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="Tela2_Nombre">Nombre de la Tela 2</label>
+                                <input type="text" asp-for="Tela2_Nombre" class="form-control" id="Tela2_Nombre"
+                                    placeholder="Nombre de la Tela 2">
+                                <span asp-validation-for="Tela2_Nombre" class="text-danger"></span>
 
-                <!-- Fila: Campo de transporte y botón convertir -->
-                <div class="row mb-3">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="transporte">Costo de Transporte</label>
-                            <input type="text" class="form-control" id="transporte" placeholder="Costo de Transporte">
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-primary">Convertir</button>
                         </div>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <button type="button" class="btn btn-primary">Convertir</button>
-                    </div>
-                </div>
 
-                <!-- Fila: Costo Total y botones -->
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="form-group">
-                            <label for="costoTotal">Costo Total</label>
-                            <input type="text" class="form-control" id="costoTotal" placeholder="Costo Total" readonly>
+                    <!-- Fila: Precio, cantidad y costo de la tela 2 -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Precio_Tela2">Precio</label>
+                                <input type="number" step="0.01" asp-for="Precio_Tela2" class="form-control" id="Precio_Tela2" placeholder="Precio">
+                                <span asp-validation-for="Precio_Tela2" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Tela2_Cantidad">Cantidad</label>
+                                <input type="number" step="0.01" asp-for="Tela2_Cantidad" class="form-control" id="Tela2_Cantidad" placeholder="Cantidad">
+                                <span asp-validation-for="Tela2_Cantidad" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Tela2_Costo">Costo</label>
+                                <input type="number" step="0.01" asp-for="Tela2_Costo" class="form-control" id="Tela2_Costo" placeholder="Costo">
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 text-end">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary"
-                            onclick="window.location.href='@Url.Action("ResCosteo", "Gerente")'">Guardar
-                            Cambios</button>
-                    </div>
-                </div>
 
+                    <!-- Siguiente fila: Costes de elaboración -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6>Costes de Elaboración</h6>
+                        </div>
+                    </div>
+
+                    <!-- Fila: Campos de costes de elaboración -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Molde">Molde</label>
+                                <input type="number" step="0.01" asp-for="Molde" class="form-control" id="Molde" placeholder="Molde">
+                                <span asp-validation-for="Molde" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Tizado">Tizado</label>
+                                <input type="number" step="0.01" asp-for="Tizado" class="form-control" id="Tizado" placeholder="Tizado">
+                                <span asp-validation-for="Tizado" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Corte">Corte</label>
+                                <input type="number" step="0.01" asp-for="Corte" class="form-control" id="Corte" placeholder="Corte">
+                                <span asp-validation-for="Corte" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Confección">Confección</label>
+                                <input type="number" step="0.01" asp-for="Confección" class="form-control" id="Confección" placeholder="Confección">
+                                <span asp-validation-for="Confección" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Botones">Botones</label>
+                                <input type="number" step="0.01" asp-for="Botones" class="form-control" id="Botones" placeholder="Botones">
+                                <span asp-validation-for="Botones" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Pegado_Botón">Pegado de Botón</label>
+                                <input type="number" step="0.01" asp-for="Pegado_Botón" class="form-control" id="Pegado_Botón" placeholder="Pegado de Botón">
+                                <span asp-validation-for="Pegado_Botón" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Avios">Avíos</label>
+                                <input type="number" step="0.01" asp-for="Avios" class="form-control" id="Avios" placeholder="Avíos">
+                                <span asp-validation-for="Avios" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Tricotex">Tricotex</label>
+                                <input type="number" step="0.01" asp-for="Tricotex" class="form-control" id="Tricotex" placeholder="Tricotex">
+                                <span asp-validation-for="Tricotex" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Acabados">Acabados</label>
+                                <input type="number" step="0.01" asp-for="Acabados" class="form-control" id="Acabados" placeholder="Acabados">
+                                <span asp-validation-for="Acabados" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="Otros">Otros</label>
+                                <input type="number" step="0.01" asp-for="Otros" class="form-control" id="Otros" placeholder="Otros">
+                                <span asp-validation-for="Otros" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Siguiente fila: Costo de Transporte -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6>Costo de Transporte</h6>
+                        </div>
+                    </div>
+
+                    <!-- Fila: Campo de transporte y botón convertir -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="Precio_Transporte">Precio de Transporte</label>
+                                <input type="number" step="0.01" asp-for="Precio_Transporte" class="form-control" id="Precio_Transporte"
+                                    placeholder="Costo de Transporte">
+                                <span asp-validation-for="Precio_Transporte" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-primary">Convertir</button>
+                        </div>
+                    </div>
+
+                    <!-- Fila: Costo Total y botones -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="CostoTransporte">Costo de Transporte</label>
+                                <input type="number" step="0.01" asp-for="CostoTransporte" class="form-control" id="CostoTransporte" placeholder="Costo Total"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary" >Guardar
+                                Cambios</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+
