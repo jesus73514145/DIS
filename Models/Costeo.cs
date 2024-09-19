@@ -20,7 +20,7 @@ namespace proyecto.Models
     public string Empresa { get; set; }
 
     [Required(ErrorMessage = "La cantidad de prendas es obligatoria.")]
-    [Range(1, int.MaxValue, ErrorMessage = "La cantidad de prendas debe ser mayor a 0.")]
+    [Range(0, int.MaxValue, ErrorMessage = "La cantidad de prendas debe ser mayor a 0.")]
     public int Cantidad_Prendas { get; set; }
 
     [Required(ErrorMessage = "El nombre de la Tela 1 es obligatorio.")]
@@ -36,7 +36,7 @@ namespace proyecto.Models
     public double Tela1_Cantidad { get; set; }
 
     [StringLength(100, ErrorMessage = "El nombre de la tela no puede tener más de {1} caracteres.")]
-    public string Tela2_Nombre { get; set; }
+    public string? Tela2_Nombre { get; set; }
 
     [Range(0.01, double.MaxValue, ErrorMessage = "El costo de la tela debe ser mayor a 0.")]
     public double? Tela2_Costo { get; set; } // Campo que acepta nulos
@@ -87,13 +87,11 @@ namespace proyecto.Models
     [Range(0.01, double.MaxValue, ErrorMessage = "El costo de transporte debe ser mayor a 0.")]
     public double CostoTransporte { get; set; }
 
-    [Required(ErrorMessage = "El Costo Unitario Final es obligatorio.")]
-    [Range(0.01, double.MaxValue, ErrorMessage = "El costo unitario debe ser mayor a 0.")]
-    public double CU_Final { get; set; }
+   
+    public double? CU_Final { get; set; }
 
-    [Required(ErrorMessage = "El Costo Total Final es obligatorio.")]
-    [Range(0.01, double.MaxValue, ErrorMessage = "El costo total debe ser mayor a 0.")]
-    public double CT_Final { get; set; }
+    
+    public double? CT_Final { get; set; }
 
     // Campos que no se crearán en la base de datos, pero se validarán en la vista
     [NotMapped]

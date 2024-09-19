@@ -1,9 +1,13 @@
-@using Microsoft.AspNetCore.Identity
+@model proyecto.Models.CosteoDetallesViewModel
+
+@using Microsoft.AspNetCore.Identity 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
 @{
     ViewData["Title"] = "Resultado del Costeo";
 }
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="~/css/index.css" />
 <link rel="stylesheet" href="~/css/body.css" />
@@ -13,7 +17,6 @@
     /* Estilos generales */
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
         padding-bottom: 2rem;
     }
 
@@ -21,6 +24,13 @@
         font-size: 2.5rem;
         font-weight: bold;
         color: #343a40;
+        margin-bottom: 1.5rem;
+    }
+
+    h2 {
+        font-size: 2.0rem;
+        font-weight: bold;
+        color: #ffffff;
         margin-bottom: 1.5rem;
     }
 
@@ -101,26 +111,14 @@
     }
 </style>
 
-@{
-    ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
-
-    if (User.Identity.IsAuthenticated)
-    {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
-        }
-    }
-}
-
 <body>
     <div class="container mt-5">
         <!-- Primera fila: Título principal -->
         <div class="row mb-4">
             <div class="col-12 text-center">
                 <h1>RESULTADO DEL COSTEO</h1>
+                <hr>
+                <h2>Nombre de la empresa: @Model.Empresa</h2>
             </div>
         </div>
 
@@ -129,18 +127,18 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h3>Título 1</h3>
+                        <h3>Costo Final de la Prenda</h3>
                         <hr>
-                        <p class="price-display">$1234.56</p>
+                        <p class="price-display">S/. @Model.CU_Final?.ToString("0.00")</p> <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h3>Título 2</h3>
+                        <h3>Costo Final del Pedido</h3>
                         <hr>
-                        <p class="price-display">$789.00</p>
+                        <p class="price-display">S/. @Model.CT_Final?.ToString("0.00")</p> <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -151,18 +149,18 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h3>Título 3</h3>
+                        <h3>Costo de la Tela 1</h3>
                         <hr>
-                        <p class="price-display">$456.78</p>
+                        <p class="price-display">S/. @Model.Tela1_Costo?.ToString("0.00")</p> <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h3>Título 4</h3>
+                        <h3>Costo de la Tela 2</h3>
                         <hr>
-                        <p class="price-display">$321.00</p>
+                        <p class="price-display">S/. @Model.Tela2_Costo?.ToString("0.00")</p> <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -173,18 +171,18 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h3>Título 5</h3>
+                        <h3>Costo de Elaboración</h3>
                         <hr>
-                        <p class="price-display">$654.32</p>
+                        <p class="price-display">S/. @Model.SumaCostos?.ToString("0.00")</p> <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h3>Título 6</h3>
+                        <h3>Costo de Transporte</h3>
                         <hr>
-                        <p class="price-display">$987.65</p>
+                        <p class="price-display">S/. @Model.CostoTransporte?.ToString("0.00")</p> <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>

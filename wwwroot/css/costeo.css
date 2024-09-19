@@ -1,0 +1,79 @@
+/* Estilo general del formulario */
+.container {
+    max-width: 1000px; /* Ancho máximo para el contenedor */
+}
+
+/* Estilo de los títulos */
+h1 {
+    font-size: 3rem; /* Tamaño de fuente grande para el título principal */
+    color: #333333; /* Color de texto oscuro para el título */
+    font-weight: bold; /* Fuente en negrita */
+    margin-bottom: 2rem; /* Espacio debajo del título */
+}
+
+h2, h6 {
+    font-size: 2rem; /* Tamaño de fuente para los subtítulos */
+    color: #007bff; /* Color azul para los subtítulos */
+    font-weight: bold; /* Fuente en negrita */
+    margin-bottom: 1rem; /* Espacio debajo de los subtítulos */
+}
+
+/* Estilo del formulario */
+.form-group {
+    margin-bottom: 1.5rem; /* Espacio inferior entre los grupos de campos */
+}
+
+/* Estilo de las etiquetas */
+.form-group label {
+    font-size: 1.8rem; /* Tamaño de fuente de las etiquetas */
+    font-weight: bold; /* Fuente en negrita */
+    color: #333333; /* Color del texto de las etiquetas */
+}
+
+/* Estilo de los campos de entrada */
+.form-control {
+    font-size: 1.8rem; /* Tamaño de fuente para los campos de entrada */
+    padding: 0.75rem 1.25rem; /* Padding interno */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    border: 1px solid #ced4da; /* Color del borde */
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Sombra interna */
+}
+
+/* Estilo de los botones */
+.btn-primary, .btn-secondary {
+    font-size: 1.8rem; /* Tamaño de fuente de los botones */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    transition: background-color 0.3s, color 0.3s; /* Transición suave */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Color de fondo del botón primario */
+    color: #ffffff; /* Color del texto del botón primario */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Color de fondo del botón secundario */
+    color: #ffffff; /* Color del texto del botón secundario */
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268; /* Color de fondo al pasar el ratón */
+}
+
+/* Estilo de la fila del modal */
+.row.mb-3 {
+    margin-bottom: 2rem; /* Espacio inferior entre las filas */
+}
+
+/* Estilo del pie del modal */
+.modal-footer {
+    justify-content: flex-end; /* Alinea los botones al final */
+}
+
+.text-danger {
+    font-size: 18px;;
+}
