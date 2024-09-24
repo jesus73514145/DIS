@@ -50,7 +50,7 @@ namespace proyecto.Areas.Identity.Pages.Account
             ///     a ser utilizado directamente desde su código. Este API puede cambiar o ser removido en versiones futuras.
             /// </summary>
             [Required(ErrorMessage = "La contraseña es obligatoria.")]
-            [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} y un máximo de {1} caracteres.", MinimumLength = 6)]
+            [StringLength(20, ErrorMessage = "La Contraseña debe tener al menos {2} y un máximo de {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 

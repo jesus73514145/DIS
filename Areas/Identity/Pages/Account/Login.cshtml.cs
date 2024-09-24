@@ -68,13 +68,13 @@ namespace proyecto.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             // Validación para el campo de Email con mensajes personalizados en español
-            [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
-            [EmailAddress(ErrorMessage = "Por favor, introduce un correo electrónico válido.")]
+            [Required(ErrorMessage = "El correo electrónico es obligatorio")]
+            [EmailAddress(ErrorMessage = "Por favor, introduce un correo electrónico válido")]
             public string Email { get; set; }
 
             // Validación para el campo de Password con mensajes personalizados en español
-            [Required(ErrorMessage = "La contraseña es obligatoria.")]
-            [DataType(DataType.Password, ErrorMessage = "El formato de la contraseña es incorrecto.")]
+            [Required(ErrorMessage = "La contraseña es obligatoria")]
+            [DataType(DataType.Password, ErrorMessage = "El formato de la contraseña es incorrecto")]
             public string Password { get; set; }
 
             /// <summary>
@@ -119,7 +119,7 @@ namespace proyecto.Areas.Identity.Pages.Account
                     // Redirigir según el RolId
                     if (user != null)
                     {
-                        _logger.LogInformation("El usuario inició sesión.");
+                        _logger.LogInformation("El usuario inició sesión");
 
                         switch (user.RolId.ToString())
                         {
@@ -148,7 +148,7 @@ namespace proyecto.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido.");
+                    ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido");
                     return Page();
                 }
             }
