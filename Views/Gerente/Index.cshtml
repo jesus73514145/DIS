@@ -40,7 +40,7 @@ roles = await UserManager.GetRolesAsync(myidentity);
 
 
 <body>
-    <section class="content bienvenida">
+    <section class="content bienvenida"  style="min-height: 90vh; ">
         @if (SignInManager.IsSignedIn(User))
         {
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
@@ -55,10 +55,11 @@ roles = await UserManager.GetRolesAsync(myidentity);
                 </h2>
                 <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
                 <div class="boton-container">
-                    <a href="/Textil/Gerente/IngMat" class="boton">INGRESO DE MATERIALES</a>
-                    <a href="javascript:void(0);" class="boton" id="btnOpenModal">COSTEO DE PRENDAS</a>
-                    <a href="/Textil/Gerente/SalPrend" class="boton">SALIDA DE PRENDAS</a>
+                    <a href="/Textil/Gerente/IngMat" class="boton" style="background-color: #FAAB34; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO DE MATERIALES</a>
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal" style="background-color: #FACF34; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">COSTEO DE PRENDAS</a>
+                    <a href="/Textil/Gerente/SalPrend" class="boton" style="background-color: #FAAB34; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">SALIDA DE PRENDAS</a>
                 </div>
+
 
                 <!-- Aquí incluyes la vista parcial del modal -->
                 @await Html.PartialAsync("_CostPren")
