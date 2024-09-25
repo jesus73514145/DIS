@@ -6,7 +6,6 @@
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="~/css/index.css" />
-<link rel="stylesheet" href="~/css/body.css" />
 <link rel="stylesheet" href="~/css/boton.css" />
 
 <style>
@@ -49,22 +48,16 @@
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
             var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
 
-            
-
             @* Verifica si el usuario es Admin o no tiene rol asignado *@
             @if (rolId == "1")  // Si el RolId es "Admin"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
             <h2 class="title">
-                <span class="wellcome">¡Bienvenido, Administrador @user.Nombres @user.ApellidoPat!</span>
+                <span class="wellcome">Bienvenido, Administrador @user.Nombres @user.ApellidoPat</span>
             </h2>
             <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
 
-            <div class="boton-container">
-                    <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
-                    <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
-                    <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
-                </div>
+            
             }
         }
         else
@@ -82,6 +75,13 @@
         @TempData["SuccessMessage"]
     </div>
 }
+    </section>
+    <section class="Botones">
+        <div class="boton-container">
+            <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
+            <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
+            <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
+        </div>
     </section>
 
 </body>
