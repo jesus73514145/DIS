@@ -28,12 +28,12 @@ namespace proyecto.Models
         public async Task SendEmailAsync(string recipient, string subject, string body)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Empresa Textil", "locode@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("Empresa Textil", "yisusoria@gmail.com"));
             emailMessage.To.Add(new MailboxAddress("", recipient));
             emailMessage.Subject = subject;
 
             // Obtener la ruta completa de la imagen
-            var imagePath = "wwwroot/images/locode.jpeg";
+            var imagePath = "wwwroot/images/ALZEN_logo.png";
 
             // Crear el cuerpo del correo electrónico con texto y un archivo adjunto
             var textPart = new TextPart(TextFormat.Plain) { Text = body };
