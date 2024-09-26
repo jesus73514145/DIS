@@ -92,7 +92,7 @@ namespace proyecto.Controllers
                 ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
                 _logger.LogWarning("Número de documento ya está en uso.");
 
-        
+
                 return View();
             }
 
@@ -104,7 +104,7 @@ namespace proyecto.Controllers
                 ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
                 _logger.LogWarning("Correo electrónico ya está en uso.");
 
-       
+
                 return View();
             }
 
@@ -127,18 +127,39 @@ namespace proyecto.Controllers
             // Crear el usuario en la base de datos
             var result = await _userManager.CreateAsync(user, model.Password);
 
+
             if (result.Succeeded)
             {
-                _logger.LogInformation("Usuario registrado con éxito.");
-                TempData["SuccessMessage"] = "Usuario rol gerente agregado con éxito.";
-                return RedirectToAction("Index");
+                // Generar el token de confirmación de correo
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                // Confirmar el email automáticamente utilizando el token generado
+                var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+
+                if (confirmResult.Succeeded)
+                {
+                    _logger.LogInformation("Usuario registrado con éxito y correo confirmado automáticamente.");
+                    TempData["SuccessMessage"] = "Usuario rol gerente agregado con éxito.";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    _logger.LogError("Error al confirmar el correo automáticamente.");
+                    foreach (var error in confirmResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            else
+            {
+                // Manejar errores de creación de usuario
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
-            // Manejar errores de creación de usuario
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
 
             // Si hay errores de validación, vuelve a cargar la vista con el modelo
             return View();
