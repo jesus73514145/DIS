@@ -26,38 +26,29 @@
                 </div>
             </div>
 
-        <div class="inputBox">
-            <div class="input">
-                <span>Contraseña</span>
-                <input asp-for="Input.Password" autocomplete="current-password" aria-required="true"
-                    placeholder="password" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            <div class="inputBox">
+                <div class="input" id="input-password">
+                    <input asp-for="Input.Password" autocomplete="current-password" aria-required="true"
+                        placeholder="Contraseña" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <span asp-validation-summary="ModelOnly" class="text-danger" role="alert"></span>
+                </div>
             </div>
-        </div>
-
-        <!--<div class="inputBox">
-            <div class="checkbox">
-                <label asp-for="Input.RememberMe" class="form-label">
-                    <input class="form-check-input" asp-for="Input.RememberMe" />
-                    @@Html.DisplayNameFor(m => m.Input.RememberMe)
-                </label>
-            </div>
-        </div>-->
-
-        <input type="submit" value="INGRESAR" class="btn"></input>
-
-        <div class="login-options">
-            <div class="input">
-                <a id="forgot-password" asp-page="./ForgotPassword">Recuperar Contraseña</a>
-            </div>
-            <div class="input">
-                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registrarse como nuevo
-                    usuario</a>
+            <input type="submit" value="INGRESAR" class="btnn"></input>
+            
+            
+            <div class="login-options">
+                <div class="pass">
+                    <a id="forgot-password" asp-page="./ForgotPassword">Recuperar Contraseña</a>
+                </div>
             </div>
             
         </form>
 </div>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 </body>
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
 }
