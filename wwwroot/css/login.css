@@ -1,3 +1,13 @@
+* {
+    font-family: Arial;
+}
+
+.form-links-a {
+    font-size: 14px;
+    color: #b8b8b8;
+    text-decoration: none;
+}
+
 .formulario {
     background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaCadtT2rUNpBItGgUAkiCCdJ0nf3aTOqGzUmpMOjPRGWrsKf7UpDjRimPo3nSkltNUt-v45ymbzr9BDyrokOkIonY_QGg=w1908-h897");
     background-attachment: fixed;
