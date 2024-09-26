@@ -1,25 +1,16 @@
-* {
-    font-family: Arial;
-}
-
-.form-links-a {
-    font-size: 14px;
-    color: #b8b8b8;
-    text-decoration: none;
-}
-
-.formulario {
+/*.formulario {
     background-image: url("https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaCadtT2rUNpBItGgUAkiCCdJ0nf3aTOqGzUmpMOjPRGWrsKf7UpDjRimPo3nSkltNUt-v45ymbzr9BDyrokOkIonY_QGg=w1908-h897");
     background-attachment: fixed;
     background-size: cover;
+    height: 100vh;
 }
 
 .formulario form {
-    width: 50%;
+    width: 40%;
 }
 
 .formulario form .inputBox .input {
-    width: 50%;
+    width: 60%;
     margin: auto;
 }
 
@@ -37,8 +28,19 @@
 .formulario form .inputBox .input input {
     text-transform: none;
     margin-bottom: 1rem;
-    width: 100%;
+    max-width: 100%;
     border: .15rem solid var(--white);
+}
+
+.formulario form .mi-imagen {
+    max-width: 300px;
+    height: auto;
+}
+
+.formulario form #mensaje {
+    display: block;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 @media (max-width: 600px) {
@@ -52,21 +54,58 @@
 
     .formulario {
         display: block;
-        padding: 0 4rem;
+        padding: 0;
         background: #ffffff;
     }
 
     .formulario form {
-        width: 100%;
+        width: auto;
         box-shadow: none;
         border: none;
         display: block;
         margin: 3rem auto;
     }
 
-    .formulario form .inputBox .input {
-        width: 100%;
-        margin-bottom: 1rem;
+    .formulario form .inputBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        border: 1px solid #D3D3D3;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 10px 0;
+        transition: border-color 0.3s ease;
+    }
+
+    .formulario form .inputBox .input input {
+        width: 80%;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 1px solid #D3D3D3;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .formulario form .inputBox .input input:focus {
+        border-color: #4CAF50;
+    }
+
+    .formulario form .mi-imagen {
+        max-width: 200px;
+        height: auto;
+        display: block;
+        margin: 0 auto 20px;
+    }
+
+    .formulario form #mensaje {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: #333;
     }
 
     .formulario form .login-options .input a {
@@ -77,7 +116,263 @@
     .formulario form .btn {
         font-size: 2rem;
         width: 75%;
-        margin: 2% 12.5%;
+        margin: auto;
         margin-bottom: 1rem;
     }
+
+    .formulario form .mi-imagen {
+        max-width: 200px;
+        height: auto;
+    }
+}*/
+/*---Iniciar Sesion---*/
+body {
+    background-color: #d3d3d3; /* Fondo plomo */
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
+
+.text-danger {
+    display: block;
+    color: red !important;
+}
+
+.formulario {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 100vH;   
+}
+
+.formulario form{
+    margin: 0 auto;
+    width: max-content;
+    height: max-content;
+    padding: 50px;
+    border: none;
+    box-shadow: none;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.formulario form .mi-imagen {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+}
+
+.formulario form #mensaje {
+    font-size: 18px;
+    font-weight: lighter;
+    margin-bottom: 20px;
+    display: block;
+    color: 6A6464;
+}
+
+.formulario form .inputBox{
+    display: flex;
+    margin-bottom: 20px;
+    width: 90%;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: flex-start;
+}
+
+.formulario form .inputBox .input{
+    margin: 0;
+    flex: 1;
+    border-radius: 5px;
+    height: 60px;
+}
+
+.formulario form .inputBox .input input {
+    background: #ffffff;
+    margin: 0;
+    border-radius: 10px;
+    padding: 1.5rem;
+    padding-left: 1.5rem;
+    width: 100%;
+    height: 100%;
+    border: .15rem solid var(--white);
+}
+
+.formulario form .inputBox .input span {
+    font-size: small;
+    margin: 0;
+    max-width: 100%; 
+}
+
+.input input::placeholder {
+    font-size: 20px;
+    color: #6A6464;
+    font-weight: bold;
+}
+
+.formulario form .btnn{
+    width: 70%;
+    background-color: #D9D9D9;
+    color: black;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5%;
+   
+}
+
+.formulario form .login-options{
+    margin-top: 20px;
+    color: #D9D9D9;
+}
+
+#forgot-password{
+    color: #6A6464;
+    font-weight: lighter;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+@media (max-width: 500px) {
+    .formulario form {
+        max-width: 450px;
+        padding: 30px;
+    }
+
+    .formulario form .mi-imagen {
+        width: 200px;
+        height: 200px;
+    }
+
+    .formulario form .btnn {
+        font-size: 20px;
+        padding: 15px;
+    }
+}
+
+/*---Recuperar Contraseña*/
+h2{
+    font-size: 16px;
+    font-weight: lighter;
+    margin-bottom: 20px;
+    display: block;
+    color: 6A6464;
+}
+
+.formulario form .btnn2{
+    width: 70%;
+    background-color: #D9D9D9;
+    color: black;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    padding: 3%; 
+}
+
+#volver{
+    color: #6A6464;
+    font-weight: lighter;
+    font-size: 18px;
+    text-decoration: none;
+}
+/*Restablecer Contraseña*/
+.formulario form .btn3{
+    width: 70%;
+    background-color: #D9D9D9;
+    color: black;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    padding: 3%; 
+}
+
+.formulario form .inputBox .input1{
+    margin: 0;
+    flex: 1;
+    width: 100%;
+    border-radius: 5px;
+    height: 60px;
+    align-self: flex-start;
+    padding-right: 1.5rem;
+}
+
+.formulario form .inputBox .input2{
+    margin: 0;
+    flex: 1;
+    width: 100%;
+    border-radius: 5px;
+    height: 60px;
+    align-self: flex-start;
+    padding-left: 1.5rem;
+}
+
+.formulario form .inputBox .input1 input {
+    background: #ffffff;
+    margin: 0;
+    
+    border-radius: 10px;
+    padding: 1.5rem;
+    padding-left: 1.5rem;
+    width: 100%;
+    height: 100%;
+    border: .15rem solid var(--white);
+}
+
+.input1 input::placeholder {
+    font-size: 20px;
+    color: #6A6464;
+    font-weight: bold;
+}
+
+.formulario form .inputBox .input1 span {
+    font-size: small;
+    margin: 0;
+    max-width: 90%; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.formulario form .inputBox .input2 input {
+    background: #ffffff;
+    margin: 0;
+    
+    border-radius: 10px;
+    padding: 1.5rem;
+    padding-left: 1.5rem;
+    width: 100%;
+    height: 100%;
+    border: .15rem solid var(--white);
+}
+
+.input2 input::placeholder {
+    font-size: 20px;
+    color: #6A6464;
+    font-weight: bold;
+}
+
+.formulario form .inputBox .input2 span {
+    font-size: small;
+    margin: 0;
+    max-width: 90%; 
+    margin-left: auto;
+    margin-right: auto;
+}
+

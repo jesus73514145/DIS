@@ -1,3 +1,9 @@
+body {
+    background-color: #d3d3d3; /* Fondo plomo */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
 span #a{
     font-size: 1rem;
 }
