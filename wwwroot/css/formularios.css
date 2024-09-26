@@ -73,13 +73,29 @@
     transition: background-color 0.3s ease;
 }
 
-.formulario form .btn:hover {
+/*.formulario form .btn:hover {
     background-color: var(--amarillo);
-    /* Cambia el color de fondo al pasar el mouse */
-}
-
+}*/
 .formulario form .inputBox .input {
     width: 49%;
+}
+
+.formulario form .inputBox .btn {
+    display: flexbox;
+    width: 30%;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #413e3e;
+    /* Cambia el color de fondo */
+    color: #FFFFFF;
+    /* Cambia el color del texto */
+    border: none;
+    border-radius: .5rem;
+    padding: 1rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .formulario form .inputBox .input span {

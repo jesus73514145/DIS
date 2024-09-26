@@ -142,9 +142,12 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
         </div>
-
-
-        <input type="submit" value="Registrar" class="btn">
+        <div class="inputBox">
+            <input type="submit" value="Registrar" class="btn">
+            <a href="/Textil/Admin/AgreUsu" class="btn">Cancelar</a>
+        </div>
+            
+            
 
         @if (TempData["SuccessMessage"] != null)
 {
