@@ -6,25 +6,25 @@
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="~/css/index.css" />
-<link rel="stylesheet" href="~/css/body.css" />
+
 <link rel="stylesheet" href="~/css/boton.css" />
 <link rel="stylesheet" href="~/css/modal-styles.css" />
 
 <style>
-      
+
 </style>
 @{
     @*ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
+IList<string> roles = new List<string>();
 
-    if (User.Identity.IsAuthenticated)
-    {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
-        }
-    }*@ 
+if (User.Identity.IsAuthenticated)
+{
+myidentity = await UserManager.GetUserAsync(User);
+if (myidentity != null)
+{
+roles = await UserManager.GetRolesAsync(myidentity);
+}
+}*@
     ApplicationUser myidentity = null;
     string rolId = null;
 
@@ -33,49 +33,52 @@
         myidentity = await UserManager.GetUserAsync(User);
         if (myidentity != null)
         {
-            rolId = myidentity.RolId;  // Obtiene el RolId directamente del usuario
+            rolId = myidentity.RolId; // Obtiene el RolId directamente del usuario
         }
     }
 }
 
 
 <body>
-    <section class="content bienvenida">
+    <section class="content bienvenida" style="min-height: 90vh; ">
         @if (SignInManager.IsSignedIn(User))
         {
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
             var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
 
-            
+
 
             @* Verifica si el usuario es Admin o no tiene rol asignado *@
-            @if (rolId == "1")  // Si el RolId es "Admin"
+            @if (rolId == "1") // Si el RolId es "Admin"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
-            <h2 class="title">
-                <span class="wellcome">¡Bienvenido, Administrador @user.Nombres @user.ApellidoPat!</span>
-            </h2>
-            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <h2 class="title">
+                    <span class="wellcome">¡Bienvenido, Administrador @user.Nombres @user.ApellidoPat!</span>
+                </h2>
+                <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
 
-            <div class="boton-container">
-                    <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
-                    <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
-                    <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
-                </div>
+                <section class="Botones">
+                    <div class="boton-container">
+                        <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
+                        <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
+                        <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
+                    </div>
+                </section>
             }
 
             @* Verifica si el usuario es Gerente *@
-            if (rolId == "2")  // Si el RolId es "Gerente"
+            if (rolId == "2") // Si el RolId es "Gerente"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
                 <h2 class="title">
                     <span class="wellcome">¡Bienvenido, Gerente @user.Nombres @user.ApellidoPat!</span>
                 </h2>
                 <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+
                 <div class="boton-container">
-                    <a href="/Textil/Gerente/IngMat" class="boton">INGRESO DE MATERIALES</a>
-                    <a href="javascript:void(0);" class="boton" id="btnOpenModal">COSTEO DE PRENDAS</a>
-                    <a href="/Textil/Gerente/SalPrend" class="boton">SALIDA DE PRENDAS</a>
+                    <a href="/Textil/Gerente/IngMat" class="boton" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO DE MATERIALES</a>
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">COSTEO DE PRENDAS</a>
+                    <a href="/Textil/Gerente/SalPrend" class="boton" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">SALIDA DE PRENDAS</a>
                 </div>
 
                 <!-- Aquí incluyes la vista parcial del modal -->
@@ -83,13 +86,13 @@
             }
 
             @* Verifica si el usuario es Empleado *@
-            if (rolId == "3")  // Si el RolId es "Supervisor"
+            if (rolId == "3") // Si el RolId es "Supervisor"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
-            <h2 class="title">
-                <span class="wellcome">¡Bienvenido, Supervisor @user.Nombres @user.ApellidoPat!</span>
-            </h2>
-            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <h2 class="title">
+                    <span class="wellcome">¡Bienvenido, Supervisor @user.Nombres @user.ApellidoPat!</span>
+                </h2>
+                <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
             }
         }
         else
@@ -101,7 +104,7 @@
         }
     </section>
 
- <!-- Scripts necesarios -->
+    <!-- Scripts necesarios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/showmodal.js"></script> <!-- Asegúrate de que la ruta es correcta -->

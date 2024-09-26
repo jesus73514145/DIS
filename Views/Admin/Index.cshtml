@@ -9,24 +9,27 @@
 <link rel="stylesheet" href="~/css/boton.css" />
 
 <style>
-      .custom-alert {
-    font-size: 2.0em; /* Aumenta el tamaño del texto */
-    padding: 20px; /* Aumenta el relleno interno */
-    border-radius: 5px; /* Redondea los bordes de la alerta */
-}
+    .custom-alert {
+        font-size: 2.0em;
+        /* Aumenta el tamaño del texto */
+        padding: 20px;
+        /* Aumenta el relleno interno */
+        border-radius: 5px;
+        /* Redondea los bordes de la alerta */
+    }
 </style>
 @{
     @*ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
+IList<string> roles = new List<string>();
 
-    if (User.Identity.IsAuthenticated)
-    {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
-        }
-    }*@ 
+if (User.Identity.IsAuthenticated)
+{
+myidentity = await UserManager.GetUserAsync(User);
+if (myidentity != null)
+{
+roles = await UserManager.GetRolesAsync(myidentity);
+}
+}*@
     ApplicationUser myidentity = null;
     string rolId = null;
 
@@ -35,29 +38,35 @@
         myidentity = await UserManager.GetUserAsync(User);
         if (myidentity != null)
         {
-            rolId = myidentity.RolId;  // Obtiene el RolId directamente del usuario
+            rolId = myidentity.RolId; // Obtiene el RolId directamente del usuario
         }
     }
 }
 
 
 <body>
-    <section class="content bienvenida">
+    <section class="content bienvenida" style="min-height: 90vh; ">
         @if (SignInManager.IsSignedIn(User))
         {
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
             var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
 
             @* Verifica si el usuario es Admin o no tiene rol asignado *@
-            @if (rolId == "1")  // Si el RolId es "Admin"
+            @if (rolId == "1") // Si el RolId es "Admin"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
-            <h2 class="title">
-                <span class="wellcome">Bienvenido, Administrador @user.Nombres @user.ApellidoPat</span>
-            </h2>
-            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <h2 class="title">
+                    <span class="wellcome">¡Bienvenido, Administrador @user.Nombres @user.ApellidoPat!</span>
+                </h2>
+                <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <section class="Botones">
+                    <div class="boton-container">
+                        <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
+                        <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
+                        <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
+                    </div>
+                </section>
 
-            
             }
         }
         else
@@ -69,19 +78,13 @@
         }
         <br><br><br>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success custom-alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success custom-alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
     </section>
-    <section class="Botones">
-        <div class="boton-container">
-            <a href="/Textil/Admin/ListUsuGer" class="boton">LISTA DE USUARIOS GERENTE</a>
-            <a href="/Textil/Admin/AgreUsu" class="boton">AGREGAR USUARIOS</a>
-            <a href="/Textil/Admin/ListUsuSup" class="boton">LISTA DE USUARIOS SUPERVISOR</a>
-        </div>
-    </section>
+
 
 </body>

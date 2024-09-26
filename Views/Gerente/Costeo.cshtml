@@ -4,33 +4,33 @@
 <!-- Agrega los estilos personalizados -->
 <link rel="stylesheet" href="~/css/costeo-modal.css" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
- <script>
-        $(document).ready(function () {
-            // Función para calcular el costo de Tela 1
-            $('#Precio_Tela1, #Tela1_Cantidad').on('input', function () {
-                var precioTela1 = parseFloat($('#Precio_Tela1').val()) || 0;
-                var cantidadTela1 = parseFloat($('#Tela1_Cantidad').val()) || 0;
-                var costoTela1 = precioTela1 * cantidadTela1;
-                $('#Tela1_Costo').val(costoTela1.toFixed(2));
-            });
-
-            // Función para calcular el costo de Tela 2
-            $('#Precio_Tela2, #Tela2_Cantidad').on('input', function () {
-                var precioTela2 = parseFloat($('#Precio_Tela2').val()) || 0;
-                var cantidadTela2 = parseFloat($('#Tela2_Cantidad').val()) || 0;
-                var costoTela2 = precioTela2 * cantidadTela2;
-                $('#Tela2_Costo').val(costoTela2.toFixed(2));
-            });
-
-            // Función para calcular el costo de transporte por prenda
-            $('#Precio_Transporte, #Cantidad_Prendas').on('input', function () {
-                var precioTransporte = parseFloat($('#Precio_Transporte').val()) || 0;
-                var cantidadPrendas = parseFloat($('#Cantidad_Prendas').val()) || 0;
-                var costoTransporte = (cantidadPrendas > 0) ? (precioTransporte / cantidadPrendas).toFixed(2) : 0;
-                $('#CostoTransporte').val(costoTransporte);
-            });
+<script>
+    $(document).ready(function () {
+        // Función para calcular el costo de Tela 1
+        $('#Precio_Tela1, #Tela1_Cantidad').on('input', function () {
+            var precioTela1 = parseFloat($('#Precio_Tela1').val()) || 0;
+            var cantidadTela1 = parseFloat($('#Tela1_Cantidad').val()) || 0;
+            var costoTela1 = precioTela1 * cantidadTela1;
+            $('#Tela1_Costo').val(costoTela1.toFixed(2));
         });
-    </script>
+
+        // Función para calcular el costo de Tela 2
+        $('#Precio_Tela2, #Tela2_Cantidad').on('input', function () {
+            var precioTela2 = parseFloat($('#Precio_Tela2').val()) || 0;
+            var cantidadTela2 = parseFloat($('#Tela2_Cantidad').val()) || 0;
+            var costoTela2 = precioTela2 * cantidadTela2;
+            $('#Tela2_Costo').val(costoTela2.toFixed(2));
+        });
+
+        // Función para calcular el costo de transporte por prenda
+        $('#Precio_Transporte, #Cantidad_Prendas').on('input', function () {
+            var precioTransporte = parseFloat($('#Precio_Transporte').val()) || 0;
+            var cantidadPrendas = parseFloat($('#Cantidad_Prendas').val()) || 0;
+            var costoTransporte = (cantidadPrendas > 0) ? (precioTransporte / cantidadPrendas).toFixed(2) : 0;
+            $('#CostoTransporte').val(costoTransporte);
+        });
+    });
+</script>
 <!-- Página de Costeo -->
 <div class="container mt-5">
     <div class="row">
@@ -294,7 +294,7 @@
                 </div>
             </div>
             <div class="col-md-4 text-end">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a href="/Textil/Gerente" class="btn btn-secondary">Cerrar</a>
                 <button type="submit" class="btn btn-primary">Guardar
                     Cambios</button>
             </div>
