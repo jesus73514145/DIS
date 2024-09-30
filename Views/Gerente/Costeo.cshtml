@@ -60,7 +60,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="Cantidad_Prendas">Cantidad de Prendas</label>
-                    <input type="number" step="1" asp-for="Cantidad_Prendas" class="form-control" id="Cantidad_Prendas"
+                    <input type="number"  min="0" step="1" asp-for="Cantidad_Prendas" class="form-control" id="Cantidad_Prendas"
                         placeholder="Prendas">
                     <span asp-validation-for="Cantidad_Prendas" class="text-danger"></span>
                 </div>
@@ -92,7 +92,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Precio_Tela1">Precio</label>
-                    <input type="number" step="0.01" asp-for="Precio_Tela1" class="form-control" id="Precio_Tela1"
+                    <input type="number"  min="0" step="0.01" asp-for="Precio_Tela1" class="form-control" id="Precio_Tela1"
                         placeholder="Precio">
                     <span asp-validation-for="Precio_Tela1" class="text-danger"></span>
                 </div>
@@ -100,7 +100,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Tela1_Cantidad">Cantidad</label>
-                    <input type="number" step="0.01" asp-for="Tela1_Cantidad" class="form-control" id="Tela1_Cantidad"
+                    <input type="number"  min="0" step="0.01" asp-for="Tela1_Cantidad" class="form-control" id="Tela1_Cantidad"
                         placeholder="Cantidad">
                     <span asp-validation-for="Tela1_Cantidad" class="text-danger"></span>
                 </div>
@@ -173,7 +173,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Molde">Molde</label>
-                    <input type="number" step="0.01" asp-for="Molde" class="form-control" id="Molde"
+                    <input type="number"  min="0" step="0.01" asp-for="Molde" class="form-control" id="Molde"
                         placeholder="Molde">
                     <span asp-validation-for="Molde" class="text-danger"></span>
                 </div>
@@ -181,7 +181,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Tizado">Tizado</label>
-                    <input type="number" step="0.01" asp-for="Tizado" class="form-control" id="Tizado"
+                    <input type="number"  min="0" step="0.01" asp-for="Tizado" class="form-control" id="Tizado"
                         placeholder="Tizado">
                     <span asp-validation-for="Tizado" class="text-danger"></span>
                 </div>
@@ -189,7 +189,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Corte">Corte</label>
-                    <input type="number" step="0.01" asp-for="Corte" class="form-control" id="Corte"
+                    <input type="number"  min="0" step="0.01" asp-for="Corte" class="form-control" id="Corte"
                         placeholder="Corte">
                     <span asp-validation-for="Corte" class="text-danger"></span>
                 </div>
@@ -199,7 +199,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Confección">Confección</label>
-                    <input type="number" step="0.01" asp-for="Confección" class="form-control" id="Confección"
+                    <input type="number"  min="0" step="0.01" asp-for="Confección" class="form-control" id="Confección"
                         placeholder="Confección">
                     <span asp-validation-for="Confección" class="text-danger"></span>
                 </div>
@@ -207,7 +207,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Botones">Botones</label>
-                    <input type="number" step="0.01" asp-for="Botones" class="form-control" id="Botones"
+                    <input type="number"  min="0" step="0.01" asp-for="Botones" class="form-control" id="Botones"
                         placeholder="Botones">
                     <span asp-validation-for="Botones" class="text-danger"></span>
                 </div>
@@ -215,7 +215,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Pegado_Botón">Pegado de Botón</label>
-                    <input type="number" step="0.01" asp-for="Pegado_Botón" class="form-control" id="Pegado_Botón"
+                    <input type="number"  min="0" step="0.01" asp-for="Pegado_Botón" class="form-control" id="Pegado_Botón"
                         placeholder="Pegado de Botón">
                     <span asp-validation-for="Pegado_Botón" class="text-danger"></span>
                 </div>
@@ -226,7 +226,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Avios">Avíos</label>
-                    <input type="number" step="0.01" asp-for="Avios" class="form-control" id="Avios"
+                    <input type="number"  min="0" step="0.01" asp-for="Avios" class="form-control" id="Avios"
                         placeholder="Avíos">
                     <span asp-validation-for="Avios" class="text-danger"></span>
 
@@ -235,7 +235,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Tricotex">Tricotex</label>
-                    <input type="number" step="0.01" asp-for="Tricotex" class="form-control" id="Tricotex"
+                    <input type="number"  min="0" step="0.01" asp-for="Tricotex" class="form-control" id="Tricotex"
                         placeholder="Tricotex">
                     <span asp-validation-for="Tricotex" class="text-danger"></span>
 
@@ -244,7 +244,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="Acabados">Acabados</label>
-                    <input type="number" step="0.01" asp-for="Acabados" class="form-control" id="Acabados"
+                    <input type="number"  min="0" step="0.01" asp-for="Acabados" class="form-control" id="Acabados"
                         placeholder="Acabados">
                     <span asp-validation-for="Acabados" class="text-danger"></span>
 

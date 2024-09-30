@@ -31,6 +31,15 @@ DATABASE:  database_dis
 Esta base de datos fue creada el 15/09/2024 asi que puede que se venza el proximo mes que es 15/10/2024, asi que hay que guardar la info con tiempo para luego pasar la data copiando y pegando.
 
 
+## Probando darle creditos como autor
+
+git add .
+
+
+git commit --author="Lucas Espinoza Laurente <lukaespinoza12@gmail.com>" -m "Login, ForgotPassword, ResetPassword, Registrar Costeo"
+
+
+git push origin master
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">

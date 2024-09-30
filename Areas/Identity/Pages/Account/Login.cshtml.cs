@@ -102,46 +102,50 @@ namespace proyecto.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-          public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            
             if (ModelState.IsValid)
             {
+                // Verificar si el usuario existe
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "El correo electrónico no está registrado.");
+                    return Page();
+                }
+
+                // Intentar iniciar sesión
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    // Obtener el usuario autenticado
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    _logger.LogInformation("El usuario inició sesión");
 
                     // Redirigir según el RolId
-                    if (user != null)
+                    switch (user.RolId.ToString())
                     {
-                        _logger.LogInformation("El usuario inició sesión");
+                        case "1": // Administrador
+                            return RedirectToAction("Index", "Admin");
 
-                        switch (user.RolId.ToString())
-                        {
-                            case "1": // Administrador
-                                return RedirectToAction("Index", "Admin");
+                        case "2": // Gerente
+                            return RedirectToAction("Index", "Gerente");
 
-                            case "2": // Gerente
-                                return RedirectToAction("Index", "Gerente");
+                        case "3": // Supervisor
+                            return RedirectToAction("Index", "Supervisor");
 
-                            case "3": // Supervisor
-                                return RedirectToAction("Index", "Supervisor");
-
-                            default: // Rol no reconocido
-                                return LocalRedirect(returnUrl);
-                        }
+                        default: // Rol no reconocido
+                            return LocalRedirect(returnUrl);
                     }
                 }
+
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("Cuenta de usuario bloqueada.");
@@ -149,7 +153,7 @@ namespace proyecto.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido");
+                    ModelState.AddModelError(string.Empty, "La contraseña es incorrecta.");
                     return Page();
                 }
             }
@@ -157,5 +161,6 @@ namespace proyecto.Areas.Identity.Pages.Account
             // Si algo falla, volver a mostrar el formulario
             return Page();
         }
+
     }
 }

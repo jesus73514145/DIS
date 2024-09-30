@@ -55,21 +55,32 @@ namespace proyecto.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                if (user == null)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
+                    // Mostrar un mensaje de error que el correo no está registrado
+                    ModelState.AddModelError(string.Empty, "No se encontró una cuenta con ese correo electrónico.");
+                    return Page();
+                }
+
+                // Verificar si el correo está confirmado
+                if (!(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // Redirigir si el correo no está confirmado
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 }
 
-                // For more information on how to enable account confirmation and password reset please
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                // Generar token y enviar el correo
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { area = "Identity", code },
+                    values: new { area = "Identity", code, email = Input.Email },
                     protocol: Request.Scheme);
+
+                // Mostrar la URL generada para depuración
+                Console.WriteLine($"URL de restablecimiento de contraseña: {callbackUrl}");
+                Console.WriteLine($"Email enviado: {Input.Email}");
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,
@@ -81,5 +92,6 @@ namespace proyecto.Areas.Identity.Pages.Account
 
             return Page();
         }
+
     }
 }

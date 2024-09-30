@@ -41,6 +41,11 @@ namespace proyecto.Controllers
                 return RedirectToAction("Index", "Gerente");
             }
 
+            // Mostrar datos en la consola
+            _logger.LogInformation($"Costeo encontrado: Id={costeo.Id}, Empresa={costeo.Empresa}, CU_Final={costeo.CU_Final}, CT_Final={costeo.CT_Final}, " +
+                                   $"Tela1_Costo={costeo.Tela1_Costo}, Tela2_Costo={costeo.Tela2_Costo}, " +
+                                   $"CostoTransporte={costeo.CostoTransporte}");
+
             // Calcular la suma de los costos (excepto CostoTransporte)
             var sumaCostos = costeo.Molde + costeo.Tizado + costeo.Corte + costeo.Confección +
                              costeo.Botones + costeo.Pegado_Botón + costeo.Otros +
@@ -79,6 +84,30 @@ namespace proyecto.Controllers
         [HttpPost]
         public async Task<IActionResult> RegistrarCosteo(Costeo model)
         {
+            // Convertir valores nulos a 0 antes de realizar cualquier cálculo
+            model.Cantidad_Prendas = model.Cantidad_Prendas ?? 0;
+            
+            model.Tela1_Costo = model.Tela1_Costo ?? 0;
+            model.Tela1_Cantidad = model.Tela1_Cantidad ?? 0;
+            model.Precio_Tela1 = model.Precio_Tela1 ?? 0;
+
+            model.Tela2_Costo = model.Tela2_Costo ?? 0;
+            model.Tela2_Cantidad = model.Tela2_Cantidad ?? 0;
+            model.Precio_Tela2 = model.Precio_Tela2 ?? 0;
+
+            model.Molde  = model.Molde  ?? 0;
+            model.Tizado  = model.Tizado  ?? 0;
+            model.Corte  = model.Corte  ?? 0;
+            model.Confección   = model.Confección   ?? 0;
+            model.Botones   = model.Botones   ?? 0;
+            model.Pegado_Botón   = model.Pegado_Botón   ?? 0;
+            model.Otros    = model.Otros    ?? 0;
+            model.Avios    = model.Avios    ?? 0;
+            model.Tricotex    = model.Tricotex    ?? 0;
+            model.Acabados     = model.Acabados     ?? 0;
+            model.Precio_Transporte  = model.Precio_Transporte  ?? 0;
+            
+            model.Otros = model.Otros ?? 0;
             // Calcular CU_Final y CT_Final antes de cualquier validación
             model.CU_Final = model.Tela1_Costo + model.Tela2_Costo + model.Molde + model.Tizado +
                              model.Corte + model.Confección + model.Botones + model.Pegado_Botón +
@@ -122,8 +151,8 @@ namespace proyecto.Controllers
                                           .SelectMany(v => v.Errors)
                                           .Select(e => e.ErrorMessage)
                                           .ToList();
-
-            TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+            // para mapear que error de que campo es
+            //TempData["ErrorMessage"] = string.Join(" ", errorMessages);
 
             // Si algo falla, devolver el modelo con los errores y los datos de vuelta a la vista
             return View("Costeo", model);
