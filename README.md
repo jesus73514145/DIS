@@ -41,6 +41,20 @@ git commit --author="Lucas Espinoza Laurente <lukaespinoza12@gmail.com>" -m "Log
 
 git push origin master
 
+## comando para crear una nueva rama
+
+git checkout -b kriss 
+
+kristell_flores@usmp.pe
+
+aliagaarturo2004@gmail.com
+
+
+git commit --author="Arturo Aliaga Silva <aliagaarturo2004@gmail.com>" -m "xdxd"
+
+git commit --author="Kristell Flores Huamani <kristell_flores@usmp.pe>" -m "Prueba de Kriss"
+
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 </p>
