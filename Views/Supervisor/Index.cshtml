@@ -39,7 +39,7 @@
 
 
 <body>
-    <section class="content bienvenida">
+    <section class="content bienvenida"  style="min-height: 90vh; ">
         @if (SignInManager.IsSignedIn(User))
         {
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado

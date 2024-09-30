@@ -6,11 +6,11 @@
 }
 
 <head>
-    <title>Register</title>
+    <title>ROL: GERENTE</title>
     <link rel="icon" href="~/images/ALZEN_logo.png" />
     <link rel="stylesheet" href="~/css/formularios.css" />
     <link rel="stylesheet" href="~/css/register.css" />
-    <link rel="stylesheet" href="~/css/body.css" />
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .text-danger {
@@ -122,8 +122,7 @@
             </div>
             <div class="input">
                 <span>Correo Electrónico</span>
-                <input asp-for="Email" autocomplete="username" aria-required="true"
-                    placeholder="nombre@ejemplo.com" />
+                <input asp-for="Email" autocomplete="username" aria-required="true" placeholder="nombre@ejemplo.com" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
         </div>
@@ -131,8 +130,7 @@
         <div class="inputBox">
             <div class="input">
                 <span>Contraseña</span>
-                <input asp-for="Password" autocomplete="new-password" aria-required="true"
-                    placeholder="************" />
+                <input asp-for="Password" autocomplete="new-password" aria-required="true" placeholder="************" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="input">
@@ -146,15 +144,15 @@
             <input type="submit" value="Registrar" class="btn">
             <a href="/Textil/Admin/AgreUsu" class="btn">Cancelar</a>
         </div>
-            
-            
+
+
 
         @if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
 
 
     </form>
