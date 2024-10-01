@@ -12,7 +12,7 @@ dotnet ef migrations add InitialMigration2
 
 dotnet ef database update
 
-
+dotnet ef migrations add CosteoMigration  
 
 # DIS BASE DE DATOS
 
