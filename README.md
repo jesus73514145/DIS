@@ -55,6 +55,8 @@ git commit --author="Arturo Aliaga Silva <aliagaarturo2004@gmail.com>" -m "xdxd"
 git commit --author="Kristell Flores Huamani <kristell_flores@usmp.pe>" -m "Prueba de Kriss"
 
 
+xdxd
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 </p>
