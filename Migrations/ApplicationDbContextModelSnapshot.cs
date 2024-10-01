@@ -278,13 +278,16 @@ namespace proyecto.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Acabados")
+                    b.Property<double?>("Acabados")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Avios")
+                    b.Property<double?>("Avios")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Botones")
+                    b.Property<double?>("Botones")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
                     b.Property<double?>("CT_Final")
@@ -293,16 +296,20 @@ namespace proyecto.Migrations
                     b.Property<double?>("CU_Final")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("Cantidad_Prendas")
+                    b.Property<int?>("Cantidad_Prendas")
+                        .IsRequired()
                         .HasColumnType("integer");
 
-                    b.Property<double>("Confección")
+                    b.Property<double?>("Confección")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Corte")
+                    b.Property<double?>("Corte")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("CostoTransporte")
+                    b.Property<double?>("CostoTransporte")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
                     b.Property<string>("Empresa")
@@ -310,19 +317,23 @@ namespace proyecto.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double>("Molde")
+                    b.Property<double?>("Molde")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
                     b.Property<double?>("Otros")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Pegado_Botón")
+                    b.Property<double?>("Pegado_Botón")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Tela1_Cantidad")
+                    b.Property<double?>("Tela1_Cantidad")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Tela1_Costo")
+                    b.Property<double?>("Tela1_Costo")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
                     b.Property<string>("Tela1_Nombre")
@@ -340,11 +351,22 @@ namespace proyecto.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double>("Tizado")
+                    b.Property<double?>("Tizado")
+                        .IsRequired()
                         .HasColumnType("double precision");
 
-                    b.Property<double>("Tricotex")
+                    b.Property<double?>("Tricotex")
+                        .IsRequired()
                         .HasColumnType("double precision");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("fec_Actualizacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("fec_Creacion")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
