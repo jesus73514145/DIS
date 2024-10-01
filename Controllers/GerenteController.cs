@@ -170,7 +170,7 @@ namespace proyecto.Controllers
                     </style>
                 </head>
                 <body>
-                    <img src='https://firebasestorage.googleapis.com/v0/b/proyectos-cb445.appspot.com/o/img_logo_athletix.png?alt=media&token=a32e429b-4ece-45d2-bf00-85a8f9081a9c&_gl=1*14iryjj*_ga*MTcyOTkyMjIwMS4xNjk2NDU2NzU2*_ga_CW55HF8NVT*MTY5ODAxNDc2Mi4yLjEuMTY5ODAxNDg0Ny40OC4wLjA.' alt='Logo' width='100' class='logo'/>
+                    <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' width='100' class='logo'/>
                     <h1>Reporte de Costeo {id}</h1>
                     <table>
                         <tr>
@@ -343,6 +343,11 @@ namespace proyecto.Controllers
 
 
         public async Task<ActionResult> Costeo()
+        {
+            return View();
+        }
+
+        public async Task<ActionResult> DetalleCosteo()
         {
             return View();
         }
