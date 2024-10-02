@@ -103,7 +103,7 @@ namespace proyecto.Controllers
             if (userId == null)
             {
                 // no se ha logueado
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de agregar un producto";
+                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
                 return View("~/Views/Home/Index.cshtml");
             }
             else

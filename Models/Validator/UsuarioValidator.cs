@@ -14,18 +14,18 @@ namespace proyecto.Models.Validator
             RuleFor(usuario => usuario.Nombres)
            .NotEmpty().WithMessage("El campo de Nombre es obligatorio");
 
-           RuleFor(usuario => usuario.ApellidoPaterno)
+           RuleFor(usuario => usuario.ApellidoPat)
             .NotEmpty().WithMessage("El campo de Apellido Paterno es obligatorio");
 
-            RuleFor(usuario => usuario.ApellidoMaterno)
+            RuleFor(usuario => usuario.ApellidoMat)
             .NotEmpty().WithMessage("El campo de Apellido Materno es obligatorio");
 
             RuleFor(usuario => usuario.Email)
             .NotEmpty().WithMessage("El campo de Email es obligatorio");
 
-            RuleFor(usuario => usuario.Dni)
-            .NotEmpty().WithMessage("El campo de DNI es obligatorio")
-            .NotNull().WithMessage("El campo de DNI es obligatorio");
+            RuleFor(usuario => usuario.NumeroDocumento)
+            .NotEmpty().WithMessage("El campo de Numero de Documento es obligatorio")
+            .NotNull().WithMessage("El campo de Numero de Documento es obligatorio");
 
             RuleFor(usuario => usuario.Celular)
             .NotEmpty().WithMessage("El campo de Celular es obligatorio");
@@ -33,5 +33,6 @@ namespace proyecto.Models.Validator
             RuleFor(usuario => usuario.Genero)
             .NotNull().WithMessage("El campo de genero no puede ser vacio, seleccione uno");
         }
+
     }
 }
