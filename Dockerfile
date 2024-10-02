@@ -15,11 +15,11 @@ RUN dotnet build "proyecto.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "proyecto.csproj" -c Release -o /app/publish
 
-# Etapa 4: Instalar wkhtmltox y dependencias
+# Etapa 4: Instalar wkhtmltox y dependencias sin libssl1.1
 FROM base AS final
 WORKDIR /app
 
-# Actualizar paquetes e instalar dependencias necesarias incluyendo libssl1.1
+# Actualizar paquetes e instalar dependencias necesarias
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     xfonts-75dpi \
@@ -30,14 +30,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxcb1 \
     fontconfig \
     libjpeg62-turbo \
-    libxext6 \
-    libssl1.1 && \
-    rm -rf /var/lib/apt/lists/*
+    libxext6
 
-# Descargar e instalar wkhtmltox
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb && \
-    dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb || apt-get install -f -y && \
-    rm wkhtmltox_0.12.6-1.buster_amd64.deb
+# Descargar e instalar una versión de wkhtmltox que no dependa de libssl1.1
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.5-1/wkhtmltox_0.12.5-1.bionic_amd64.deb && \
+    dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb || apt-get install -f -y
 
 # Copiar la aplicación publicada
 COPY --from=publish /app/publish .
