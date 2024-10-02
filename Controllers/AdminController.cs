@@ -67,9 +67,13 @@ namespace proyecto.Controllers
 
 
                 pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
+               
 
-                // Aquí aplicamos la paginación.
-                var listaPaginada = await _context.Users.ToPagedListAsync(pageNumber, pageSize);
+                
+                // Filtrar usuarios por RolId = 2
+                var listaPaginada = await _context.Users
+                    .Where(u => u.RolId == "2") // Filtrar por RolId
+                    .ToPagedListAsync(pageNumber, pageSize); // Aplicar paginación
 
                 return View("ListUsuGer", listaPaginada);
             }
@@ -146,21 +150,27 @@ namespace proyecto.Controllers
 
         public async Task<IActionResult> buscarUsuario(string query)
         {
-
-
-            IPagedList usuariosPagedList;
+            IPagedList<ApplicationUser> usuariosPagedList;
 
             try
             {
+
+                // Filtrar por RolId = 2
+                var baseQuery = _context.Users.Where(u => u.RolId == "2");
+
                 if (string.IsNullOrWhiteSpace(query))
                 {
-                    var todosLosUsuarios = await _context.Users.ToListAsync();
-                    usuariosPagedList = _context.Users.ToPagedList(1, todosLosUsuarios.Count);
+                    // Si no hay query, obtener todos los usuarios con RolId = 2
+                    var todosLosUsuarios = await baseQuery.ToListAsync();
+                    usuariosPagedList = todosLosUsuarios.ToPagedList(1, todosLosUsuarios.Count);
                 }
                 else
                 {
+                    // Convertir el query a mayúsculas para una búsqueda sin distinción de mayúsculas
                     query = query.ToUpper();
-                    var usuarios = await _context.Users
+
+                    // Filtrar los usuarios por nombre o Id y RolId = 2
+                    var usuarios = await baseQuery
                         .Where(p => p.Nombres.ToUpper().Contains(query) || p.Id.ToUpper().Contains(query))
                         .ToListAsync();
 
@@ -171,6 +181,7 @@ namespace proyecto.Controllers
                     }
                     else
                     {
+                        // Asignar a usuariosPagedList la lista paginada de usuarios encontrados
                         usuariosPagedList = usuarios.ToPagedList(1, usuarios.Count);
                     }
                 }
@@ -184,6 +195,7 @@ namespace proyecto.Controllers
             // Retorna la vista con usuariosPagedList, que siempre tendrá un valor asignado.
             return View("ListUsuGer", usuariosPagedList);
         }
+
 
         [HttpGet]
         public IActionResult ListUsuSup()
