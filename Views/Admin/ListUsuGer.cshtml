@@ -1,38 +1,395 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
+@using X.PagedList.Mvc.Core; 
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Fluent;
+
+@model IPagedList<ApplicationUser>
+
 @{
-    ViewData["Title"] = "Lista de Usuarios Gerente";
+    ViewData["Title"] = "LISTA DE USUARIOS GERENTE";
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="~/css/index.css" />
-<link rel="stylesheet" href="~/css/body.css" />
+
 <link rel="stylesheet" href="~/css/boton.css" />
+@if (TempData["MessageDeRespuesta"] != null)
+{
+    <div class="alert alert-danger" id="MensajesVerdeRojo">
+        @TempData["MessageDeRespuesta"]
+    </div>
+}
 
 <style>
-      
-</style>
-@{
-    ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
+    @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
 
-    if (User.Identity.IsAuthenticated)
-    {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
-        }
+    :root {
+        --my-blue: #000000;
+        --light-my-blue: #6FA6FF;
+        /* Aquí defines el tono más claro */
+        --celeste: #40E0D0;
+        --light-celeste: hsl(177, 72%, 70%);
+        --amarillo: #f9d806;
+        --light-amarillo: #ffee80;
+        --rojo: #FF0000;
+        --light-rojo: #FFAFAF;
+        --verde: #369681;
+        --light-verde: #00B050;
+        --black: #130f40;
+        --light-color: #666;
+        --border: .1rem solid rgba(0, 0, 0, .1);
+        --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
     }
-}
+
+    section {
+        padding: 2rem 6%;
+    }
+
+    /* esto es para los productos */
+
+    .heading {
+        text-align: center;
+        padding-bottom: 2rem;
+        font-size: 4.5rem;
+        color: var(--black);
+    }
+
+    .heading span {
+        position: relative;
+        z-index: 0;
+    }
+
+ 
+
+    /* estilos para la tabla productos */
+    body {
+        background: #eee;
+    }
+
+    .table-product-form-container {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table-product-form-container table {
+        background-color: white;
+        text-align: center;
+        border-collapse: collapse;
+    }
+
+    .table-product-form-container th,
+    td {
+        padding: 10px;
+        /* Aumenta el espaciado para mejorar la legibilidad */
+        border: 1px solid #ddd;
+        /* Agrega un borde en todas las celdas */
+        font-size: 1.5rem;
+    }
+
+    .table-product-form-container thead {
+        background-color: #000000;
+        /*#246355*/
+        border-bottom: solid 5px var(--light-celeste);
+        color: white;
+    }
+
+    .table {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .table-product-form-container tr:nth-child(even) {
+        background-color: #ddd;
+    }
+
+    .table-product-form-container tr:hover {
+        background-color: var(--my-blue);
+        color: white;
+    }
+
+    .table-product-form-container tr:hover td a {
+        color: white;
+    }
+
+    /* los buscadores */
+    .listar_product .table-product-form-container .Buscador {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--my-blue);
+        border-radius: 0.5rem;
+        box-shadow: var(--box-shadow);
+        padding: 10px;
+
+        /* Agregar margen superior para separar del encabezado */
+    }
+
+    .listar_product .table-product-form-container .Buscador span {
+        font-weight: bold;
+        margin: 10px;
+        font-size: 16px;
+        color: #ffffff;
+
+        border: none;
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnBuscar {
+        display: inline-block;
+        margin-top: 1rem;
+        border-radius: .5rem;
+        background: var(--light-celeste);
+        color: var(--black);
+        font-weight: 500;
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: .5rem 1.5rem;
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnBuscar:hover {
+        background: var(--celeste);
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnAgregar {
+        display: inline-block;
+        margin-top: 1rem;
+        border-radius: .5rem;
+        background: var(--light-amarillo);
+        color: var(--black);
+        font-weight: 500;
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: .5rem 1.5rem;
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnAgregar:hover {
+        background: var(--amarillo);
+    }
+
+
+    .listar_product .table-product-form-container .Buscador .btnPDF {
+        display: inline-block;
+        margin-top: 1rem;
+        border-radius: .5rem;
+        background: var(--light-rojo);
+        color: var(--black);
+        font-weight: 500;
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: .5rem 1.5rem;
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnPDF:hover {
+        background: var(--rojo);
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnExcel {
+        display: inline-block;
+        margin-top: 1rem;
+        border-radius: .5rem;
+        background: var(--light-verde);
+        color: var(--black);
+        font-weight: 500;
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: .5rem 1.5rem;
+    }
+
+    .listar_product .table-product-form-container .Buscador .btnExcel:hover {
+        background: var(--verde);
+    }
+
+    .listar_product .table-product-form-container .Buscador input[type="text"] {
+        flex: 0.5;
+        padding: 8px;
+        border: none;
+        border-radius: 0.5rem;
+        margin-right: 10px;
+        font-weight: 500;
+        font-size: 1.7rem;
+    }
+
+
+    /* Personalización de la Paginación */
+    .pagination-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .pagination {
+        display: inline-block;
+    }
+
+    .pagination li {
+        display: inline;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        font-size: 18px;
+        /* Ajusta el tamaño de la fuente aquí */
+    }
+
+    .pagination li.active a,
+    .pagination li.active span {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .pagination li a:hover:not(.active) {
+        background-color: #ddd;
+    }
+
+    .pagination li.disabled a,
+    .pagination li.disabled span {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* estilo para el boton editar y eliminar */
+
+    .btnEditar {
+        display: inline-block;
+        margin-top: 1rem;
+        border-radius: .5rem;
+        background: var(--light-verde);
+        color: var(--black);
+
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: .2rem 1rem;
+    }
+
+    .btnEditar:hover {
+        background: var(--verde);
+    }
+
+    .btnEliminar {
+        display: inline-block;
+        margin-top: 1rem;
+        border-radius: .5rem;
+        background: var(--light-rojo);
+        color: var(--black);
+
+        font-size: 1.7rem;
+        cursor: pointer;
+        padding: .2rem 1rem;
+    }
+
+    .btnEliminar:hover {
+        background: var(--rojo);
+        color: white;
+    }
+
+    /* hasta aqui */
+</style>
 
 
 <body>
-    <section class="content bienvenida"  style="min-height: 90vh; ">
-        <h2 class="title">
-            <span class="wellcome">LISTA DE USUARIOS GERENTE</span>
-        </h2>
-        
-    </section>
+   <!---------------------------- listar producto stars  ---------------------------->
+<section class="listar_product" id="listar_product">
+    <div class="table-product-form-container">
+        <h1 class="heading"> <span>USUAROS GERENTE</span></h1>
+
+        <div class="Buscador">
+            <span>Buscar Gerente</span>
+            <form asp-controller="Admin" asp-action="BuscarUsuario" method="get">
+                <input type="text" name="query" />
+                <button type="submit" class="btnBuscar">Buscar</button>
+            </form>
+
+            <a style="text-decoration: none;" asp-area="" asp-controller="Admin" asp-action="Index"
+                class="btnExcel">Volver</a>
+        </div>
+        <br>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre Completo</th>
+                    <th>Tipo de Documento</th>
+                    <th>Nro. de Documento</th>
+                    <th>Correo</th>
+                    <th>Celular</th>
+                    <th>Fecha de registro</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Id</td>
+                        <td>@usuario.Nombres @usuario.ApellidoPat @usuario.ApellidoMat</td>
+                        <td>@usuario.TipoDocumento</td>
+                        <td>@usuario.NumeroDocumento</td>
+                        <td>@usuario.Email</td>
+                        <td>@usuario.Celular</td>
+                        <td>@usuario.fechaDeRegistro</td>
+
+                        <td>
+                             <!-- Botón de Editar -->
+                            <a asp-controller="Admin" asp-action="EditarUsuario" asp-route-id="@usuario.Id"
+                                class="btnEditar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+
+                         <td>
+                            <!-- Botón de Eliminar -->
+                            <form asp-controller="Admin" asp-action="EliminarUsuario" asp-route-id="@usuario.Id"
+                                method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este Gerente?')"
+                                class="d-inline-block">
+                                <button type="submit" class="btnEliminar">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br><br>
+        <div class="pagination-container">
+            <ul class="pagination">
+                <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("ListUsuGer", new { page = 1 })">Primera</a>
+                </li>
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link"
+                        href="@Url.Action("ListUsuGer", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                </li>
+                @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
+                {
+                    <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                        <a class="page-link"
+                            href="@Url.Action("ListUsuGer", new { page = pageNumber })">@pageNumber</a>
+                    </li>
+                }
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link"
+                        href="@Url.Action("ListUsuGer", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                </li>
+                <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
+                    <a class="page-link"
+                        href="@Url.Action("ListUsuGer", new { page = Model.PageCount })">&Uacute;ltima</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!---------------------------- listar producto ends  ---------------------------->
+
+<!---------------------------- javascript  stars  ---------------------------->
+<script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
+<!---------------------------- javascript  ends  ---------------------------->
 
 </body>

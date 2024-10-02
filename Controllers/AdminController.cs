@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using proyecto.Models;
+using proyecto.Models.DTO;
+using proyecto.Models.Validator;
 using Microsoft.Extensions.Logging;
 using proyecto.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +11,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea
 using System.Linq;
 using Microsoft.EntityFrameworkCore; // Esto es necesario para FirstOrDefaultAsync
+
+/*LIBRERIAS PARA LA PAGINACION DE LISTAR PRODUCTOS */
+using X.PagedList;
+
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Drawing;
+
+/*validation*/
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace proyecto.Controllers
 {
@@ -36,10 +48,141 @@ namespace proyecto.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult ListUsuGer()
+
+
+        public async Task<ActionResult> ListUsuGer(int? page)
         {
-            return View("ListUsuGer");
+            var userId = _userManager.GetUserId(User); //sesion
+
+            if (userId == null)
+            {
+                // no se ha logueado
+                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
+                return View("~/Views/Home/Index.cshtml");
+            }
+            else
+            {
+                int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
+                int pageSize = 10; // maximo 6 usuarios por pagina
+
+
+                pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
+
+                // Aquí aplicamos la paginación.
+                var listaPaginada = await _context.Users.ToPagedListAsync(pageNumber, pageSize);
+
+                return View("ListUsuGer", listaPaginada);
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarUsuario(string id)
+        {
+            var usuario = await _context.Users.FindAsync(id);
+
+            if (usuario != null)
+            {
+                _context.Users.Remove(usuario);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ListUsuGer));
+            }
+
+            return NotFound("no se encontro");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> EditarUsuario(string? id)
+        {
+
+            ApplicationUser? usuarioEditar = await _context.Users.FindAsync(id);
+
+            if (usuarioEditar == null)
+            {
+                Console.Write("No se encontro");
+                return NotFound("No se encontro a ese usuario");
+            }
+
+            UsuarioDTO usuarioEditarDTO = new UsuarioDTO();
+            usuarioEditarDTO.Id = usuarioEditar.Id;
+            usuarioEditarDTO.Nombres = usuarioEditar.Nombres;
+            usuarioEditarDTO.ApellidoPat = usuarioEditar.ApellidoPat;
+            usuarioEditarDTO.ApellidoMat = usuarioEditar.ApellidoMat;
+            usuarioEditarDTO.NumeroDocumento = usuarioEditar.NumeroDocumento;
+            usuarioEditarDTO.TipoDocumento = usuarioEditar.TipoDocumento;
+            return View("EditarUsuario", usuarioEditarDTO);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarUsuarioEditado(UsuarioDTO usuarioDTO)
+        {
+
+            UsuarioValidator validator = new UsuarioValidator();
+            ValidationResult result = validator.Validate(usuarioDTO);
+
+            if (result.IsValid)
+            {
+                ApplicationUser? user = await _context.Users.FindAsync(usuarioDTO.Id);
+                user.Nombres = usuarioDTO.Nombres;
+                user.ApellidoPat = usuarioDTO.ApellidoPat;
+                user.ApellidoMat = usuarioDTO.ApellidoMat;
+                user.TipoDocumento = usuarioDTO.TipoDocumento;
+                user.NumeroDocumento = usuarioDTO.NumeroDocumento;
+
+                TempData["MessageActualizandoUsuario"] = "Se Actualizaron exitosamente los datos.";
+                _context.Users.Update(user);
+                _context.SaveChanges();
+
+                return RedirectToAction("EditarUsuario", new { id = usuarioDTO.Id });
+            }
+
+            foreach (var failure in result.Errors)
+            {
+                ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+            }
+            return View("EditarUsuario", usuarioDTO);
+
+        }
+
+        public async Task<IActionResult> buscarUsuario(string query)
+        {
+
+
+            IPagedList usuariosPagedList;
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    var todosLosUsuarios = await _context.Users.ToListAsync();
+                    usuariosPagedList = _context.Users.ToPagedList(1, todosLosUsuarios.Count);
+                }
+                else
+                {
+                    query = query.ToUpper();
+                    var usuarios = await _context.Users
+                        .Where(p => p.Nombres.ToUpper().Contains(query) || p.Id.ToUpper().Contains(query))
+                        .ToListAsync();
+
+                    if (!usuarios.Any())
+                    {
+                        TempData["MessageDeRespuesta"] = "No se encontraron usuarios que coincidan con la búsqueda.";
+                        usuariosPagedList = new PagedList<ApplicationUser>(new List<ApplicationUser>(), 1, 1);
+                    }
+                    else
+                    {
+                        usuariosPagedList = usuarios.ToPagedList(1, usuarios.Count);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["MessageDeRespuesta"] = "Ocurrió un error al buscar usuarios. Por favor, inténtalo de nuevo más tarde.";
+                usuariosPagedList = new PagedList<ApplicationUser>(new List<ApplicationUser>(), 1, 1);
+            }
+
+            // Retorna la vista con usuariosPagedList, que siempre tendrá un valor asignado.
+            return View("ListUsuGer", usuariosPagedList);
         }
 
         [HttpGet]
