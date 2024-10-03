@@ -57,6 +57,11 @@ git commit --author="Kristell Flores Huamani <kristell_flores@usmp.pe>" -m "Prue
 
 xdxd
 
+git commit --author="Kristell Flores Huamani <kristell_flores@usmp.pe>" -m "Agregar Usuario Supervisor, Lstar Usuario Supervisor, Editar Usuario Supervisor, Eliminar Usuario Supervisor"
+
+Mis HUs
+
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 </p>
