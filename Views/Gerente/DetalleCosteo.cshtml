@@ -1,38 +1,264 @@
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@{
-    ViewData["Title"] = "DETALLE DE COSTEO";
-}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="~/css/index.css" />
-<link rel="stylesheet" href="~/css/body.css" />
-<link rel="stylesheet" href="~/css/boton.css" />
+@model proyecto.Models.Costeo
 
-<style>
-      
-</style>
-@{
-    ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
+<link rel="stylesheet" href="~/css/costeo.css" />
+<link rel="stylesheet" href="~/css/costeo-modal.css" />
 
-    if (User.Identity.IsAuthenticated)
-    {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
+<!-- Página de Costeo -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Detalle del Costeo Nro. @Model.Id</h1>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Empresa">Nombre de la Empresa</label>
+                <p class="form-control" readonly>@Model.Empresa</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Cantidad_Prendas">Cantidad de Prendas</label>
+                <p class="form-control" readonly>@Model.Cantidad_Prendas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2>Tela 1</h2>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="Tela1_Nombre">Nombre de la Tela 1</label>
+                <p class="form-control" readonly>@Model.Tela1_Nombre</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Precio_Tela1">Precio</label>
+                <p class="form-control" readonly>
+                    S/. @((Model.Tela1_Cantidad > 0) ?
+                    (((double)Model.Tela1_Costo / (double)Model.Tela1_Cantidad).ToString("F2")) : "0.00")
+                </p>
+
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Tela1_Cantidad">Cantidad</label>
+                <p class="form-control" readonly>@Model.Tela1_Cantidad</p>
+
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Tela1_Costo">Costo de la Tela 1</label>
+                <p class="form-control" readonly>S/. @Model.Tela1_Costo</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2>Tela 2</h2>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="Tela2_Nombre">Nombre de la Tela 2</label>
+                <p class="form-control" readonly>
+                    @(string.IsNullOrEmpty(Model.Tela2_Nombre) ? "No hay tela" : Model.Tela2_Nombre)
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Precio_Tela2">Precio</label>
+                <p class="form-control" readonly>
+                    S/. @((Model.Tela2_Cantidad > 0) ?
+                    (((double)Model.Tela2_Costo / (double)Model.Tela2_Cantidad).ToString("F2")) : "0.00")
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Tela2_Cantidad">Cantidad</label>
+                <p class="form-control" readonly>@Model.Tela2_Cantidad</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Tela2_Costo">Costo de la Tela 2</label>
+                <p class="form-control" readonly>S/. @Model.Tela2_Costo</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2>Costes de Elaboración</h2>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Molde">Molde</label>
+                <p class="form-control" readonly>S/. @Model.Molde</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Tizado">Tizado</label>
+                <p class="form-control" readonly>S/. @Model.Tizado</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Corte">Corte</label>
+                <p class="form-control" readonly>S/. @Model.Corte</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Confección">Confección</label>
+                <p class="form-control" readonly>S/. @Model.Confección</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Botones">Botones</label>
+                <p class="form-control" readonly>S/. @Model.Botones</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Pegado_Botón">S/. Pegado de Botón</label>
+                <p class="form-control" readonly>S/. @Model.Pegado_Botón</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Avios">Avíos</label>
+                <p class="form-control" readonly>S/. @Model.Avios</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Tricotex">Tricotex</label>
+                <p class="form-control" readonly>S/. @Model.Tricotex</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Acabados">Acabados</label>
+                <p class="form-control" readonly>S/. @Model.Acabados</p>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Otros">Otros</label>
+                <p class="form-control" readonly>S/. @Model.Otros</p>
+
+            </div>
+        </div>
+
+        @{
+            // Validar cada costo y asignar 0 si es nulo
+            double Molde = Model.Molde ?? 0;
+            double Tizado = Model.Tizado ?? 0;
+            double Corte = Model.Corte ?? 0;
+            double Confeccion = Model.Confección ?? 0;
+            double Botones = Model.Botones ?? 0;
+            double Pegado_Botón = Model.Pegado_Botón ?? 0;
+            double Avios = Model.Avios ?? 0;
+            double Tricotex = Model.Tricotex ?? 0;
+            double Acabados = Model.Acabados ?? 0;
+            double Otros = Model.Otros ?? 0;
+
+            // Sumar todos los costos
+            double costoTotal = Molde + Tizado + Corte + Confeccion 
+            + Botones + Pegado_Botón + Avios + Tricotex + Acabados +
+            Otros;
         }
-    }
-}
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Total del Costo de elaboración</label>
+                <p class="form-control" readonly>S/. @costoTotal.ToString("F2")</p>
+            </div>
+        </div>
+    </div>
 
+    <!-- Siguiente fila: Costo de Transporte -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h6>Costo de Transporte</h6>
+        </div>
+    </div>
 
-<body>
-    <section class="content bienvenida"  style="min-height: 90vh; ">
-        <h2 class="title">
-            <span class="wellcome">DETALLE DE COSTEO</span>
-        </h2>
-        
-    </section>
+    <!-- Fila: Campos de transporte -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Precio_Transporte">Precio de Transporte</label>
 
-</body>
+                <p class="form-control" readonly>
+                    S/. @((Model.CostoTransporte > 0) ?
+                    (((double)Model.CostoTransporte * (double)Model.Cantidad_Prendas).ToString("F2")) : "0.00")
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="CostoTransporte">Costo de Transporte</label>
+                <p class="form-control" readonly>S/. @Model.CostoTransporte</p>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="CU_Final">Costo Final de la Prenda</label>
+                <p class="form-control" readonly>S/. @Model.CU_Final</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="CT_Final">Costo Final del Pedido</label>
+                <p class="form-control" readonly>S/. @Model.CT_Final</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- Aquí puedes añadir el contenido de la tercera columna -->
+            <div class="col-md-4 text-end">
+                <button class="btn btn-secondary" onclick="window.history.back()">Volver</button>
+            </div>
+        </div>
+    </div>
+
+</div>
