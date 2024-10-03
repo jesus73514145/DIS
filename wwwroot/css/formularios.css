@@ -79,7 +79,9 @@
 .formulario form .inputBox .input {
     width: 49%;
 }
-
+.formulario form .inputBox p {
+    width: 49%;
+}
 .formulario form .inputBox .btn {
     display: flexbox;
     width: 30%;

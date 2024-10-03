@@ -347,9 +347,14 @@ namespace proyecto.Controllers
             return View();
         }
 
-        public async Task<ActionResult> DetalleCosteo()
+        public async Task<ActionResult> DetalleCosteo(int id)
         {
-            return View();
+            Costeo costeo = _context.DataCosteo.Find(id);
+            if (costeo == null)
+            {
+                return NotFound("no se encontro el costeo"); // Maneja el caso en que no se encuentre el costeo
+            }
+            return View(costeo);
         }
 
         [HttpPost]
