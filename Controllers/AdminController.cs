@@ -67,9 +67,9 @@ namespace proyecto.Controllers
 
 
                 pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
-               
 
-                
+
+
                 // Filtrar usuarios por RolId = 2
                 var listaPaginada = await _context.Users
                     .Where(u => u.RolId == "2") // Filtrar por RolId
@@ -98,55 +98,167 @@ namespace proyecto.Controllers
         [HttpGet]
         public async Task<ActionResult> EditarUsuario(string? id)
         {
+            // Busca el usuario en la base de datos
+            ApplicationUser? usuario = await _context.Users.FindAsync(id);
 
-            ApplicationUser? usuarioEditar = await _context.Users.FindAsync(id);
-
-            if (usuarioEditar == null)
+            if (usuario == null)
             {
-                Console.Write("No se encontro");
-                return NotFound("No se encontro a ese usuario");
+                Console.WriteLine("No se encontró");
+                return NotFound("No se encontró a ese usuario");
             }
 
-            UsuarioDTO usuarioEditarDTO = new UsuarioDTO();
-            usuarioEditarDTO.Id = usuarioEditar.Id;
-            usuarioEditarDTO.Nombres = usuarioEditar.Nombres;
-            usuarioEditarDTO.ApellidoPat = usuarioEditar.ApellidoPat;
-            usuarioEditarDTO.ApellidoMat = usuarioEditar.ApellidoMat;
-            usuarioEditarDTO.NumeroDocumento = usuarioEditar.NumeroDocumento;
-            usuarioEditarDTO.TipoDocumento = usuarioEditar.TipoDocumento;
-            return View("EditarUsuario", usuarioEditarDTO);
+            // Imprimir las propiedades del usuario en la consola
+            Console.WriteLine("Usuario encontrado:");
+            Console.WriteLine($"ID: {usuario.Id}");
+            Console.WriteLine($"Nombres: {usuario.Nombres}");
+            Console.WriteLine($"Apellido Paterno: {usuario.ApellidoPat}");
+            Console.WriteLine($"Apellido Materno: {usuario.ApellidoMat}");
+            Console.WriteLine($"Tipo de Documento: {usuario.TipoDocumento}");
+            Console.WriteLine($"Número de Documento: {usuario.NumeroDocumento}");
+            Console.WriteLine($"Género: {usuario.Genero}");
+            Console.WriteLine($"Email: {usuario.Email}");
+            Console.WriteLine($"Celular: {usuario.Celular}");
+            Console.WriteLine($"PasswordHash: {usuario.PasswordHash}");
+
+            // Crea un nuevo objeto UserRegistrationViewModel y mapea las propiedades
+            UserRegistrationViewModel usuarioEditar = new UserRegistrationViewModel
+            {
+                Id = usuario.Id, // Asegúrate de que el Id esté en el ViewModel
+                Nombres = usuario.Nombres,
+                ApellidoPat = usuario.ApellidoPat,
+                ApellidoMat = usuario.ApellidoMat,
+                TipoDocumento = usuario.TipoDocumento,
+                NumeroDocumento = usuario.NumeroDocumento,
+                Genero = usuario.Genero,
+                Email = usuario.Email,
+                Celular = usuario.Celular,
+                Password = usuario.PasswordHash, // Nota: Considera no exponer la contraseña
+                ConfirmPassword = usuario.PasswordHash // Nota: Considera no exponer la contraseña
+                                                       // Agrega otras propiedades según sea necesario
+            };
+
+            return View("EditarUsuario", usuarioEditar); // Pasa el ViewModel a la vista
         }
+
+
 
         [HttpPost]
-        public async Task<IActionResult> GuardarUsuarioEditado(UsuarioDTO usuarioDTO)
+        public async Task<IActionResult> GuardarUsuarioEditado(UserRegistrationViewModel usuarioDTO)
         {
+            _logger.LogInformation("Iniciando la edición del usuario con ID: {UserId}", usuarioDTO.Id);
 
-            UsuarioValidator validator = new UsuarioValidator();
-            ValidationResult result = validator.Validate(usuarioDTO);
-
-            if (result.IsValid)
+            // Verificar si el modelo es válido
+            if (!ModelState.IsValid)
             {
-                ApplicationUser? user = await _context.Users.FindAsync(usuarioDTO.Id);
-                user.Nombres = usuarioDTO.Nombres;
-                user.ApellidoPat = usuarioDTO.ApellidoPat;
-                user.ApellidoMat = usuarioDTO.ApellidoMat;
-                user.TipoDocumento = usuarioDTO.TipoDocumento;
-                user.NumeroDocumento = usuarioDTO.NumeroDocumento;
+                // Registrar los errores del modelo
+                _logger.LogWarning("Modelo no es válido.");
+                foreach (var error in ModelState)
+                {
+                    if (error.Value.Errors.Count > 0)
+                    {
+                        _logger.LogWarning("Error en el campo {Field}: {ErrorMessage}", error.Key, error.Value.Errors.First().ErrorMessage);
+                    }
+                }
+                return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
+            }
 
-                TempData["MessageActualizandoUsuario"] = "Se Actualizaron exitosamente los datos.";
+            // Buscar el usuario en la base de datos
+            ApplicationUser? user = await _context.Users.FindAsync(usuarioDTO.Id);
+
+            if (user == null)
+            {
+                _logger.LogWarning("El usuario con ID {UserId} no fue encontrado.", usuarioDTO.Id);
+                ModelState.AddModelError(string.Empty, "El usuario no fue encontrado.");
+                return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
+            }
+
+            // Validar unicidad del número de documento
+            var existingUserByDoc = await _context.Users
+                .FirstOrDefaultAsync(u => u.NumeroDocumento == usuarioDTO.NumeroDocumento && u.Id != usuarioDTO.Id);
+
+            if (existingUserByDoc != null)
+            {
+                ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
+                _logger.LogWarning("Número de documento ya está en uso.");
+                return View("EditarUsuario", usuarioDTO);
+            }
+
+            // Validar unicidad del correo electrónico
+            var existingUserByEmail = await _userManager.FindByEmailAsync(usuarioDTO.Email);
+
+            if (existingUserByEmail != null && existingUserByEmail.Id != usuarioDTO.Id)
+            {
+                ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
+                _logger.LogWarning("Correo electrónico ya está en uso.");
+                return View("EditarUsuario", usuarioDTO);
+            }
+
+            // Actualizar los datos del usuario
+            user.Nombres = usuarioDTO.Nombres;
+            user.ApellidoPat = usuarioDTO.ApellidoPat;
+            user.ApellidoMat = usuarioDTO.ApellidoMat;
+            user.TipoDocumento = usuarioDTO.TipoDocumento;
+            user.NumeroDocumento = usuarioDTO.NumeroDocumento;
+            user.Email = usuarioDTO.Email; // Asegúrate de actualizar el email
+            user.Celular = usuarioDTO.Celular;
+            user.Genero = usuarioDTO.Genero;
+            user.fechaDeActualizacion = DateTime.Now.ToUniversalTime();
+            user.Activo = true;
+
+            // Verificar si se debe actualizar la contraseña
+            if (!string.IsNullOrEmpty(usuarioDTO.Password) || !string.IsNullOrEmpty(usuarioDTO.ConfirmPassword))
+            {
+                if (usuarioDTO.Password != usuarioDTO.ConfirmPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "Las contraseñas no coinciden.");
+                    _logger.LogWarning("Las contraseñas no coinciden.");
+                    return View("EditarUsuario", usuarioDTO);
+                }
+
+                // Validar la complejidad de la contraseña (por ejemplo, longitud mínima)
+                if (usuarioDTO.Password.Length < 6) // Cambia esto según tus requisitos de complejidad
+                {
+                    ModelState.AddModelError(string.Empty, "La contraseña debe tener al menos 6 caracteres.");
+                    _logger.LogWarning("La contraseña no cumple con los requisitos de complejidad.");
+                    return View("EditarUsuario", usuarioDTO);
+                }
+
+                // Establecer la nueva contraseña
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, usuarioDTO.Password);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("EditarUsuario", usuarioDTO);
+                }
+            }
+
+            try
+            {
+                // Actualizar el usuario en el contexto
                 _context.Users.Update(user);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync(); // Guardar cambios de manera asíncrona
 
+                _logger.LogInformation("Usuario con ID {UserId} editado exitosamente.", usuarioDTO.Id);
+                TempData["MessageActualizandoUsuario"] = "Se actualizaron exitosamente los datos.";
                 return RedirectToAction("EditarUsuario", new { id = usuarioDTO.Id });
             }
-
-            foreach (var failure in result.Errors)
+            catch (Exception ex)
             {
-                ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+                // Manejar errores de base de datos
+                _logger.LogError("Error al guardar los cambios para el usuario con ID {UserId}: {ErrorMessage}", usuarioDTO.Id, ex.Message);
+                ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los cambios: " + ex.Message);
             }
-            return View("EditarUsuario", usuarioDTO);
 
+            // Si hay errores de validación, vuelve a cargar la vista con el modelo
+            return View("EditarUsuario", usuarioDTO);
         }
+
+
 
         public async Task<IActionResult> buscarUsuario(string query)
         {

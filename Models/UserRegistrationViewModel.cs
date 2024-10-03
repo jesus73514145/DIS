@@ -12,6 +12,7 @@ namespace proyecto.Models
     public class UserRegistrationViewModel
     
     {
+        public string Id { get; set; }
 
 
         [Required(ErrorMessage = "El campo de correo electrónico es obligatorio.")]
