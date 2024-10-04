@@ -1,38 +1,155 @@
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@{
-    ViewData["Title"] = "INGRESO DE MATERIAL";
-}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="~/css/index.css" />
-<link rel="stylesheet" href="~/css/body.css" />
-<link rel="stylesheet" href="~/css/boton.css" />
+@model proyecto.Models.Material
+<link rel="stylesheet" href="~/css/costeo.css" />
 
-<style>
-      
-</style>
-@{
-    ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
+<!-- Agrega los estilos personalizados -->
+<link rel="stylesheet" href="~/css/costeo-modal.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Función para calcular el costo de Tela 1
+        $('#Precio, #Cantidad').on('input', function () {
+            var precioTela = parseFloat($('#Precio').val()) || 0;
+            var cantidadTela = parseFloat($('#Cantidad').val()) || 0;
+            var costoTela = precioTela * cantidadTela;
+            $('#PrecioTotal').val(costoTela.toFixed(2));
+        });
+    });
+</script>
+<!-- Página de Costeo -->
+<div class="container mt-5" style="min-height: 80vh; ">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">INGRESAR MATERIAL</h1>
+        </div>
+    </div>
 
-    if (User.Identity.IsAuthenticated)
+    <form asp-controller="Gerente" asp-action="RegistrarMaterial" method="POST" id="costeoForm">
+
+
+        <!-- Segunda fila: Nombre de la empresa y prendas -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Modelo">Modelo</label>
+                    <input type="text" asp-for="Modelo" class="form-control" id="Modelo" placeholder="Modelo">
+                    <span asp-validation-for="Modelo" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tercera fila: Tela 1 -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <h2>Información de la Tela</h2>
+            </div>
+            <hr>
+        </div>
+
+        <!-- Cuarta fila: Nombre de la tela y botón convertir -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="NombreTela">Nombre de la Tela</label>
+                    <input type="text" asp-for="NombreTela" class="form-control" id="NombreTela"
+                        placeholder="Nombre de la Tela">
+                    <input asp-for="TipoTela" type="hidden" value="No hay todavía" />
+
+                    <span asp-validation-for="NombreTela" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Fila: Precio, cantidad y costo -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="Precio">Precio</label>
+                    <input type="number" min="0" step="0.01" asp-for="Precio" class="form-control" id="Precio"
+                        placeholder="Precio">
+                    <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="Cantidad">Cantidad</label>
+                    <input type="number" min="0" step="0.01" asp-for="Cantidad" class="form-control" id="Cantidad"
+                        placeholder="Cantidad">
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="PrecioTotal">Costo</label>
+                    <input type="number" step="0.01" asp-for="PrecioTotal" class="form-control" id="PrecioTotal"
+                        placeholder="Costo total de la tela" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- Siguiente fila: Tela 2 -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <h2>INFORMACIÓN DEL PROVEEDOR</h2>
+            </div>
+            <hr>
+        </div>
+
+        <!-- Fila: Nombre de la tela 2 y botón convertir -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Proveedor">Nombre del Proveedor</label>
+                    <input type="text" asp-for="Proveedor" class="form-control" id="Proveedor"
+                        placeholder="Nombre del Proveedor">
+                    <span asp-validation-for="Proveedor" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="ProveedorContacto">Contacto del Proveedor</label>
+                    <input type="text" asp-for="ProveedorContacto" class="form-control" id="ProveedorContacto"
+                        placeholder="Contacto del Proveedor">
+                    <span asp-validation-for="ProveedorContacto" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Fila: botones -->
+        <div class="row">
+            <div class="col-md-4 text-end">
+                <a href="/Textil/Gerente" class="btn btn-secondary">Cerrar</a>
+                <button type="submit" class="btn btn-primary">Guardar
+                    Cambios</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@if (TempData["MessageDeRespuesta"] != null)
+{
+    var mensaje = TempData["MessageDeRespuesta"].ToString();
+    var partesMensaje = mensaje.Split('|');
+
+    // Verificar que el mensaje contiene al menos dos partes
+    if (partesMensaje.Length == 2)
     {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
-        }
+        var tipoMensaje = partesMensaje[0]; // "success" o "error"
+        var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+        var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+        <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+            @textoMensaje
+        </div>
+    }
+    else
+    {
+        // Si no hay dos partes, mostrar el mensaje directamente
+        <div class="alert alert-warning" id="MensajesVerdeRojo">
+            @mensaje
+        </div>
     }
 }
-
-
-<body>
-    <section class="content bienvenida"  style="min-height: 90vh; ">
-        <h2 class="title">
-            <span class="wellcome">INGRESO DE MATERIALES</span>
-        </h2>
-        
-    </section>
-
-</body>

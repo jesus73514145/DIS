@@ -2,14 +2,14 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@using X.PagedList.Mvc.Core; 
+@using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Mvc.Core.Fluent;
 
-@model IPagedList<Costeo>
+@model IPagedList<Material>
 
 @{
-    ViewData["Title"] = "COSTEOS PREVIOS";
+    ViewData["Title"] = "MATERIALES ADQUIRIDOS";
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -39,6 +39,7 @@
         </div>
     }
 }
+
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
@@ -79,7 +80,7 @@
         z-index: 0;
     }
 
- 
+
 
     /* estilos para la tabla productos */
     body {
@@ -311,97 +312,101 @@
 
 
 <body>
-   <!---------------------------- listar producto stars  ---------------------------->
-<section class="listar_product" id="listar_product">
-    <div class="table-product-form-container">
-        <h1 class="heading"> <span>Costeos Previos</span></h1>
+    <!---------------------------- listar producto stars  ---------------------------->
+    <section class="listar_product" id="listar_product">
+        <div class="table-product-form-container">
+            <h1 class="heading"> <span>MATERIALES ADQUIRIDOS</span></h1>
 
-        <div class="Buscador">
-            <span>Buscar Costeo</span>
-            <form asp-controller="Gerente" asp-action="BuscarCosteo" method="get">
-                <input type="text" name="query" />
-                <button type="submit" class="btnBuscar">Buscar</button>
-            </form>
+            <div class="Buscador">
+                <span>Buscar Material</span>
+                <form asp-controller="Gerente" asp-action="BuscarMaterial" method="get">
+                    <input type="text" name="query" />
+                    <button type="submit" class="btnBuscar">Buscar</button>
+                </form>
 
-            <a style="text-decoration: none;" asp-area="" asp-controller="Gerente" asp-action="Index"
-                class="btnExcel">Volver</a>
-        </div>
-        <br>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Empresa</th>
-                    <th>Costo Final de la Prenda</th>
-                    <th>Costo Final del Pedido</th>
-                    <th>Fecha de registro</th>
-                    <th>Detalle</th>
-                    <th>Acciones de exportar</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var costeo in Model)
-                {
+                <a style="text-decoration: none;" asp-area="" asp-controller="Gerente" asp-action="Index"
+                    class="btnExcel">Volver</a>
+            </div>
+            <br>
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>@costeo.Id</td>
-                        <td>@costeo.Empresa</td>
-
-                        <td>S/. @costeo.CU_Final</td>
-                        <td>S/. @costeo.CT_Final</td>
-                        <td>@costeo.fec_Creacion</td>
-
-                        <td>
-                            <!-- Botón de Detalle -->
-                            <a asp-controller="Gerente" asp-action="DetalleCosteo" asp-route-id="@costeo.Id"
-                                class="">
-                                <i class="fa-solid fa-circle-info" style="color: #000000;"></i>
-                            </a>
-                        </td>
-
-                        <td>
-                            <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnPDF"
-                                asp-route-id="@costeo.Id">PDF</a>
-                            <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnExcel"
-                                asp-route-id="@costeo.Id">EXcel</a>
-                        </td>
-
+                        <th>Modelo</th>
+                        <th>Tela</th>
+                        <th>Precio</th>
+                        <th>Proveedor</th>
+                        <th>Telefono</th>
+                        <th>Acciones de exportar</th>
+                        <th>Eliminar</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-        <br><br>
-        <div class="pagination-container">
-            <ul class="pagination">
-                <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
-                    <a class="page-link" href="@Url.Action("VerCostPrev", new { page = 1 })">Primera</a>
-                </li>
-                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                    <a class="page-link"
-                        href="@Url.Action("VerCostPrev", new { page = Model.PageNumber - 1 })">&laquo;</a>
-                </li>
-                @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
-                {
-                    <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
-                        <a class="page-link"
-                            href="@Url.Action("VerCostPrev", new { page = pageNumber })">@pageNumber</a>
-                    </li>
-                }
-                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                    <a class="page-link"
-                        href="@Url.Action("VerCostPrev", new { page = Model.PageNumber + 1 })">&raquo;</a>
-                </li>
-                <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
-                    <a class="page-link"
-                        href="@Url.Action("VerCostPrev", new { page = Model.PageCount })">&Uacute;ltima</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
-<!---------------------------- listar producto ends  ---------------------------->
+                </thead>
+                <tbody>
+                    @foreach (var material in Model)
+                    {
+                        <tr>
+                            <td>@material.Modelo</td>
+                            <td>@material.NombreTela</td>
+                            <td>S/. @material.PrecioTotal</td>
+                            <td>@material.Proveedor</td>
+                            <td>@material.ProveedorContacto</td>
 
-<!---------------------------- javascript  stars  ---------------------------->
-<script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
-<!---------------------------- javascript  ends  ---------------------------->
+                            <td>
+                                <a asp-controller="Gerente" asp-action="ExportarUnSoloMaterialEnPDF"
+                                    asp-route-id="@material.Id">PDF</a>
+                                <a asp-controller="Gerente" asp-action="ExportarUnSoloMaterialEnExcel"
+                                    asp-route-id="@material.Id">EXcel</a>
+                            </td>
+
+                            <td>
+                                <!-- Botón de Eliminar -->
+                                <form asp-controller="Gerente" asp-action="EliminarMaterial" asp-route-id="@material.Id"
+                                    method="post"
+                                    onsubmit="return confirm('¿Está seguro de que desea eliminar este material?')"
+                                    class="d-inline-block">
+                                    <button type="submit" class="btnEliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+
+
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br><br>
+            <div class="pagination-container">
+                <ul class="pagination">
+                    <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("VerMatAdq", new { page = 1 })">Primera</a>
+                    </li>
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link"
+                            href="@Url.Action("VerMatAdq", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                    </li>
+                    @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
+                    {
+                        <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("VerMatAdq", new { page = pageNumber })">@pageNumber</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link"
+                            href="@Url.Action("VerMatAdq", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                    </li>
+                    <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
+                        <a class="page-link"
+                            href="@Url.Action("VerMatAdq", new { page = Model.PageCount })">&Uacute;ltima</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!---------------------------- listar producto ends  ---------------------------->
+
+    <!---------------------------- javascript  stars  ---------------------------->
+    <script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
+    <!---------------------------- javascript  ends  ---------------------------->
 
 </body>

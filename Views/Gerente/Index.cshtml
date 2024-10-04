@@ -9,7 +9,31 @@
 
 <link rel="stylesheet" href="~/css/boton.css" />
 <link rel="stylesheet" href="~/css/modal-styles.css" />
+@if (TempData["MessageDeRespuesta"] != null)
+{
+    var mensaje = TempData["MessageDeRespuesta"].ToString();
+    var partesMensaje = mensaje.Split('|');
 
+    // Verificar que el mensaje contiene al menos dos partes
+    if (partesMensaje.Length == 2)
+    {
+        var tipoMensaje = partesMensaje[0]; // "success" o "error"
+        var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+        var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+        <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+            @textoMensaje
+        </div>
+    }
+    else
+    {
+        // Si no hay dos partes, mostrar el mensaje directamente
+        <div class="alert alert-warning" id="MensajesVerdeRojo">
+            @mensaje
+        </div>
+    }
+}
 <style>
 
 </style>
@@ -55,14 +79,16 @@ roles = await UserManager.GetRolesAsync(myidentity);
                 </h2>
                 <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
                 <div class="boton-container">
-                    <a href="/Textil/Gerente/IngMat" class="boton" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO DE MATERIALES</a>
-                    <a href="javascript:void(0);" class="boton" id="btnOpenModal" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">COSTEO DE PRENDAS</a>
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal1" data-bs-toggle="modal" data-bs-target="#exampleModal2" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO DE MATERIALES</a>
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal2" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">COSTEO DE PRENDAS</a>
                     <a href="/Textil/Gerente/SalPrend" class="boton" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">SALIDA DE PRENDAS</a>
                 </div>
 
 
                 <!-- Aquí incluyes la vista parcial del modal -->
+                @await Html.PartialAsync("_IngMat")
                 @await Html.PartialAsync("_CostPren")
+                
             }
         }
         else
