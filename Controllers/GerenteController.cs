@@ -114,10 +114,11 @@ namespace proyecto.Controllers
 
                 pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
 
-                var costeosDelGerente = _context.DataCosteo.Where(p => p.UserID == userId);
+                // Elimina el filtro Where para obtener todos los registros
+                var costeos = _context.DataCosteo;
 
-                // Aquí aplicamos la paginación.
-                var listaPaginada = await costeosDelGerente.ToPagedListAsync(pageNumber, pageSize);
+                // Aplicar paginación
+                var listaPaginada = await costeos.ToPagedListAsync(pageNumber, pageSize);
 
 
                 return View("VerCostPrev", listaPaginada);
@@ -305,11 +306,8 @@ namespace proyecto.Controllers
             {
                 if (string.IsNullOrWhiteSpace(query))
                 {
-                    // Si no hay búsqueda, obtener todos los costeos del usuario logueado
-                    var todosLosCosteos = await _context.DataCosteo
-                        .Where(p => p.UserID == userId)  // Filtra por el ID del usuario
-                        .ToListAsync();
-
+                    // Si no hay búsqueda, obtener todos los costeos sin filtrar por usuario
+                    var todosLosCosteos = await _context.DataCosteo.ToListAsync();
                     costeosPagedList = todosLosCosteos.ToPagedList(1, todosLosCosteos.Count);
                 }
                 else
@@ -317,7 +315,7 @@ namespace proyecto.Controllers
                     // Si hay una búsqueda, aplica el filtro
                     query = query.ToUpper();
                     var costeos = await _context.DataCosteo
-                        .Where(p => p.UserID == userId && p.Empresa.ToUpper().Contains(query)) // Filtra por el ID del usuario y la búsqueda
+                        .Where(p => p.Empresa.ToUpper().Contains(query)) // Solo filtra por la búsqueda, no por usuario
                         .ToListAsync();
 
                     if (!costeos.Any())
@@ -340,6 +338,7 @@ namespace proyecto.Controllers
             // Retorna la vista con productosPagedList, que siempre tendrá un valor asignado.
             return View("VerCostPrev", costeosPagedList);
         }
+
 
 
         public async Task<ActionResult> Costeo()
@@ -495,7 +494,7 @@ namespace proyecto.Controllers
 
         public async Task<ActionResult> VerMatAdq(int? page)
         {
-            var userId = _userManager.GetUserId(User); //sesion
+            var userId = _userManager.GetUserId(User); // sesión
 
             if (userId == null)
             {
@@ -506,21 +505,20 @@ namespace proyecto.Controllers
             else
             {
                 int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
-                int pageSize = 6; // maximo 6 costeos por pagina
+                int pageSize = 6; // máximo 6 materiales por página
 
+                pageNumber = Math.Max(pageNumber, 1); // Asegura que pageNumber nunca sea menor que 1
 
-                pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
+                // Elimina el filtro Where para obtener todos los registros
+                var materiales = _context.DataMaterial;
 
-                var materialesDelGerente = _context.DataMaterial.Where(p => p.UserID == userId);
-
-                // Aquí aplicamos la paginación.
-                var listaPaginada = await materialesDelGerente.ToPagedListAsync(pageNumber, pageSize);
-
+                // Aplicar paginación
+                var listaPaginada = await materiales.ToPagedListAsync(pageNumber, pageSize);
 
                 return View("VerMatAdq", listaPaginada);
             }
-
         }
+
 
         /* Para exportar individualmente los productos */
         public async Task<IActionResult> ExportarUnSoloMaterialEnPDF(int id)
@@ -681,60 +679,58 @@ namespace proyecto.Controllers
 
         /* metodo para buscar */
 
-        public async Task<IActionResult> BuscarMaterial(string query)
+       public async Task<IActionResult> BuscarMaterial(string query)
+{
+    // Declara la variable materialPagedList una sola vez aquí
+    IPagedList<Material> materialPagedList;
+
+    // Obtén el ID del usuario logueado
+    var userId = _userManager.GetUserId(User);
+
+    if (userId == null)
+    {
+        // Si no hay sesión de usuario activa, muestra un mensaje y redirige
+        TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+        return View("~/Views/Home/Index.cshtml");
+    }
+
+    try
+    {
+        if (string.IsNullOrWhiteSpace(query))
         {
-            // Declara la variable productosPagedList una sola vez aquí
-            IPagedList<Material> materialPagedList;
+            // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
+            var todosLosMateriales = await _context.DataMaterial.ToListAsync();
+            materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+        }
+        else
+        {
+            // Si hay una búsqueda, aplica el filtro solo en el campo Modelo
+            query = query.ToUpper();
+            var materiales = await _context.DataMaterial
+                .Where(p => p.Modelo.ToUpper().Contains(query)) // Filtra solo por la búsqueda
+                .ToListAsync();
 
-            // Obtén el ID del usuario logueado
-            var userId = _userManager.GetUserId(User);
-
-            if (userId == null)
+            if (!materiales.Any())
             {
-                // Si no hay sesión de usuario activa, muestra un mensaje y redirige
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
-                return View("~/Views/Home/Index.cshtml");
-            }
-
-            try
-            {
-                if (string.IsNullOrWhiteSpace(query))
-                {
-                    // Si no hay búsqueda, obtener todos los Materiales del usuario logueado
-                    var todosLosMateriales = await _context.DataMaterial
-                        .Where(p => p.UserID == userId)  // Filtra por el ID del usuario
-                        .ToListAsync();
-
-                    materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
-                }
-                else
-                {
-                    // Si hay una búsqueda, aplica el filtro
-                    query = query.ToUpper();
-                    var materiales = await _context.DataMaterial
-                        .Where(p => p.UserID == userId && p.Modelo.ToUpper().Contains(query)) // Filtra por el ID del usuario y la búsqueda
-                        .ToListAsync();
-
-                    if (!materiales.Any())
-                    {
-                        TempData["MessageDeRespuesta"] = "error|No se encontraron materiales que coincidan con la búsqueda.";
-                        materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1);
-                    }
-                    else
-                    {
-                        materialPagedList = materiales.ToPagedList(1, materiales.Count);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar el material. Por favor, inténtalo de nuevo más tarde.";
+                TempData["MessageDeRespuesta"] = "error|No se encontraron materiales que coincidan con la búsqueda.";
                 materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1);
             }
-
-            // Retorna la vista con productosPagedList, que siempre tendrá un valor asignado.
-            return View("VerMatAdq", materialPagedList);
+            else
+            {
+                materialPagedList = materiales.ToPagedList(1, materiales.Count);
+            }
         }
+    }
+    catch (Exception ex)
+    {
+        TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar el material. Por favor, inténtalo de nuevo más tarde.";
+        materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1);
+    }
+
+    // Retorna la vista con materialPagedList, que siempre tendrá un valor asignado.
+    return View("VerMatAdq", materialPagedList);
+}
+
 
         [HttpPost]
         public async Task<IActionResult> EliminarMaterial(int id)
