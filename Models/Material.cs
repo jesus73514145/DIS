@@ -23,8 +23,6 @@ namespace proyecto.Models
         [Required(ErrorMessage = "El nombre de la tela es obligatorio.")]
         public string NombreTela { get; set; }  // Nombre de la tela
 
-        [Required(ErrorMessage = "El tipo de tela es obligatorio.")]
-        public string TipoTela { get; set; }  // Tipo de la tela
 
         [Required(ErrorMessage = "El precio por metro es obligatorio.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0.")]
