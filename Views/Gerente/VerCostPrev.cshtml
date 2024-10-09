@@ -2,7 +2,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@using X.PagedList.Mvc.Core; 
+@using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Mvc.Core.Fluent;
 
@@ -79,7 +79,7 @@
         z-index: 0;
     }
 
- 
+
 
     /* estilos para la tabla productos */
     body {
@@ -311,97 +311,123 @@
 
 
 <body>
-   <!---------------------------- listar producto stars  ---------------------------->
-<section class="listar_product" id="listar_product">
-    <div class="table-product-form-container">
-        <h1 class="heading"> <span>Costeos Previos</span></h1>
+    <!---------------------------- listar producto stars  ---------------------------->
+    <section class="listar_product" id="listar_product">
+        <div class="table-product-form-container">
+            <h1 class="heading"> <span>Costeos Previos</span></h1>
 
-        <div class="Buscador">
-            <span>Buscar Costeo</span>
-            <form asp-controller="Gerente" asp-action="BuscarCosteo" method="get">
-                <input type="text" name="query" />
-                <button type="submit" class="btnBuscar">Buscar</button>
-            </form>
+            <div class="Buscador">
+                <span>Buscar Costeo</span>
+                <form asp-controller="Gerente" asp-action="BuscarCosteo" method="get">
+                    <input type="text" name="query" />
+                    <button type="submit" class="btnBuscar">Buscar</button>
+                </form>
 
-            <a style="text-decoration: none;" asp-area="" asp-controller="Gerente" asp-action="Index"
-                class="btnExcel">Volver</a>
-        </div>
-        <br>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Empresa</th>
-                    <th>Costo Final de la Prenda</th>
-                    <th>Costo Final del Pedido</th>
-                    <th>Fecha de registro</th>
-                    <th>Detalle</th>
-                    <th>Acciones de exportar</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var costeo in Model)
-                {
+                <a style="text-decoration: none;" asp-area="" asp-controller="Gerente" asp-action="Index"
+                    class="btnExcel">Volver</a>
+            </div>
+            <br>
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>@costeo.Id</td>
-                        <td>@costeo.Empresa</td>
-
-                        <td>S/. @costeo.CU_Final</td>
-                        <td>S/. @costeo.CT_Final</td>
-                        <td>@costeo.fec_Creacion</td>
-
-                        <td>
-                            <!-- Botón de Detalle -->
-                            <a asp-controller="Gerente" asp-action="DetalleCosteo" asp-route-id="@costeo.Id"
-                                class="">
-                                <i class="fa-solid fa-circle-info" style="color: #000000;"></i>
-                            </a>
-                        </td>
-
-                        <td>
-                            <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnPDF"
-                                asp-route-id="@costeo.Id">PDF</a>
-                            <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnExcel"
-                                asp-route-id="@costeo.Id">EXcel</a>
-                        </td>
-
+                        <th>Código</th>
+                        <th>Empresa</th>
+                        <th>Cantidad</th>
+                        <th>Costo Final de la Prenda</th>
+                        <th>Costo Final del Pedido</th>
+                        <th>Detalle</th>
+                        <th>Acciones de exportar</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-        <br><br>
-        <div class="pagination-container">
-            <ul class="pagination">
-                <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
-                    <a class="page-link" href="@Url.Action("VerCostPrev", new { page = 1 })">Primera</a>
-                </li>
-                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                    <a class="page-link"
-                        href="@Url.Action("VerCostPrev", new { page = Model.PageNumber - 1 })">&laquo;</a>
-                </li>
-                @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
-                {
-                    <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
-                        <a class="page-link"
-                            href="@Url.Action("VerCostPrev", new { page = pageNumber })">@pageNumber</a>
+                </thead>
+                <tbody>
+                    @foreach (var costeo in Model)
+                    {
+                        <tr>
+                            <td>@costeo.Id</td>
+                            <td>@costeo.Empresa</td>
+                            <td>@costeo.Cantidad_Prendas</td>
+                            <td>S/. @($"{costeo.CU_Final:F2}")</td>
+                            <td>S/. @($"{costeo.CT_Final:F2}")</td>
+
+                            <td>
+                                <!-- Botón de Detalle -->
+
+                                <a onclick="showInPopup('@Url.Action("DetalleCosteo", "Gerente", new { id = costeo.Id }, Context.Request.Scheme)', 'Detalle de Costeo (Nro: ' + @costeo.Id + ')')"
+                                    class="btn btn-outline-primary">
+                                    <i class="fa-solid fa-circle-info" style="color: #000000;"></i> Detalle Costeo
+                                </a>
+
+
+
+                            </td>
+
+                            <td>
+                                <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnPDF"
+                                    asp-route-id="@costeo.Id">PDF</a>
+                                <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnExcel"
+                                    asp-route-id="@costeo.Id">EXcel</a>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br><br>
+            <div class="pagination-container">
+                <ul class="pagination">
+                    <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("VerCostPrev", new { page = 1 })">Primera</a>
                     </li>
-                }
-                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                    <a class="page-link"
-                        href="@Url.Action("VerCostPrev", new { page = Model.PageNumber + 1 })">&raquo;</a>
-                </li>
-                <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
-                    <a class="page-link"
-                        href="@Url.Action("VerCostPrev", new { page = Model.PageCount })">&Uacute;ltima</a>
-                </li>
-            </ul>
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link"
+                            href="@Url.Action("VerCostPrev", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                    </li>
+                    @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
+                    {
+                        <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                            <a class="page-link"
+                                href="@Url.Action("VerCostPrev", new { page = pageNumber })">@pageNumber</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link"
+                            href="@Url.Action("VerCostPrev", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                    </li>
+                    <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
+                        <a class="page-link"
+                            href="@Url.Action("VerCostPrev", new { page = Model.PageCount })">&Uacute;ltima</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
-<!---------------------------- listar producto ends  ---------------------------->
+    </section>
+    <!---------------------------- listar producto ends  ---------------------------->
+    <partial name="_AddOrEditDialog" />
+    <!---------------------------- javascript  stars  ---------------------------->
+    <script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
+    <!---------------------------- javascript  ends  ---------------------------->
+    <!-- Scripts de jQuery y Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<!---------------------------- javascript  stars  ---------------------------->
-<script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
-<!---------------------------- javascript  ends  ---------------------------->
+    <!-- Tu script personalizado aquí -->
+    <script>
+        // Aquí va tu código JavaScript personalizado, incluyendo la función showInPopup
+        showInPopup = (url, title) => {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (res) {
+                    $('#form-modal .modal-body').html(res);
+                    $('#form-modal .modal-title').html(title);
+                    $('#form-modal').modal('show');
+                },
+                error: function (err) {
+                    console.error('Error al cargar el modal:', err);
+                }
+            });
+        };
 
+        // Otros scripts como jQueryAjaxPost, etc.
+    </script>
 </body>

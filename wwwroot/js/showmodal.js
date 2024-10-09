@@ -27,3 +27,4 @@ $(document).ready(function () {
         $('.modal-backdrop').remove();
     });
 });
+
