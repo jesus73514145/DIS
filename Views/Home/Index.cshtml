@@ -63,6 +63,7 @@ roles = await UserManager.GetRolesAsync(myidentity);
         </div>
     }
 }
+
 <body>
     <section class="content bienvenida" style="min-height: 90vh; ">
         @if (SignInManager.IsSignedIn(User))
@@ -126,6 +127,16 @@ roles = await UserManager.GetRolesAsync(myidentity);
                     <span class="wellcome">¡Bienvenido, Supervisor @user.Nombres @user.ApellidoPat!</span>
                 </h2>
                 <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <div class="boton-container">
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal3" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal3"
+                        style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO
+                        DE MATERIALES</a>
+                </div>
+
+
+                <!-- Aquí incluyes la vista parcial del modal -->
+                @await Html.PartialAsync("_IngMatSup")
             }
         }
         else

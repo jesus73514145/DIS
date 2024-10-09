@@ -6,24 +6,49 @@
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="~/css/index.css" />
-<link rel="stylesheet" href="~/css/body.css" />
-<link rel="stylesheet" href="~/css/boton.css" />
 
+<link rel="stylesheet" href="~/css/boton.css" />
+<link rel="stylesheet" href="~/css/modal-styles.css" />
+@if (TempData["MessageDeRespuesta"] != null)
+{
+    var mensaje = TempData["MessageDeRespuesta"].ToString();
+    var partesMensaje = mensaje.Split('|');
+
+    // Verificar que el mensaje contiene al menos dos partes
+    if (partesMensaje.Length == 2)
+    {
+        var tipoMensaje = partesMensaje[0]; // "success" o "error"
+        var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+        var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+        <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+            @textoMensaje
+        </div>
+    }
+    else
+    {
+        // Si no hay dos partes, mostrar el mensaje directamente
+        <div class="alert alert-warning" id="MensajesVerdeRojo">
+            @mensaje
+        </div>
+    }
+}
 <style>
-      
+
 </style>
 @{
     @*ApplicationUser myidentity = null;
-    IList<string> roles = new List<string>();
+IList<string> roles = new List<string>();
 
-    if (User.Identity.IsAuthenticated)
-    {
-        myidentity = await UserManager.GetUserAsync(User);
-        if (myidentity != null)
-        {
-            roles = await UserManager.GetRolesAsync(myidentity);
-        }
-    }*@ 
+if (User.Identity.IsAuthenticated)
+{
+myidentity = await UserManager.GetUserAsync(User);
+if (myidentity != null)
+{
+roles = await UserManager.GetRolesAsync(myidentity);
+}
+}*@
     ApplicationUser myidentity = null;
     string rolId = null;
 
@@ -32,7 +57,7 @@
         myidentity = await UserManager.GetUserAsync(User);
         if (myidentity != null)
         {
-            rolId = myidentity.RolId;  // Obtiene el RolId directamente del usuario
+            rolId = myidentity.RolId; // Obtiene el RolId directamente del usuario
         }
     }
 }
@@ -45,25 +70,54 @@
             var userId = UserManager.GetUserId(User); // Obtén el ID del usuario autenticado
             var user = await UserManager.FindByIdAsync(userId); // Busca el usuario en la base de datos por ID
 
-        
-
-            @* Verifica si el usuario es Empleado *@
-            if (rolId == "3")  // Si el RolId es "Supervisor"
+            @* Verifica si el usuario es Gerente *@
+            if (rolId == "3") // Si el RolId es "Gerente"
             {
                 // Si el usuario está autenticado, muestra un mensaje de bienvenida personalizado
-            <h2 class="title">
-                <span class="wellcome">¡Bienvenido, Supervisor @user.Nombres @user.ApellidoPat!</span>
-            </h2>
-            <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <h2 class="title">
+                    <span class="wellcome">¡Bienvenido, Supervisor @user.Nombres @user.ApellidoPat!</span>
+                </h2>
+                <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
+                <div class="boton-container">
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal3" data-bs-toggle="modal" data-bs-target="#exampleModal3" style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO DE MATERIALES</a>
+                </div>
+
+
+                <!-- Aquí incluyes la vista parcial del modal -->
+                @await Html.PartialAsync("_IngMatSup")
+                
             }
         }
         else
         {
-            // Si el usuario no está autenticado, muestra un mensaje de bienvenida genérico
             <h1 class="title">
                 <span class="wellcome">Bienvenido</span>
             </h1>
         }
+
+        @{
+            var successMessage = TempData["SuccessMessage"] as string;
+            var errorMessage = TempData["ErrorMessage"] as string;
+        }
+
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="alert alert-success" style="font-size: 20px;">
+                @successMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" style="font-size: 20px;">
+                @errorMessage
+            </div>
+        }
     </section>
+
+    <!-- Scripts necesarios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/showmodal.js"></script> <!-- Asegúrate de que la ruta es correcta -->
 
 </body>

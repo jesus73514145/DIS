@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="~/css/boton.css" />
 
 <style>
-      
+
 </style>
 @{
     ApplicationUser myidentity = null;
@@ -28,19 +28,31 @@
 
 
 <body>
-    <section class="content bienvenida"  style="min-height: 90vh; ">
+    <section class="content bienvenida" style="min-height: 90vh; ">
         <h2 class="title">
             <span class="wellcome">AGREGAR USUARIOS</span>
         </h2>
 
-        <h3>En este apartado podrá agregar los usuarios que desee, ya sean Gerentes o Supervisores. 
+        <h3>En este apartado podrá agregar los usuarios que desee, ya sean Gerentes o Supervisores.
             Tome en cuenta la información antes de completar el proceso</h3>
 
         <div class="boton-container">
             <a href="/Textil/Admin/AgregUsuGer" class="boton">AGREGAR USUARIO GERENTE</a>
+            @*<a onclick="showInPopup('@Url.Action("AgregUsuGer", "Admin", Context.Request.Scheme)', 'AGREGAR USUARIO GERENTE')"
+                class="boton">
+                AGREGAR USUARIO GERENTE
+            </a>
+
+            <a onclick="showInPopup('@Url.Action("AgregUsuSup", "Admin", Context.Request.Scheme)', 'AGREGAR USUARIO SUPERVISOR')"
+                class="boton">
+                AGREGAR USUARIO SUPERVISOR
+            </a>*@
             <a href="/Textil/Admin/AgregUsuSup" class="boton">AGREGAR USUARIO SUPERVISOR</a>
         </div>
-        
+
+
+
     </section>
+    <!-- Tu script personalizado aquí -->
 
 </body>

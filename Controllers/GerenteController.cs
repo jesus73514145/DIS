@@ -611,7 +611,7 @@ namespace proyecto.Controllers
                     Objects = { objectSettings }
                 };
                 var file = _converter.Convert(pdf);
-                return File(file, "application/pdf", $"Material{id}.pdf");
+                return File(file, "application/pdf", $"Material_{id}.pdf");
 
             }
             catch (Exception ex)
@@ -679,57 +679,57 @@ namespace proyecto.Controllers
 
         /* metodo para buscar */
 
-       public async Task<IActionResult> BuscarMaterial(string query)
-{
-    // Declara la variable materialPagedList una sola vez aquí
-    IPagedList<Material> materialPagedList;
-
-    // Obtén el ID del usuario logueado
-    var userId = _userManager.GetUserId(User);
-
-    if (userId == null)
-    {
-        // Si no hay sesión de usuario activa, muestra un mensaje y redirige
-        TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
-        return View("~/Views/Home/Index.cshtml");
-    }
-
-    try
-    {
-        if (string.IsNullOrWhiteSpace(query))
+        public async Task<IActionResult> BuscarMaterial(string query)
         {
-            // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
-            var todosLosMateriales = await _context.DataMaterial.ToListAsync();
-            materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
-        }
-        else
-        {
-            // Si hay una búsqueda, aplica el filtro solo en el campo Modelo
-            query = query.ToUpper();
-            var materiales = await _context.DataMaterial
-                .Where(p => p.Modelo.ToUpper().Contains(query)) // Filtra solo por la búsqueda
-                .ToListAsync();
+            // Declara la variable materialPagedList una sola vez aquí
+            IPagedList<Material> materialPagedList;
 
-            if (!materiales.Any())
+            // Obtén el ID del usuario logueado
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
             {
-                TempData["MessageDeRespuesta"] = "error|No se encontraron materiales que coincidan con la búsqueda.";
+                // Si no hay sesión de usuario activa, muestra un mensaje y redirige
+                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+                return View("~/Views/Home/Index.cshtml");
+            }
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
+                    var todosLosMateriales = await _context.DataMaterial.ToListAsync();
+                    materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+                }
+                else
+                {
+                    // Si hay una búsqueda, aplica el filtro solo en el campo Modelo
+                    query = query.ToUpper();
+                    var materiales = await _context.DataMaterial
+                        .Where(p => p.Modelo.ToUpper().Contains(query)) // Filtra solo por la búsqueda
+                        .ToListAsync();
+
+                    if (!materiales.Any())
+                    {
+                        TempData["MessageDeRespuesta"] = "error|No se encontraron materiales que coincidan con la búsqueda.";
+                        materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1);
+                    }
+                    else
+                    {
+                        materialPagedList = materiales.ToPagedList(1, materiales.Count);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar el material. Por favor, inténtalo de nuevo más tarde.";
                 materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1);
             }
-            else
-            {
-                materialPagedList = materiales.ToPagedList(1, materiales.Count);
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar el material. Por favor, inténtalo de nuevo más tarde.";
-        materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1);
-    }
 
-    // Retorna la vista con materialPagedList, que siempre tendrá un valor asignado.
-    return View("VerMatAdq", materialPagedList);
-}
+            // Retorna la vista con materialPagedList, que siempre tendrá un valor asignado.
+            return View("VerMatAdq", materialPagedList);
+        }
 
 
         [HttpPost]
