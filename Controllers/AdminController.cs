@@ -8,11 +8,11 @@ using proyecto.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea
+using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea para renderizar
 using System.Linq;
 using Microsoft.EntityFrameworkCore; // Esto es necesario para FirstOrDefaultAsync
 
-/*LIBRERIAS PARA LA PAGINACION DE LISTAR PRODUCTOS */
+/*LIBRERIAS PARA LA PAGINACION DE LISTAR DE USUARIOS GERENTE, LISTAR DE USUARIOS SUPERVISOR */
 using X.PagedList;
 
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -24,7 +24,7 @@ using FluentValidation.Results;
 
 namespace proyecto.Controllers
 {
-    [Authorize]  // Agrega esto a tu controlador o acción
+    [Authorize]  // Agrega esto a tu controlador o acción para que no te redirija a ninguna pagina anterior antes de que se loguee
     public class AdminController : Controller
     {
         private readonly ILogger<AdminController> _logger;

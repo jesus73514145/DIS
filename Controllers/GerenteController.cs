@@ -6,10 +6,10 @@ using proyecto.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-/*LIBRERIAS PARA LA PAGINACION DE LISTAR PRODUCTOS */
+/*LIBRERIAS PARA LA PAGINACION DE LISTAR USUARIOS GERENTE, SUPERVISOR Y COSTEOS PREVIOS Y MATERIALES ADQUIRIDOS */
 using X.PagedList;
 
-/*LIBRERIAS NECESARIAS PARA EXPORTAR */
+/*LIBRERIAS NECESARIAS PARA EXPORTAR EN PDF */
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using OfficeOpenXml;
@@ -25,7 +25,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace proyecto.Controllers
 {
-    [Authorize]  // Agrega esto a tu controlador o acción
+    [Authorize]   // Agrega esto a tu controlador o acción para que no te redirija a ninguna pagina anterior antes de que se loguee
     public class GerenteController : Controller
     {
         private readonly ILogger<GerenteController> _logger;
