@@ -24,7 +24,7 @@ using FluentValidation.Results;
 
 namespace proyecto.Controllers
 {
-    [Authorize]  // Agrega esto a tu controlador o acción
+    [Authorize]  // Agrega esto a tu controlador o acción para que no te redirija a ninguna pagina anterior antes de que se loguee
     public class AdminController : Controller
     {
         private readonly ILogger<AdminController> _logger;
