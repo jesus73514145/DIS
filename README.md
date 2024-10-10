@@ -61,6 +61,9 @@ git commit --author="Kristell Flores Huamani <kristell_flores@usmp.pe>" -m "Agre
 
 Mis HUs
 
+
+git checkout -b HU-DIS-S2-LUCAS
+
 http://localhost:5052/Identity/Account/Register
 
 https://dis-q75d.onrender.com/Identity/Account/Register
