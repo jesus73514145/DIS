@@ -61,8 +61,17 @@ git commit --author="Kristell Flores Huamani <kristell_flores@usmp.pe>" -m "Agre
 
 Mis HUs
 
+## Comando para crear rama
 
 git checkout -b HU-DIS-S2-LUCAS
+
+## Comando para subir los cambios con esa rama
+
+git add .
+
+git commit --author="Lucas Espinoza Laurente <lukaespinoza12@gmail.com>" -m "HU-DIS-S2-LUCAS-v1.0"
+
+git push origin HU-DIS-S2-LUCAS
 
 http://localhost:5052/Identity/Account/Register
 
