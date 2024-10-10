@@ -16,15 +16,6 @@
     <hr style="border: 1px solid black; margin: 20px 0;">
 
     <div class="row mb-3">
-        <div class="col-md-8">
-            <div class="form-group d-flex align-items-center">
-                <h5 for="Tela1_Nombre" class="mr-2 mb-0">Tela 1:</h5>
-                <p class="mb-0" style="width: 30%; margin-left: 15px;">@Model.Tela1_Nombre</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
         @*<div class="col-md-4">
         <div class="form-group d-flex align-items-center">
         <label for="Precio_Tela1" class="mr-2">Precio:</label>
@@ -34,6 +25,12 @@
         </p>
         </div>
         </div>*@
+        <div class="col-md-4">
+            <div class="form-group d-flex align-items-center">
+                <h5 for="Tela1_Nombre" class="mr-2 mb-0">Tela 1:</h5>
+                <p class="mb-0" style="width: 30%; margin-left: 15px;">@Model.Tela1_Nombre</p>
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="form-group d-flex align-items-center">
                 <label for="Tela1_Cantidad" class="mr-2">Cantidad:</label>
@@ -52,15 +49,6 @@
 
 
     <div class="row mb-3">
-        <div class="col-md-8">
-            <div class="form-group d-flex align-items-center">
-                <h5 for="Tela2_Nombre" class="mr-2 mb-0">Tela 2:</h5>
-                <p class="mb-0" style="width: 30%; margin-left: 15px;">@(string.IsNullOrEmpty(Model.Tela2_Nombre) ? "No hay tela" : Model.Tela2_Nombre)</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
         @*<div class="col-md-4">
         <div class="form-group d-flex align-items-center">
         <label for="Precio_Tela2" class="mr-2">Precio:</label>
@@ -70,6 +58,12 @@
         </p>
         </div>
         </div>*@
+        <div class="col-md-4">
+            <div class="form-group d-flex align-items-center">
+                <h5 for="Tela2_Nombre" class="mr-2 mb-0">Tela 2:</h5>
+                <p class="mb-0" style="width: 30%; margin-left: 15px;">@(string.IsNullOrEmpty(Model.Tela2_Nombre) ? "No hay tela" : Model.Tela2_Nombre)</p>
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="form-group d-flex align-items-center">
                 <label for="Tela2_Cantidad" class="mr-2">Cantidad:</label>
