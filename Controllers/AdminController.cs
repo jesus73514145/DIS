@@ -8,7 +8,7 @@ using proyecto.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea
+using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea para renderizar
 using System.Linq;
 using Microsoft.EntityFrameworkCore; // Esto es necesario para FirstOrDefaultAsync
 
