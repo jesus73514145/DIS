@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea para renderizar
 using System.Linq;
 using Microsoft.EntityFrameworkCore; // Esto es necesario para FirstOrDefaultAsync
 
-/*LIBRERIAS PARA LA PAGINACION DE LISTAR PRODUCTOS */
+/*LIBRERIAS PARA LA PAGINACION DE LISTAR DE USUARIOS GERENTE */
 using X.PagedList;
 
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
