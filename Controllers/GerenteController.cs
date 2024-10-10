@@ -6,10 +6,10 @@ using proyecto.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-/*LIBRERIAS PARA LA PAGINACION DE LISTAR PRODUCTOS */
+/*LIBRERIAS PARA LA PAGINACION DE LISTAR USUARIOS GERENTE, SUPERVISOR Y COSTEOS PREVIOS Y MATERIALES ADQUIRIDOS */
 using X.PagedList;
 
-/*LIBRERIAS NECESARIAS PARA EXPORTAR */
+/*LIBRERIAS NECESARIAS PARA EXPORTAR EN PDF */
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using OfficeOpenXml;

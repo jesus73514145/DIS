@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
 namespace proyecto.Controllers;
-[Authorize]  // Agrega esto a tu controlador o acción
+[Authorize]  // Agrega esto a tu controlador o acción para que no te redirija a ninguna pagina anterior antes de que se loguee
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
