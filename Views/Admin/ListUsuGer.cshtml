@@ -298,7 +298,7 @@
         <h1 class="heading"> <span>USUARIOS GERENTE</span></h1>
 
         <div class="Buscador">
-            <span>Buscar Gerente</span>
+            <span>Buscar Gerente por Nombre</span>
             <form asp-controller="Admin" asp-action="BuscarUsuario" method="get">
                 <input type="text" name="query" />
                 <button type="submit" class="btnBuscar">Buscar</button>
@@ -311,7 +311,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Código</th>
+                    @*<th>Código</th>*@
                     <th>Nombre Completo</th>
                     <th>Tipo de Documento</th>
                     <th>Nro. de Documento</th>
@@ -326,7 +326,7 @@
                 @foreach (var usuario in Model)
                 {
                     <tr>
-                        <td>@usuario.Id</td>
+                        @*<td>@usuario.Id</td>*@
                         <td>@usuario.Nombres @usuario.ApellidoPat @usuario.ApellidoMat</td>
                         <td>@usuario.TipoDocumento</td>
                         <td>@usuario.NumeroDocumento</td>
@@ -344,7 +344,7 @@
 
                          <td>
                             <!-- Botón de Eliminar -->
-                            <form asp-controller="Admin" asp-action="EliminarUsuario" asp-route-id="@usuario.Id"
+                            <form asp-controller="Admin" asp-action="EliminarUsuarioGerente" asp-route-id="@usuario.Id"
                                 method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este Gerente?')"
                                 class="d-inline-block">
                                 <button type="submit" class="btnEliminar">

@@ -81,7 +81,7 @@ namespace proyecto.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EliminarUsuario(string id)
+        public async Task<IActionResult> EliminarUsuarioGerente(string id)
         {
             var usuario = await _context.Users.FindAsync(id);
 
@@ -90,6 +90,21 @@ namespace proyecto.Controllers
                 _context.Users.Remove(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(ListUsuGer));
+            }
+
+            return NotFound("no se encontro");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarUsuarioSupervisor(string id)
+        {
+            var usuario = await _context.Users.FindAsync(id);
+
+            if (usuario != null)
+            {
+                _context.Users.Remove(usuario);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ListUsuSup));
             }
 
             return NotFound("no se encontro");
