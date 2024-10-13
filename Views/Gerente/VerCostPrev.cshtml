@@ -14,31 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <link rel="stylesheet" href="~/css/boton.css" />
-@if (TempData["MessageDeRespuesta"] != null)
-{
-    var mensaje = TempData["MessageDeRespuesta"].ToString();
-    var partesMensaje = mensaje.Split('|');
 
-    // Verificar que el mensaje contiene al menos dos partes
-    if (partesMensaje.Length == 2)
-    {
-        var tipoMensaje = partesMensaje[0]; // "success" o "error"
-        var textoMensaje = partesMensaje[1]; // El texto del mensaje
-
-        var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
-
-        <div class="alert @claseAlerta" id="MensajesVerdeRojo">
-            @textoMensaje
-        </div>
-    }
-    else
-    {
-        // Si no hay dos partes, mostrar el mensaje directamente
-        <div class="alert alert-warning" id="MensajesVerdeRojo">
-            @mensaje
-        </div>
-    }
-}
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
@@ -314,7 +290,13 @@
     <!---------------------------- listar producto stars  ---------------------------->
     <section class="listar_product" id="listar_product">
         <div class="table-product-form-container">
-            <h1 class="heading"> <span>Costeos Previos</span></h1>
+         
+
+            <h1 class="heading">
+                <a href="@Url.Action("VerCostPrev", "Gerente")" style="text-decoration: none; color: inherit;">
+                    <span>Costeos Previos</span>
+                </a>
+            </h1>
 
             <div class="Buscador">
                 <span>Buscar Costeo por Empresa</span>
@@ -400,6 +382,32 @@
                 </ul>
             </div>
         </div>
+
+        @if (TempData["MessageDeRespuesta"] != null)
+        {
+            var mensaje = TempData["MessageDeRespuesta"].ToString();
+            var partesMensaje = mensaje.Split('|');
+
+            // Verificar que el mensaje contiene al menos dos partes
+            if (partesMensaje.Length == 2)
+            {
+                var tipoMensaje = partesMensaje[0]; // "success" o "error"
+                var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+                var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+                <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+                    @textoMensaje
+                </div>
+            }
+            else
+            {
+                // Si no hay dos partes, mostrar el mensaje directamente
+                <div class="alert alert-warning" id="MensajesVerdeRojo">
+                    @mensaje
+                </div>
+            }
+        }
     </section>
     <!---------------------------- listar producto ends  ---------------------------->
     <partial name="_AddOrEditDialog" />

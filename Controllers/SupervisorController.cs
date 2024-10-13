@@ -122,7 +122,8 @@ namespace proyecto.Controllers
             if (userId == null)
             {
                 // no se ha logueado
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
+                Console.WriteLine("Usuario no logueado, redirigiendo a la página de inicio."); // Console log
                 return View("~/Views/Home/Index.cshtml");
             }
             else
@@ -132,13 +133,28 @@ namespace proyecto.Controllers
 
                 pageNumber = Math.Max(pageNumber, 1); // Asegura que pageNumber nunca sea menor que 1
 
-                // Elimina el filtro Where para obtener todos los registros
-                var materiales = _context.DataMaterial;
+                try
+                {
+                    // Elimina el filtro Where para obtener todos los registros
+                    var materiales = _context.DataMaterial;
 
-                // Aplicar paginación
-                var listaPaginada = await materiales.ToPagedListAsync(pageNumber, pageSize);
+                    // Aplicar paginación
+                    var listaPaginada = await materiales.ToPagedListAsync(pageNumber, pageSize);
 
-                return View("VerMatAdq", listaPaginada);
+                    // Mensaje de éxito al cargar los materiales
+                    TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
+                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+
+                    return View("VerMatAdq", listaPaginada);
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error al obtener los materiales
+                    _logger.LogError(ex, "Ocurrió un error al cargar los materiales.");
+                    Console.WriteLine("Error al cargar los materiales: " + ex.Message); // Console log
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar los materiales: " + ex.Message;
+                    return View("VerMatAdq", null); // o redirigir a otra vista si lo prefieres
+                }
             }
         }
 
@@ -313,7 +329,7 @@ namespace proyecto.Controllers
             if (userId == null)
             {
                 // Si no hay sesión de usuario activa, muestra un mensaje y redirige
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
                 return View("~/Views/Home/Index.cshtml");
             }
 
@@ -322,8 +338,11 @@ namespace proyecto.Controllers
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
-                    var todosLosMateriales = await _context.DataMaterial.ToListAsync();
-                    materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+                    //var todosLosMateriales = await _context.DataMaterial.ToListAsync();
+                    //materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1); // Lista vacía
                 }
                 else
                 {
@@ -340,6 +359,7 @@ namespace proyecto.Controllers
                     }
                     else
                     {
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron materiales que coinciden con la búsqueda."; // Mensaje de éxito
                         materialPagedList = materiales.ToPagedList(1, materiales.Count);
                     }
                 }

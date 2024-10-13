@@ -1,6 +1,6 @@
 @model proyecto.Models.CosteoDetallesViewModel
 
-@using Microsoft.AspNetCore.Identity 
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
@@ -12,31 +12,7 @@
 <link rel="stylesheet" href="~/css/index.css" />
 <link rel="stylesheet" href="~/css/body.css" />
 <link rel="stylesheet" href="~/css/boton.css" />
-@if (TempData["MessageDeRespuesta"] != null)
-{
-    var mensaje = TempData["MessageDeRespuesta"].ToString();
-    var partesMensaje = mensaje.Split('|');
 
-    // Verificar que el mensaje contiene al menos dos partes
-    if (partesMensaje.Length == 2)
-    {
-        var tipoMensaje = partesMensaje[0]; // "success" o "error"
-        var textoMensaje = partesMensaje[1]; // El texto del mensaje
-
-        var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
-
-        <div class="alert @claseAlerta" id="MensajesVerdeRojo">
-            @textoMensaje
-        </div>
-    }
-    else
-    {
-        // Si no hay dos partes, mostrar el mensaje directamente
-        <div class="alert alert-warning" id="MensajesVerdeRojo">
-            @mensaje
-        </div>
-    }
-}
 <style>
     /* Estilos generales */
     body {
@@ -130,7 +106,8 @@
     }
 
     .row:last-child {
-        margin-bottom: 3rem; /* Espacio adicional al final */
+        margin-bottom: 3rem;
+        /* Espacio adicional al final */
     }
 
     .col-md-4 {
@@ -156,7 +133,8 @@
                     <div class="card-body text-center">
                         <h3>Costo Final de la Prenda</h3>
                         <hr>
-                        <p class="price-display">S/. @Model.CU_Final?.ToString("0.00")</p> <!-- Formatear como moneda -->
+                        <p class="price-display">S/. @Model.CU_Final?.ToString("0.00")</p>
+                        <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -165,7 +143,8 @@
                     <div class="card-body text-center">
                         <h3>Costo Final del Pedido</h3>
                         <hr>
-                        <p class="price-display">S/. @Model.CT_Final?.ToString("0.00")</p> <!-- Formatear como moneda -->
+                        <p class="price-display">S/. @Model.CT_Final?.ToString("0.00")</p>
+                        <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -178,7 +157,8 @@
                     <div class="card-body text-center">
                         <h3>Costo de la Tela 1</h3>
                         <hr>
-                        <p class="price-display">S/. @Model.Tela1_Costo?.ToString("0.00")</p> <!-- Formatear como moneda -->
+                        <p class="price-display">S/. @Model.Tela1_Costo?.ToString("0.00")</p>
+                        <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -187,7 +167,8 @@
                     <div class="card-body text-center">
                         <h3>Costo de la Tela 2</h3>
                         <hr>
-                        <p class="price-display">S/. @Model.Tela2_Costo?.ToString("0.00")</p> <!-- Formatear como moneda -->
+                        <p class="price-display">S/. @Model.Tela2_Costo?.ToString("0.00")</p>
+                        <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -200,7 +181,8 @@
                     <div class="card-body text-center">
                         <h3>Costo de Elaboración</h3>
                         <hr>
-                        <p class="price-display">S/. @Model.SumaCostos?.ToString("0.00")</p> <!-- Formatear como moneda -->
+                        <p class="price-display">S/. @Model.SumaCostos?.ToString("0.00")</p>
+                        <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -209,7 +191,8 @@
                     <div class="card-body text-center">
                         <h3>Costo de Transporte</h3>
                         <hr>
-                        <p class="price-display">S/. @Model.CostoTransporte?.ToString("0.00")</p> <!-- Formatear como moneda -->
+                        <p class="price-display">S/. @Model.CostoTransporte?.ToString("0.00")</p>
+                        <!-- Formatear como moneda -->
                     </div>
                 </div>
             </div>
@@ -227,5 +210,30 @@
                 <a href="@Url.Action("Index", "Gerente")" class="btn btn-secondary w-100">Regresar</a>
             </div>
         </div>
+        @if (TempData["MessageDeRespuesta"] != null)
+        {
+            var mensaje = TempData["MessageDeRespuesta"].ToString();
+            var partesMensaje = mensaje.Split('|');
+
+            // Verificar que el mensaje contiene al menos dos partes
+            if (partesMensaje.Length == 2)
+            {
+                var tipoMensaje = partesMensaje[0]; // "success" o "error"
+                var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+                var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+                <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+                    @textoMensaje
+                </div>
+            }
+            else
+            {
+                // Si no hay dos partes, mostrar el mensaje directamente
+                <div class="alert alert-warning" id="MensajesVerdeRojo">
+                    @mensaje
+                </div>
+            }
+        }
     </div>
 </body>

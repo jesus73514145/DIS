@@ -98,33 +98,47 @@ namespace proyecto.Controllers
 
         public async Task<ActionResult> VerCostPrev(int? page)
         {
-            var userId = _userManager.GetUserId(User); //sesion
+            var userId = _userManager.GetUserId(User); // Obtener el ID del usuario en sesión
 
             if (userId == null)
             {
-                // no se ha logueado
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
+                // No se ha logueado
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
+                Console.WriteLine("Usuario no logueado, redirigiendo a la página de inicio."); // Console log
                 return View("~/Views/Home/Index.cshtml");
             }
             else
             {
                 int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
-                int pageSize = 6; // maximo 6 costeos por pagina
+                int pageSize = 6; // Máximo 6 costeos por página
 
+                pageNumber = Math.Max(pageNumber, 1); // Asegurarse de que pageNumber nunca sea menor que 1
 
-                pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
+                try
+                {
+                    // Elimina el filtro Where para obtener todos los registros
+                    var costeos = _context.DataCosteo;
 
-                // Elimina el filtro Where para obtener todos los registros
-                var costeos = _context.DataCosteo;
+                    // Aplicar paginación
+                    var listaPaginada = await costeos.ToPagedListAsync(pageNumber, pageSize);
 
-                // Aplicar paginación
-                var listaPaginada = await costeos.ToPagedListAsync(pageNumber, pageSize);
-
-
-                return View("VerCostPrev", listaPaginada);
+                    // Mensaje de éxito al cargar los materiales
+                    TempData["MessageDeRespuesta"] = "success|Costeos cargados con éxito.";
+                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+                    
+                    return View("VerCostPrev", listaPaginada);
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error al obtener los materiales
+                    _logger.LogError(ex, "Ocurrió un error al cargar los costeos.");
+                    Console.WriteLine($"Error al obtener la lista de costeos: {ex.Message}");
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al intentar cargar los costeos. Por favor, inténtelo más tarde.";
+                    return RedirectToAction("Index"); // Redirigir a la vista principal o de error
+                }
             }
-
         }
+
 
         /* Para exportar individualmente los productos */
         public async Task<IActionResult> ExportarUnSoloCosteoEnPDF(int id)
@@ -219,7 +233,7 @@ namespace proyecto.Controllers
                     Objects = { objectSettings }
                 };
                 var file = _converter.Convert(pdf);
-                return File(file, "application/pdf", $"Costeo{id}.pdf");
+                return File(file, "application/pdf", $"Costeo_{id}.pdf");
 
             }
             catch (Exception ex)
@@ -298,7 +312,7 @@ namespace proyecto.Controllers
             if (userId == null)
             {
                 // Si no hay sesión de usuario activa, muestra un mensaje y redirige
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+                TempData["MessageDeRespuesta"] = "Por favor debe loguearse antes de realizar una búsqueda.";
                 return View("~/Views/Home/Index.cshtml");
             }
 
@@ -307,8 +321,11 @@ namespace proyecto.Controllers
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     // Si no hay búsqueda, obtener todos los costeos sin filtrar por usuario
-                    var todosLosCosteos = await _context.DataCosteo.ToListAsync();
-                    costeosPagedList = todosLosCosteos.ToPagedList(1, todosLosCosteos.Count);
+                    //var todosLosCosteos = await _context.DataCosteo.ToListAsync();
+                    //costeosPagedList = todosLosCosteos.ToPagedList(1, todosLosCosteos.Count);
+
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    costeosPagedList = new PagedList<Costeo>(new List<Costeo>(), 1, 1); // Lista vacía
                 }
                 else
                 {
@@ -320,24 +337,28 @@ namespace proyecto.Controllers
 
                     if (!costeos.Any())
                     {
-                        TempData["MessageDeRespuesta"] = "No se encontraron costeos que coincidan con la búsqueda.";
+                        TempData["MessageDeRespuesta"] = "error|No se encontraron costeos que coincidan con la búsqueda.";
                         costeosPagedList = new PagedList<Costeo>(new List<Costeo>(), 1, 1);
                     }
                     else
                     {
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron costeos que coinciden con la búsqueda."; // Mensaje de éxito
                         costeosPagedList = costeos.ToPagedList(1, costeos.Count);
                     }
                 }
             }
             catch (Exception ex)
             {
-                TempData["MessageDeRespuesta"] = "Ocurrió un error al buscar costeos. Por favor, inténtalo de nuevo más tarde.";
+                // Manejar excepciones
+                Console.WriteLine($"Error al buscar costeos: {ex.Message}");
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar costeos. Por favor, inténtalo de nuevo más tarde.";
                 costeosPagedList = new PagedList<Costeo>(new List<Costeo>(), 1, 1);
             }
 
-            // Retorna la vista con productosPagedList, que siempre tendrá un valor asignado.
+            // Retorna la vista con costeosPagedList, que siempre tendrá un valor asignado.
             return View("VerCostPrev", costeosPagedList);
         }
+
 
 
 
@@ -348,13 +369,21 @@ namespace proyecto.Controllers
 
         public async Task<ActionResult> DetalleCosteo(int id)
         {
-            Costeo costeo = _context.DataCosteo.Find(id);
+            // Intenta encontrar el costeo por ID
+            Costeo costeo = await _context.DataCosteo.FindAsync(id);
+
             if (costeo == null)
             {
-                return NotFound("no se encontro el costeo"); // Maneja el caso en que no se encuentre el costeo
+                // Si no se encuentra el costeo, maneja el error
+                TempData["MessageDeRespuesta"] = "error|No se encontró el costeo solicitado.";
+                Console.WriteLine($"Costeo con ID {id} no encontrado."); // Registra el error en la consola
+                return NotFound("No se encontró el costeo."); // Respuesta HTTP 404
             }
+
+            // Retorna la vista con el costeo encontrado
             return View(costeo);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> RegistrarCosteo(Costeo model)
@@ -382,7 +411,7 @@ namespace proyecto.Controllers
             model.Acabados = model.Acabados ?? 0;
             model.Precio_Transporte = model.Precio_Transporte ?? 0;
 
-            model.Otros = model.Otros ?? 0;
+
             // Calcular CU_Final y CT_Final antes de cualquier validación
             model.CU_Final = model.Tela1_Costo + model.Tela2_Costo + model.Molde + model.Tizado +
                              model.Corte + model.Confección + model.Botones + model.Pegado_Botón +
@@ -414,13 +443,18 @@ namespace proyecto.Controllers
                     _context.DataCosteo.Add(model);
                     await _context.SaveChangesAsync();
 
+                    TempData["MessageDeRespuesta"] = "success|Costeo registrado con éxito.";
+
+
                     // Redirigir a la vista de detalles con el ID del costeo recién creado
                     return RedirectToAction("ResCosteo", new { id = model.Id });
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Ocurrió un error al registrar el costeo.");
-                    TempData["ErrorMessage"] = "Ocurrió un error al registrar el costeo: " + ex.Message;
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el costeo: " + ex.Message;
+
+                    Console.WriteLine($"Error al registrar el costeo: {ex.Message}"); // Log en consola
                     return RedirectToAction("Index", "Gerente");
                 }
             }
@@ -431,7 +465,7 @@ namespace proyecto.Controllers
                                           .Select(e => e.ErrorMessage)
                                           .ToList();
             // para mapear que error de que campo es
-            //TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+            //TempData["MessageDeRespuesta"] = string.Join(" ", errorMessages);
 
             // Si algo falla, devolver el modelo con los errores y los datos de vuelta a la vista
             return View("Costeo", model);
@@ -499,7 +533,8 @@ namespace proyecto.Controllers
             if (userId == null)
             {
                 // no se ha logueado
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
+                Console.WriteLine("Usuario no logueado, redirigiendo a la página de inicio."); // Console log
                 return View("~/Views/Home/Index.cshtml");
             }
             else
@@ -509,15 +544,31 @@ namespace proyecto.Controllers
 
                 pageNumber = Math.Max(pageNumber, 1); // Asegura que pageNumber nunca sea menor que 1
 
-                // Elimina el filtro Where para obtener todos los registros
-                var materiales = _context.DataMaterial;
+                try
+                {
+                    // Elimina el filtro Where para obtener todos los registros
+                    var materiales = _context.DataMaterial;
 
-                // Aplicar paginación
-                var listaPaginada = await materiales.ToPagedListAsync(pageNumber, pageSize);
+                    // Aplicar paginación
+                    var listaPaginada = await materiales.ToPagedListAsync(pageNumber, pageSize);
 
-                return View("VerMatAdq", listaPaginada);
+                    // Mensaje de éxito al cargar los materiales
+                    TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
+                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+
+                    return View("VerMatAdq", listaPaginada);
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error al obtener los materiales
+                    _logger.LogError(ex, "Ocurrió un error al cargar los materiales.");
+                    Console.WriteLine("Error al cargar los materiales: " + ex.Message); // Console log
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar los materiales: " + ex.Message;
+                    return View("VerMatAdq", null); // o redirigir a otra vista si lo prefieres
+                }
             }
         }
+
 
 
         /* Para exportar individualmente los productos */
@@ -690,7 +741,7 @@ namespace proyecto.Controllers
             if (userId == null)
             {
                 // Si no hay sesión de usuario activa, muestra un mensaje y redirige
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+                TempData["MessageDeRespuesta"] = "Por favor debe loguearse antes de realizar una búsqueda.";
                 return View("~/Views/Home/Index.cshtml");
             }
 
@@ -699,8 +750,12 @@ namespace proyecto.Controllers
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
-                    var todosLosMateriales = await _context.DataMaterial.ToListAsync();
-                    materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+                    //var todosLosMateriales = await _context.DataMaterial.ToListAsync();
+                    //materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+
+                    // Si el query está vacío o solo contiene espacios, muestra un mensaje al usuario
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    materialPagedList = new PagedList<Material>(new List<Material>(), 1, 1); // Lista vacía
                 }
                 else
                 {
@@ -717,6 +772,7 @@ namespace proyecto.Controllers
                     }
                     else
                     {
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron materiales que coinciden con la búsqueda."; // Mensaje de éxito
                         materialPagedList = materiales.ToPagedList(1, materiales.Count);
                     }
                 }
@@ -750,12 +806,6 @@ namespace proyecto.Controllers
                 return RedirectToAction(nameof(VerMatAdq));
             }
         }
-
-
-
-
-
-
 
 
 

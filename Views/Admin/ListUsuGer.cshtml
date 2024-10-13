@@ -2,7 +2,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@using X.PagedList.Mvc.Core; 
+@using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Mvc.Core.Fluent;
 
@@ -14,12 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <link rel="stylesheet" href="~/css/boton.css" />
-@if (TempData["MessageDeRespuesta"] != null)
-{
-    <div class="alert alert-danger" id="MensajesVerdeRojo">
-        @TempData["MessageDeRespuesta"]
-    </div>
-}
+
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
@@ -60,7 +55,7 @@
         z-index: 0;
     }
 
- 
+
 
     /* estilos para la tabla productos */
     body {
@@ -292,105 +287,137 @@
 
 
 <body>
-   <!---------------------------- listar producto stars  ---------------------------->
-<section class="listar_product" id="listar_product">
-    <div class="table-product-form-container">
-        <h1 class="heading"> <span>USUARIOS GERENTE</span></h1>
+    <!---------------------------- listar producto stars  ---------------------------->
+    <section class="listar_product" id="listar_product">
+        <div class="table-product-form-container">
 
-        <div class="Buscador">
-            <span>Buscar Gerente por Nombre</span>
-            <form asp-controller="Admin" asp-action="BuscarUsuario" method="get">
-                <input type="text" name="query" />
-                <button type="submit" class="btnBuscar">Buscar</button>
-            </form>
 
-            <a style="text-decoration: none;" asp-area="" asp-controller="Admin" asp-action="Index"
-                class="btnExcel">Volver</a>
+            <h1 class="heading">
+                <a href="@Url.Action("ListUsuGer", "Admin")" style="text-decoration: none; color: inherit;">
+                    <span>USUARIOS GERENTE</span>
+                </a>
+            </h1>
+
+            <div class="Buscador">
+                <span>Buscar Gerente por Nombre</span>
+                <form asp-controller="Admin" asp-action="buscarUsuarioGer" method="get">
+                    <input type="text" name="query" />
+                    <button type="submit" class="btnBuscar">Buscar</button>
+                </form>
+
+                <a style="text-decoration: none;" asp-area="" asp-controller="Admin" asp-action="Index"
+                    class="btnExcel">Volver</a>
+            </div>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        @*<th>Código</th>*@
+                        <th>Nombre Completo</th>
+                        <th>Tipo de Documento</th>
+                        <th>Nro. de Documento</th>
+                        <th>Correo</th>
+                        <th>Celular</th>
+                        <th>Fecha de registro</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            @*<td>@usuario.Id</td>*@
+                            <td>@usuario.Nombres @usuario.ApellidoPat @usuario.ApellidoMat</td>
+                            <td>@usuario.TipoDocumento</td>
+                            <td>@usuario.NumeroDocumento</td>
+                            <td>@usuario.Email</td>
+                            <td>@usuario.Celular</td>
+                            <td>@usuario.fechaDeRegistro</td>
+
+                            <td>
+                                <!-- Botón de Editar -->
+                                <a asp-controller="Admin" asp-action="EditarUsuario" asp-route-id="@usuario.Id"
+                                    class="btnEditar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+
+                            <td>
+                                <!-- Botón de Eliminar -->
+                                <form asp-controller="Admin" asp-action="EliminarUsuarioGerente" asp-route-id="@usuario.Id"
+                                    method="post"
+                                    onsubmit="return confirm('¿Está seguro de que desea eliminar este Gerente?')"
+                                    class="d-inline-block">
+                                    <button type="submit" class="btnEliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br><br>
+            <div class="pagination-container">
+                <ul class="pagination">
+                    <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("ListUsuGer", new { page = 1 })">Primera</a>
+                    </li>
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link"
+                            href="@Url.Action("ListUsuGer", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                    </li>
+                    @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
+                    {
+                        <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("ListUsuGer", new { page = pageNumber })">@pageNumber</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link"
+                            href="@Url.Action("ListUsuGer", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                    </li>
+                    <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
+                        <a class="page-link"
+                            href="@Url.Action("ListUsuGer", new { page = Model.PageCount })">&Uacute;ltima</a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <br>
-        <table class="table">
-            <thead>
-                <tr>
-                    @*<th>Código</th>*@
-                    <th>Nombre Completo</th>
-                    <th>Tipo de Documento</th>
-                    <th>Nro. de Documento</th>
-                    <th>Correo</th>
-                    <th>Celular</th>
-                    <th>Fecha de registro</th>
-                    <th>Editar</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var usuario in Model)
-                {
-                    <tr>
-                        @*<td>@usuario.Id</td>*@
-                        <td>@usuario.Nombres @usuario.ApellidoPat @usuario.ApellidoMat</td>
-                        <td>@usuario.TipoDocumento</td>
-                        <td>@usuario.NumeroDocumento</td>
-                        <td>@usuario.Email</td>
-                        <td>@usuario.Celular</td>
-                        <td>@usuario.fechaDeRegistro</td>
+        @if (TempData["MessageDeRespuesta"] != null)
+        {
+            var mensaje = TempData["MessageDeRespuesta"].ToString();
+            var partesMensaje = mensaje.Split('|');
 
-                        <td>
-                             <!-- Botón de Editar -->
-                            <a asp-controller="Admin" asp-action="EditarUsuario" asp-route-id="@usuario.Id"
-                                class="btnEditar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
+            // Verificar que el mensaje contiene al menos dos partes
+            if (partesMensaje.Length == 2)
+            {
+                var tipoMensaje = partesMensaje[0]; // "success" o "error"
+                var textoMensaje = partesMensaje[1]; // El texto del mensaje
 
-                         <td>
-                            <!-- Botón de Eliminar -->
-                            <form asp-controller="Admin" asp-action="EliminarUsuarioGerente" asp-route-id="@usuario.Id"
-                                method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este Gerente?')"
-                                class="d-inline-block">
-                                <button type="submit" class="btnEliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
-                        </td>
+                var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
 
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <br><br>
-        <div class="pagination-container">
-            <ul class="pagination">
-                <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
-                    <a class="page-link" href="@Url.Action("ListUsuGer", new { page = 1 })">Primera</a>
-                </li>
-                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                    <a class="page-link"
-                        href="@Url.Action("ListUsuGer", new { page = Model.PageNumber - 1 })">&laquo;</a>
-                </li>
-                @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
-                {
-                    <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
-                        <a class="page-link"
-                            href="@Url.Action("ListUsuGer", new { page = pageNumber })">@pageNumber</a>
-                    </li>
-                }
-                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                    <a class="page-link"
-                        href="@Url.Action("ListUsuGer", new { page = Model.PageNumber + 1 })">&raquo;</a>
-                </li>
-                <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
-                    <a class="page-link"
-                        href="@Url.Action("ListUsuGer", new { page = Model.PageCount })">&Uacute;ltima</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
-<!---------------------------- listar producto ends  ---------------------------->
+                <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+                    @textoMensaje
+                </div>
+            }
+            else
+            {
+                // Si no hay dos partes, mostrar el mensaje directamente
+                <div class="alert alert-warning" id="MensajesVerdeRojo">
+                    @mensaje
+                </div>
+            }
+        }
+    </section>
+    <!---------------------------- listar producto ends  ---------------------------->
 
-<!---------------------------- javascript  stars  ---------------------------->
-<script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
-<!---------------------------- javascript  ends  ---------------------------->
+    <!---------------------------- javascript  stars  ---------------------------->
+    <script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
+    <!---------------------------- javascript  ends  ---------------------------->
 
 
 

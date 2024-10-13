@@ -52,33 +52,46 @@ namespace proyecto.Controllers
 
         public async Task<ActionResult> ListUsuGer(int? page)
         {
-            var userId = _userManager.GetUserId(User); //sesion
+            var userId = _userManager.GetUserId(User); // Obtener el ID de usuario de la sesión actual
 
             if (userId == null)
             {
-                // no se ha logueado
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
+                // No se ha iniciado sesión, redirigir a la página de inicio y mostrar un mensaje
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
                 return View("~/Views/Home/Index.cshtml");
             }
             else
             {
-                int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
-                int pageSize = 10; // maximo 6 usuarios por pagina
+                int pageNumber = page ?? 1; // Si no se especifica la página, asume la página 1
+                int pageSize = 10; // Número máximo de usuarios por página
 
+                // Asegurarse de que pageNumber nunca sea menor que 1
+                pageNumber = Math.Max(pageNumber, 1);
 
-                pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
+                try
+                {
+                    // Filtrar usuarios por RolId = 2 y aplicar paginación
+                    var listaPaginada = await _context.Users
+                        .Where(u => u.RolId == "2") // Filtrar por RolId
+                        .ToPagedListAsync(pageNumber, pageSize); // Aplicar paginación
 
+                    // Si la lista está vacía, mostrar un mensaje de respuesta
+                    if (!listaPaginada.Any())
+                    {
+                        TempData["MessageDeRespuesta"] = "No se encontraron usuarios con el rol especificado.";
+                    }
 
-
-                // Filtrar usuarios por RolId = 2
-                var listaPaginada = await _context.Users
-                    .Where(u => u.RolId == "2") // Filtrar por RolId
-                    .ToPagedListAsync(pageNumber, pageSize); // Aplicar paginación
-
-                return View("ListUsuGer", listaPaginada);
+                    return View("ListUsuGer", listaPaginada);
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error, mostrar un mensaje de respuesta con el mensaje de error
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar los usuarios. Intente nuevamente más tarde.";
+                    return View("ListUsuGer", new List<ApplicationUser>().ToPagedList(1, pageSize));
+                }
             }
-
         }
+
 
         [HttpPost]
         public async Task<IActionResult> EliminarUsuarioGerente(string id)
@@ -89,11 +102,15 @@ namespace proyecto.Controllers
             {
                 _context.Users.Remove(usuario);
                 await _context.SaveChangesAsync();
+
+                TempData["MessageDeRespuesta"] = "success|El usuario ha sido eliminado exitosamente.";
                 return RedirectToAction(nameof(ListUsuGer));
             }
 
-            return NotFound("no se encontro");
+            TempData["MessageDeRespuesta"] = "error|No se encontró el usuario especificado.";
+            return RedirectToAction(nameof(ListUsuGer));
         }
+
 
         [HttpPost]
         public async Task<IActionResult> EliminarUsuarioSupervisor(string id)
@@ -104,11 +121,15 @@ namespace proyecto.Controllers
             {
                 _context.Users.Remove(usuario);
                 await _context.SaveChangesAsync();
+
+                TempData["MessageDeRespuesta"] = "success|El usuario ha sido eliminado exitosamente.";
                 return RedirectToAction(nameof(ListUsuSup));
             }
 
-            return NotFound("no se encontro");
+            TempData["MessageDeRespuesta"] = "error|No se encontró el usuario especificado.";
+            return RedirectToAction(nameof(ListUsuSup));
         }
+
 
         [HttpGet]
         public async Task<ActionResult> EditarUsuario(string? id)
@@ -118,8 +139,9 @@ namespace proyecto.Controllers
 
             if (usuario == null)
             {
-                Console.WriteLine("No se encontró");
-                return NotFound("No se encontró a ese usuario");
+                Console.WriteLine("No se encontró el usuario especificado.");
+                TempData["MessageDeRespuesta"] = "error|No se encontró el usuario especificado.";
+                return RedirectToAction("ListUsuGer"); // Redirige a la lista de usuarios
             }
 
             // Imprimir las propiedades del usuario en la consola
@@ -157,6 +179,7 @@ namespace proyecto.Controllers
 
 
 
+
         [HttpPost]
         public async Task<IActionResult> GuardarUsuarioEditado(UserRegistrationViewModel usuarioDTO)
         {
@@ -174,6 +197,7 @@ namespace proyecto.Controllers
                         _logger.LogWarning("Error en el campo {Field}: {ErrorMessage}", error.Key, error.Value.Errors.First().ErrorMessage);
                     }
                 }
+                TempData["MessageDeRespuesta"] = "error|Hay errores en el formulario. Por favor, corrígelos."; // Mensaje de error
                 return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
             }
 
@@ -183,6 +207,7 @@ namespace proyecto.Controllers
             if (user == null)
             {
                 _logger.LogWarning("El usuario con ID {UserId} no fue encontrado.", usuarioDTO.Id);
+                TempData["MessageDeRespuesta"] = "error|El usuario no fue encontrado."; // Mensaje de error
                 ModelState.AddModelError(string.Empty, "El usuario no fue encontrado.");
                 return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
             }
@@ -195,6 +220,7 @@ namespace proyecto.Controllers
             {
                 ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
                 _logger.LogWarning("Número de documento ya está en uso.");
+                TempData["MessageDeRespuesta"] = "El número de documento ya está en uso."; // Mensaje de error
                 return View("EditarUsuario", usuarioDTO);
             }
 
@@ -205,6 +231,7 @@ namespace proyecto.Controllers
             {
                 ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
                 _logger.LogWarning("Correo electrónico ya está en uso.");
+                TempData["MessageDeRespuesta"] = "El correo electrónico ya está en uso."; // Mensaje de error
                 return View("EditarUsuario", usuarioDTO);
             }
 
@@ -227,6 +254,7 @@ namespace proyecto.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "Las contraseñas no coinciden.");
                     _logger.LogWarning("Las contraseñas no coinciden.");
+                    TempData["MessageDeRespuesta"] = "error|Las contraseñas no coinciden."; // Mensaje de error
                     return View("EditarUsuario", usuarioDTO);
                 }
 
@@ -235,6 +263,7 @@ namespace proyecto.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "La contraseña debe tener al menos 6 caracteres.");
                     _logger.LogWarning("La contraseña no cumple con los requisitos de complejidad.");
+                    TempData["MessageDeRespuesta"] = "error|La contraseña debe tener al menos 6 caracteres."; // Mensaje de error
                     return View("EditarUsuario", usuarioDTO);
                 }
 
@@ -248,6 +277,7 @@ namespace proyecto.Controllers
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al restablecer la contraseña."; // Mensaje de error
                     return View("EditarUsuario", usuarioDTO);
                 }
             }
@@ -259,7 +289,7 @@ namespace proyecto.Controllers
                 await _context.SaveChangesAsync(); // Guardar cambios de manera asíncrona
 
                 _logger.LogInformation("Usuario con ID {UserId} editado exitosamente.", usuarioDTO.Id);
-                TempData["MessageActualizandoUsuario"] = "Se actualizaron exitosamente los datos.";
+                TempData["MessageActualizandoUsuario"] = "success|Se actualizaron exitosamente los datos."; // Mensaje de éxito
                 return RedirectToAction("EditarUsuario", new { id = usuarioDTO.Id });
             }
             catch (Exception ex)
@@ -267,6 +297,7 @@ namespace proyecto.Controllers
                 // Manejar errores de base de datos
                 _logger.LogError("Error al guardar los cambios para el usuario con ID {UserId}: {ErrorMessage}", usuarioDTO.Id, ex.Message);
                 ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los cambios: " + ex.Message);
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al guardar los cambios: " + ex.Message; // Mensaje de error
             }
 
             // Si hay errores de validación, vuelve a cargar la vista con el modelo
@@ -275,7 +306,8 @@ namespace proyecto.Controllers
 
 
 
-        public async Task<IActionResult> buscarUsuario(string query)
+
+        public async Task<IActionResult> buscarUsuarioGer(string query)
         {
             IPagedList<ApplicationUser> usuariosPagedList;
 
@@ -288,8 +320,12 @@ namespace proyecto.Controllers
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     // Si no hay query, obtener todos los usuarios con RolId = 2
-                    var todosLosUsuarios = await baseQuery.ToListAsync();
-                    usuariosPagedList = todosLosUsuarios.ToPagedList(1, todosLosUsuarios.Count);
+                    //var todosLosUsuarios = await baseQuery.ToListAsync();
+                    //usuariosPagedList = todosLosUsuarios.ToPagedList(1, todosLosUsuarios.Count);
+
+                    // Si el query está vacío o solo contiene espacios, muestra un mensaje al usuario
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    usuariosPagedList = new PagedList<ApplicationUser>(new List<ApplicationUser>(), 1, 1); // Lista vacía
                 }
                 else
                 {
@@ -309,13 +345,14 @@ namespace proyecto.Controllers
                     else
                     {
                         // Asignar a usuariosPagedList la lista paginada de usuarios encontrados
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron usuarios que coinciden con la búsqueda."; // Mensaje de éxito
                         usuariosPagedList = usuarios.ToPagedList(1, usuarios.Count);
                     }
                 }
             }
             catch (Exception ex)
             {
-                TempData["MessageDeRespuesta"] = "Ocurrió un error al buscar usuarios. Por favor, inténtalo de nuevo más tarde.";
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar usuarios. Por favor, inténtalo de nuevo más tarde.";
                 usuariosPagedList = new PagedList<ApplicationUser>(new List<ApplicationUser>(), 1, 1);
             }
 
@@ -336,8 +373,12 @@ namespace proyecto.Controllers
                 if (string.IsNullOrWhiteSpace(query))
                 {
                     // Si no hay query, obtener todos los usuarios con RolId = 2
-                    var todosLosUsuarios = await baseQuery.ToListAsync();
-                    usuariosPagedList = todosLosUsuarios.ToPagedList(1, todosLosUsuarios.Count);
+                    //var todosLosUsuarios = await baseQuery.ToListAsync();
+                    //usuariosPagedList = todosLosUsuarios.ToPagedList(1, todosLosUsuarios.Count);
+
+                    // Si el query está vacío o solo contiene espacios, muestra un mensaje al usuario
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    usuariosPagedList = new PagedList<ApplicationUser>(new List<ApplicationUser>(), 1, 1); // Lista vacía
                 }
                 else
                 {
@@ -357,13 +398,14 @@ namespace proyecto.Controllers
                     else
                     {
                         // Asignar a usuariosPagedList la lista paginada de usuarios encontrados
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron usuarios que coinciden con la búsqueda."; // Mensaje de éxito
                         usuariosPagedList = usuarios.ToPagedList(1, usuarios.Count);
                     }
                 }
             }
             catch (Exception ex)
             {
-                TempData["MessageDeRespuesta"] = "Ocurrió un error al buscar usuarios. Por favor, inténtalo de nuevo más tarde.";
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar usuarios. Por favor, inténtalo de nuevo más tarde.";
                 usuariosPagedList = new PagedList<ApplicationUser>(new List<ApplicationUser>(), 1, 1);
             }
 
@@ -375,33 +417,41 @@ namespace proyecto.Controllers
         [HttpGet]
         public async Task<ActionResult> ListUsuSup(int? page)
         {
-            var userId = _userManager.GetUserId(User); //sesion
+            var userId = _userManager.GetUserId(User); // sesión
 
             if (userId == null)
             {
                 // no se ha logueado
-                TempData["MessageLOGUEARSE"] = "Por favor debe loguearse antes";
+                TempData["MessageDeRespuesta"] = "success|Por favor debe loguearse antes"; // Mensaje unificado
+                Console.WriteLine("Intento de acceso sin iniciar sesión."); // Consola
                 return View("~/Views/Home/Index.cshtml");
             }
             else
             {
                 int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
-                int pageSize = 10; // maximo 6 usuarios por pagina
+                int pageSize = 10; // máximo 10 usuarios por página
 
+                pageNumber = Math.Max(pageNumber, 1); // Asegura que pageNumber nunca sea menor que 1
 
-                pageNumber = Math.Max(pageNumber, 1);// Con esto se asegura de que pageNumber nunca sea menor que 1
-
-
-
-                // Filtrar usuarios por RolId = 2
+                // Filtrar usuarios por RolId = 3
                 var listaPaginada = await _context.Users
                     .Where(u => u.RolId == "3") // Filtrar por RolId
                     .ToPagedListAsync(pageNumber, pageSize); // Aplicar paginación
 
+                if (!listaPaginada.Any()) // Validar si la lista está vacía
+                {
+                    TempData["MessageDeRespuesta"] = "error|No se encontraron usuarios en esta categoría."; // Mensaje cuando la lista está vacía
+                    Console.WriteLine("No se encontraron usuarios para mostrar."); // Consola
+                }
+                else
+                {
+                    Console.WriteLine($"Lista de usuarios para la página {pageNumber} cargada exitosamente."); // Consola
+                }
+
                 return View("ListUsuSup", listaPaginada);
             }
-
         }
+
 
         [HttpGet]
         public IActionResult AgreUsu()
@@ -434,7 +484,7 @@ namespace proyecto.Controllers
                     }
                 }
 
-
+                TempData["MessageDeRespuesta"] = "error|Por favor, corrija los errores en el formulario."; // Mensaje unificado
                 return View();
             }
 
@@ -447,7 +497,7 @@ namespace proyecto.Controllers
                 ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
                 _logger.LogWarning("Número de documento ya está en uso.");
 
-
+                TempData["MessageDeRespuesta"] = "error|El número de documento ya está en uso."; // Mensaje unificado
                 return View();
             }
 
@@ -459,7 +509,7 @@ namespace proyecto.Controllers
                 ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
                 _logger.LogWarning("Correo electrónico ya está en uso.");
 
-
+                TempData["MessageDeRespuesta"] = "error|El correo electrónico ya está en uso."; // Mensaje unificado
                 return View();
             }
 
@@ -482,7 +532,6 @@ namespace proyecto.Controllers
             // Crear el usuario en la base de datos
             var result = await _userManager.CreateAsync(user, model.Password);
 
-
             if (result.Succeeded)
             {
                 // Generar el token de confirmación de correo
@@ -494,7 +543,7 @@ namespace proyecto.Controllers
                 if (confirmResult.Succeeded)
                 {
                     _logger.LogInformation("Usuario registrado con éxito y correo confirmado automáticamente.");
-                    TempData["SuccessMessage"] = "Usuario rol gerente agregado con éxito.";
+                    TempData["MessageDeRespuesta"] = "success|Usuario rol gerente agregado con éxito."; // Mensaje unificado
                     return RedirectToAction("Index");
                 }
                 else
@@ -515,10 +564,11 @@ namespace proyecto.Controllers
                 }
             }
 
-
             // Si hay errores de validación, vuelve a cargar la vista con el modelo
+            TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el usuario."; // Mensaje unificado
             return View();
         }
+
 
 
         [HttpGet]
@@ -545,7 +595,7 @@ namespace proyecto.Controllers
                     }
                 }
 
-
+                TempData["MessageDeRespuesta"] = "error|Por favor, corrija los errores en el formulario."; // Mensaje unificado
                 return View();
             }
 
@@ -558,7 +608,7 @@ namespace proyecto.Controllers
                 ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
                 _logger.LogWarning("Número de documento ya está en uso.");
 
-
+                TempData["MessageDeRespuesta"] = "error|El número de documento ya está en uso."; // Mensaje unificado
                 return View();
             }
 
@@ -570,7 +620,7 @@ namespace proyecto.Controllers
                 ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
                 _logger.LogWarning("Correo electrónico ya está en uso.");
 
-
+                TempData["MessageDeRespuesta"] = "error|El correo electrónico ya está en uso."; // Mensaje unificado
                 return View();
             }
 
@@ -593,7 +643,6 @@ namespace proyecto.Controllers
             // Crear el usuario en la base de datos
             var result = await _userManager.CreateAsync(user, model.Password);
 
-
             if (result.Succeeded)
             {
                 // Generar el token de confirmación de correo
@@ -605,7 +654,7 @@ namespace proyecto.Controllers
                 if (confirmResult.Succeeded)
                 {
                     _logger.LogInformation("Usuario registrado con éxito y correo confirmado automáticamente.");
-                    TempData["SuccessMessage"] = "Usuario rol gerente agregado con éxito.";
+                    TempData["MessageDeRespuesta"] = "success|Usuario rol supervisor agregado con éxito."; // Mensaje unificado
                     return RedirectToAction("Index");
                 }
                 else
@@ -624,12 +673,13 @@ namespace proyecto.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el usuario."; // Mensaje unificado
             }
-
 
             // Si hay errores de validación, vuelve a cargar la vista con el modelo
             return View();
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

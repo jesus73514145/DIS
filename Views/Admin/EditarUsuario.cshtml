@@ -147,22 +147,30 @@
         <br>
 
 
-        @if (TempData["SuccessMessage"] != null)
+        @if (TempData["MessageDeRespuesta"] != null)
         {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-        }
+            var mensaje = TempData["MessageDeRespuesta"].ToString();
+            var partesMensaje = mensaje.Split('|');
 
-        @{
-            var message = TempData["MessageActualizandoUsuario"] as string;
-        }
+            // Verificar que el mensaje contiene al menos dos partes
+            if (partesMensaje.Length == 2)
+            {
+                var tipoMensaje = partesMensaje[0]; // "success" o "error"
+                var textoMensaje = partesMensaje[1]; // El texto del mensaje
 
-        @if (!string.IsNullOrEmpty(message))
-        {
-            <div class="alert alert-success" style="font-size: 2.1em;">
-                @message
-            </div>
+                var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+                <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+                    @textoMensaje
+                </div>
+            }
+            else
+            {
+                // Si no hay dos partes, mostrar el mensaje directamente
+                <div class="alert alert-warning" id="MensajesVerdeRojo">
+                    @mensaje
+                </div>
+            }
         }
 
 
@@ -170,5 +178,5 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
 }
