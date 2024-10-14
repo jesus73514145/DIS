@@ -77,6 +77,9 @@ http://localhost:5052/Identity/Account/Register
 
 https://dis-q75d.onrender.com/Identity/Account/Register
 
+
+http://localhost:5052/Textil/Gerente/ResCosteo/34
+
 Terminado.
 
 <p align="center">

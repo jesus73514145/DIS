@@ -201,10 +201,12 @@
         <!-- Quinta fila: Botones -->
         <div class="row">
             <div class="col-md-4 text-center">
-                <button class="btn btn-success w-100">Exportar en Excel</button>
+                <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnExcel"
+                                    asp-route-id="@Model.Id" class="btn btn-success w-100">Exportar en Excel</a>
             </div>
             <div class="col-md-4 text-center">
-                <button class="btn btn-danger w-100">Exportar en PDF</button>
+                <a asp-controller="Gerente" asp-action="ExportarUnSoloCosteoEnPDF"
+                                    asp-route-id="@Model.Id" class="btn btn-danger w-100">Exportar en PDF</a>
             </div>
             <div class="col-md-4 text-center">
                 <a href="@Url.Action("Index", "Gerente")" class="btn btn-secondary w-100">Regresar</a>
