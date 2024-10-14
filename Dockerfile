@@ -29,14 +29,19 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo \
     libxext6 \
     libssl3 \
-    libx11-6 
+    libx11-6 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Descargar y instalar wkhtmltox
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb && \
+    apt-get update && \
+    apt-get install -y libssl1.1 && \
     dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb || true && \
     apt-get install -f && \
     rm wkhtmltox_0.12.6-1.buster_amd64.deb
 
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "proyecto.dll"]
