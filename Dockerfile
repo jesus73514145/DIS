@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Copiar libwkhtmltox.dll al contenedor
-COPY lib/libwkhtmltox.dll /usr/local/lib/libwkhtmltox.dll
+COPY bin/Debug/net8.0/libwkhtmltox.dll /usr/local/lib/libwkhtmltox.dll
 
 # Configurar el entorno para encontrar la biblioteca
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
