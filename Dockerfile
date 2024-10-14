@@ -33,6 +33,12 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Copiar libwkhtmltox.dll al contenedor
+COPY lib/libwkhtmltox.dll /usr/local/lib/libwkhtmltox.dll
+
+# Configurar el entorno para encontrar la biblioteca
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
 # Descargar y instalar wkhtmltox
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb && \
     apt-get update && \
