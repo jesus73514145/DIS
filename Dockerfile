@@ -27,11 +27,15 @@ RUN apt-get update && apt-get install -y \
     libxcb1 \
     fontconfig \
     libjpeg62-turbo \
-    libxext6
+    libxext6 \
+    libssl1.1 \
+    libx11-6 \
+    libxrender1
 
 # Descargar y instalar wkhtmltox
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb && \
-    apt install -y ./wkhtmltox_0.12.6-1.buster_amd64.deb && \
+    dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb || true && \
+    apt-get install -f && \
     rm wkhtmltox_0.12.6-1.buster_amd64.deb
 
 WORKDIR /app
