@@ -125,7 +125,7 @@ namespace proyecto.Controllers
                     // Mensaje de éxito al cargar los materiales
                     TempData["MessageDeRespuesta"] = "success|Costeos cargados con éxito.";
                     Console.WriteLine("Materiales cargados con éxito."); // Console log
-                    
+
                     return View("VerCostPrev", listaPaginada);
                 }
                 catch (Exception ex)
@@ -140,82 +140,155 @@ namespace proyecto.Controllers
         }
 
 
-        /* Para exportar individualmente los productos */
+        /* Para exportar individualmente los costeos */
         public async Task<IActionResult> ExportarUnSoloCosteoEnPDF(int id)
         {
             try
             {
-
-                // var product = _context.Producto.Find(id);
-                var cost = _context.DataCosteo.Find(id);
+                var cost = await _context.DataCosteo.FindAsync(id);
                 if (cost == null)
                 {
                     return NotFound($"El costeo con ID {id} no fue encontrado, por eso no se puede exportar en PDF.");
                 }
 
                 var html = $@"
-            <html>
-                <head>
+        <html>
+            <head>
                 <meta charset='UTF-8'>
-                    <style>
-                        table {{
-                            width: 100%;
-                            border-collapse: collapse;
-                        }}
-                        th, td {{
-                            border: 1px solid black;
-                            padding: 8px;
-                            text-align: left;
-                        }}
-                        th {{
-                            background-color: #f2f2f2;
-                        }}
-                        img.logo {{
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            border-radius:50%;
-                            height:3.3rem;
-                            width:3.3rem;
-                        }}
-
-                        h1 {{
-                            color: #40E0D0; /* Color celeste */
-                        }}
-                    </style>
-                </head>
-                <body>
-                    <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' width='100' class='logo'/>
-                    <h1>Reporte de Costeo {id}</h1>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        margin: 20px;
+                        background-color: #f8f8f8;
+                    }}
+                    h1 {{
+                        color: #000000; 
+                        text-align: center;
+                    }}
+                    table {{
+                        width: 100%;
+                        border-collapse: collapse;
+                    }}
+                    th, td {{
+                        border: 1px solid black;
+                        padding: 8px;
+                        text-align: left;
+                    }}
+                    th {{
+                        background-color: #f2f2f2;
+                    }}
+                    img.logo {{
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        border-radius: 50%;
+                        height: 3.3rem;
+                        width: 3.3rem;
+                    }}
+                    
+                    .section {{
+                        margin-bottom: 20px;
+                    }}
+                </style>
+            </head>
+            <body>
+                <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' width='100' class='logo'/>
+                <h1>Reporte de Costeo {id}</h1>
+                
+                <div class='section'>
+                    <h2>Información General</h2>
                     <table>
                         <tr>
-                            <th>ID</th>
+                            <th>Código del Costeo</th>
+                            <td>{cost.Id}</td>
+                        </tr>
+                        <tr>
                             <th>Empresa</th>
+                            <td>{cost.Empresa}</td>
+                        </tr>
+                        <tr>
                             <th>Cantidad de Prendas</th>
-                            <th>Tela 1</th>
-                            <th>Tela 2</th>
-                            <th>Costo Final de la Prenda</th>
-                            <th>Costo Final del Pedido</th>
+                            <td>{cost.Cantidad_Prendas}</td>
+                        </tr>
+                        <tr>
                             <th>Fecha de Creación</th>
-                        </tr>";
-
-                html += $@"
-                <tr>
-                    <td>{cost.Id}</td>
-                    <td>{cost.Empresa}</td>
-                    <td>{cost.Cantidad_Prendas}</td>
-                    <td>{cost.Tela1_Nombre}, {cost.Tela1_Costo}</td>
-                    <td>{cost.Tela2_Nombre}, {cost.Tela2_Costo}</td>
-                    <td>{cost.CU_Final}</td>
-                    <td>{cost.CT_Final}</td>
-                    <td>{cost.fec_Creacion}</td>
-                </tr>";
-
-
-                html += @"
+                            <td>{cost.fec_Creacion}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha de Actualización</th>
+                            <td>{cost.fec_Actualizacion?.ToString() ?? "N/A"}</td>
+                        </tr>
                     </table>
-                </body>
-            </html>";
+                </div>
+
+                <div class='section'>
+                    <h2>Detalles de Costos</h2>
+                    <table>
+                        <tr>
+                            <th>Tela 1</th>
+                            <td>{cost.Tela1_Nombre} - Costo: S/. {cost.Tela1_Costo}, Cantidad: {cost.Tela1_Cantidad}</td>
+                        </tr>
+                        <tr>
+                            <th>Tela 2</th>
+                            <td>{cost.Tela2_Nombre} - Costo: S/. {cost.Tela2_Costo}, Cantidad: {cost.Tela2_Cantidad ?? 0}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo del Molde</th>
+                            <td>S/. {cost.Molde}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo del Tizado</th>
+                            <td>S/. {cost.Tizado}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo del Corte</th>
+                            <td>{cost.Corte}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Confección</th>
+                            <td>S/. {cost.Confección}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Botones</th>
+                            <td>S/. {cost.Botones}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Pegado de Botón</th>
+                            <td>S/. {cost.Pegado_Botón}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Otros</th>
+                            <td>S/. {cost.Otros ?? 0}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Avíos</th>
+                            <td>S/. {cost.Avios}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Tricotex</th>
+                            <td>S/. {cost.Tricotex}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Acabados</th>
+                            <td>S/. {cost.Acabados}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo de Transporte</th>
+                            <td>S/. {cost.CostoTransporte}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo Final de la Prenda</th>
+                            <td>S/. {Math.Round(cost.CU_Final ?? 0, 2).ToString("F2")}</td>
+                        </tr>
+                        <tr>
+                            <th>Costo Final del Pedido</th>
+                            <td>S/. {Math.Round(cost.CT_Final ?? 0, 2).ToString("F2")}</td>
+                        </tr>
+                    </table>
+                </div>
+            </body>
+        </html>";
 
                 var globalSettings = new GlobalSettings
                 {
@@ -234,7 +307,6 @@ namespace proyecto.Controllers
                 };
                 var file = _converter.Convert(pdf);
                 return File(file, "application/pdf", $"Costeo_{id}.pdf");
-
             }
             catch (Exception ex)
             {
@@ -247,48 +319,182 @@ namespace proyecto.Controllers
 
 
 
+
         public async Task<IActionResult> ExportarUnSoloCosteoEnExcel(int id)
         {
             try
             {
-
-                var cost = _context.DataCosteo.Find(id);
+                var cost = await _context.DataCosteo.FindAsync(id);
                 if (cost == null)
                 {
                     return NotFound($"El costeo con ID {id} no fue encontrado, por eso no se puede exportar en Excel.");
                 }
 
                 using var package = new ExcelPackage();
-                var worksheet = package.Workbook.Worksheets.Add("Costeo");
+                var worksheet = package.Workbook.Worksheets.Add($"Costeo_{id}");
 
-                // Agregando un título arriba de la tabla
+                // Título
                 worksheet.Cells[1, 1].Value = $"Reporte del Costeo {id}";
                 worksheet.Cells[1, 1].Style.Font.Size = 20;
                 worksheet.Cells[1, 1].Style.Font.Bold = true;
+                worksheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 1, 1, 3].Merge = true; // Fusionar celdas para el título
 
-                // Cargar los datos en la fila 3 para dejar espacio para el título
-                var costList = new List<Costeo> { cost };
-                worksheet.Cells[3, 1].LoadFromCollection(costList, true);
+                // Descargar la imagen del logo
+                using var client = new HttpClient();
+                var logoBytes = await client.GetByteArrayAsync("https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02");
 
-                // Dar formato a la tabla Reporte de Productos
-                var dataRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
-                var table = worksheet.Tables.Add(dataRange, "Costeo");
-                table.ShowHeader = true;
-                table.TableStyle = TableStyles.Light6;
+                // Agregar la imagen al archivo Excel
+                var image = worksheet.Drawings.AddPicture("Logo", new MemoryStream(logoBytes));
+                image.SetPosition(0, 15, 3, 0); // Coloca el logo en la fila 1, columna E
+                image.SetSize(100, 100);  // Establece el tamaño de la imagen
 
-                // Estilo para los encabezados de las columnas 
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Font.Bold = true;
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Font.Color.SetColor(System.Drawing.Color.DarkBlue);
 
-                // Ajustar el ancho de las columnas automáticamente
+                // Espacio para el título
+                worksheet.Cells[3, 1].Value = "Detalles del Costeo:";
+                worksheet.Cells[3, 1].Style.Font.Bold = true;
+                worksheet.Cells[3, 1].Style.Font.Size = 16;
+
+                // Llenar datos en filas
+                int filaDatos = 5; // Número de fila donde comienzas a llenar los datos
+                worksheet.Cells[filaDatos, 1].Value = "Código del Costeo:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Id;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Empresa:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Empresa;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Cantidad de Prendas:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Cantidad_Prendas;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Fecha de Creación:";
+                worksheet.Cells[filaDatos, 2].Value = cost.fec_Creacion;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Fecha de Actualización:";
+                worksheet.Cells[filaDatos, 2].Value = cost.fec_Actualizacion?.ToString() ?? "N/A";
+
+                // Sección de telas
+                filaDatos += 2; // Espacio entre secciones
+                worksheet.Cells[filaDatos, 1].Value = "Detalles de Telas:";
+                worksheet.Cells[filaDatos, 1].Style.Font.Bold = true;
+                worksheet.Cells[filaDatos, 1].Style.Font.Size = 16;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Tela 1:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tela1_Nombre;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo Tela 1:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tela1_Costo;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Cantidad Tela 1:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tela1_Cantidad;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Tela 2:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tela2_Nombre;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo Tela 2:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tela2_Costo;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Cantidad Tela 2:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tela2_Cantidad ?? 0;
+
+                // Sección de costos
+                filaDatos += 2; // Espacio entre secciones
+                worksheet.Cells[filaDatos, 1].Value = "Costos Asociados:";
+                worksheet.Cells[filaDatos, 1].Style.Font.Bold = true;
+                worksheet.Cells[filaDatos, 1].Style.Font.Size = 16;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo del Molde:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Molde;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo del Tizado:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tizado;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo del Corte:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Corte;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Confección:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Confección;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Botones:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Botones;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Pegado de Botón:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Pegado_Botón;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Otros:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Otros;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Avíos:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Avios;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Tricotex:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Tricotex;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Acabados:";
+                worksheet.Cells[filaDatos, 2].Value = cost.Acabados;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo de Transporte:";
+                worksheet.Cells[filaDatos, 2].Value = cost.CostoTransporte;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo Final de la Prenda:";
+                worksheet.Cells[filaDatos, 2].Value = cost.CU_Final;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo Final del Pedido:";
+                worksheet.Cells[filaDatos, 2].Value = cost.CT_Final;
+
+                // Estilo de las celdas
+                for (int i = 5; i <= 9; i++)
+                {
+                    worksheet.Cells[i, 1].Style.Font.Bold = true;
+                    worksheet.Cells[i, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[i, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Estilo de las celdas
+                for (int i = 12; i <= 17; i++)
+                {
+                    worksheet.Cells[i, 1].Style.Font.Bold = true;
+                    worksheet.Cells[i, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[i, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Estilo de las celdas
+                for (int i = 20; i <= 32; i++)
+                {
+                    worksheet.Cells[i, 1].Style.Font.Bold = true;
+                    worksheet.Cells[i, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[i, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Ajustar ancho de las columnas
                 worksheet.Cells.AutoFitColumns();
 
                 var stream = new MemoryStream();
                 package.SaveAs(stream);
 
-                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Costeo{id}.xlsx");
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Costeo_{id}.xlsx");
             }
             catch (Exception ex)
             {
@@ -298,6 +504,8 @@ namespace proyecto.Controllers
                 return StatusCode(500, $"Ocurrió un error al exportar el costeo {id} a Excel. Por favor, inténtelo de nuevo más tarde.");
             }
         }
+
+
 
         /* metodo para buscar */
 
@@ -571,80 +779,125 @@ namespace proyecto.Controllers
 
 
 
-        /* Para exportar individualmente los productos */
+        /* Para exportar individualmente los materiales */
         public async Task<IActionResult> ExportarUnSoloMaterialEnPDF(int id)
         {
             try
             {
-
-                // var product = _context.Producto.Find(id);
-                var material = _context.DataMaterial.Find(id);
+                var material = await _context.DataMaterial.FindAsync(id);
                 if (material == null)
                 {
                     return NotFound($"El material con ID {id} no fue encontrado, por eso no se puede exportar en PDF.");
                 }
 
+                // Obtener información del usuario que agregó el material desde la base de datos.
+                var usuario = await _context.Users.FindAsync(material.UserID);
+                if (usuario == null)
+                {
+                    return NotFound($"El usuario con ID {material.UserID} no fue encontrado.");
+                }
+
                 var html = $@"
-            <html>
-                <head>
+        <html>
+            <head>
                 <meta charset='UTF-8'>
-                    <style>
-                        table {{
-                            width: 100%;
-                            border-collapse: collapse;
-                        }}
-                        th, td {{
-                            border: 1px solid black;
-                            padding: 8px;
-                            text-align: left;
-                        }}
-                        th {{
-                            background-color: #f2f2f2;
-                        }}
-                        img.logo {{
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            border-radius:50%;
-                            height:3.3rem;
-                            width:3.3rem;
-                        }}
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        margin: 20px;
+                        background-color: #f8f8f8;
+                    }}
+                    h1 {{
+                        color: #000000; /* Color celeste */
+                        text-align: center;
+                    }}
+                    h2 {{
+                        color: #333;
+                        text-align: left;
+                        margin-top: 40px;
+                    }}
+                    table {{
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 20px 0;
+                    }}
+                    th, td {{
+                        border: 1px solid #ddd;
+                        padding: 12px;
+                        text-align: left;
+                    }}
+                    th {{
+                        background-color: #000000; /* Color celeste */
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    tr:nth-child(even) {{
+                        background-color: #f9f9f9; /* Color de fila alternada */
+                    }}
+                    tr:hover {{
+                        background-color: #e0f7fa; /* Color de fila al pasar el ratón */
+                    }}
+                    img.logo {{
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        border-radius: 50%;
+                        height: 50px;
+                        width: 50px;
+                    }}
+                </style>
+            </head>
+            <body>
+                <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' class='logo'/>
+                <h1>Reporte de Material {id}</h1>
+                <h2>Información del Material</h2>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Modelo</th>
+                        <th>Nombre de Tela</th>
+                        <th>Precio por Metro</th>
+                        <th>Cantidad (metros)</th>
+                        <th>Precio Total</th>
+                        <th>Proveedor</th>
+                        <th>Proveedor de Contacto</th>
+                        <th>Fecha de Registro</th>
+                        <th>Fecha de Actualización</th>
+                    </tr>
+                    <tr>
+                        <td>{material.Id}</td>
+                        <td>{material.Modelo}</td>
+                        <td>{material.NombreTela}</td>
+                        <td>{material.Precio:C2}</td>
+                        <td>{material.Cantidad}</td>
+                        <td>{material.PrecioTotal:C2}</td>
+                        <td>{material.Proveedor}</td>
+                        <td>{material.ProveedorContacto}</td>
+                        <td>{material.FechaRegistro:dd/MM/yyyy}</td>
+                        <td>{material.FechaActualizacion?.ToString("dd/MM/yyyy") ?? "N/A"}</td>
+                    </tr>
+                </table>
 
-                        h1 {{
-                            color: #40E0D0; /* Color celeste */
-                        }}
-                    </style>
-                </head>
-                <body>
-                    <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' width='100' class='logo'/>
-                    <h1>Reporte de Material {id}</h1>
-                    <table>
-                        <tr>
-                            <th>Modelo</th>
-                            <th>Nombre de Tela</th>
-                            <th>Precio Total</th>
-                            <th>Proveedor</th>
-                            <th>Proveedor de Contacto</th>
-                            <th>Fecha de Registro</th>
-                            <th>Fecha de Actualizacion</th>
-                        </tr>";
-
-                html += $@"
-                <tr>
-                    <td>{material.Modelo}</td>
-                    <td>{material.NombreTela}</td>
-                    <td>{material.PrecioTotal}</td>
-                    <td>{material.Proveedor}</td>
-                    <td>{material.ProveedorContacto}</td>
-                    <td>{material.FechaRegistro}</td>
-                    <td>{material.FechaActualizacion}</td>
-                </tr>";
-
-
-                html += @"
-                    </table>
-                </body>
-            </html>";
+                <h2>Información del Usuario que Agregó el Material</h2>
+                <table>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Email</th>
+                        <th>Numero de Documento</th>
+                        <th>Celular</th>
+                        <th>Fecha de Registro</th>  
+                    </tr>
+                    <tr>
+                        <td>{usuario.Nombres} {usuario.ApellidoPat} {usuario.ApellidoMat}</td>
+                        <td>{usuario.Email}</td>
+                        <td>{usuario.NumeroDocumento}</td>
+                        <td>{usuario.Celular}</td>
+                        <td>{usuario.fechaDeRegistro:dd/MM/yyyy}</td>
+                    </tr>
+                </table>
+            </body>
+        </html>";
 
                 var globalSettings = new GlobalSettings
                 {
@@ -663,16 +916,14 @@ namespace proyecto.Controllers
                 };
                 var file = _converter.Convert(pdf);
                 return File(file, "application/pdf", $"Material_{id}.pdf");
-
             }
             catch (Exception ex)
             {
-                // Loguear el error para obtener más detalles
                 _logger.LogError(ex, $"Error al exportar el material {id} a PDF");
-                // Retornar un mensaje de error al usuario
                 return StatusCode(500, $"Ocurrió un error al exportar el material {id} a PDF. Por favor, inténtelo de nuevo más tarde.");
             }
         }
+
 
 
 
@@ -680,44 +931,138 @@ namespace proyecto.Controllers
         {
             try
             {
-
-                var material = _context.DataMaterial.Find(id);
+                var material = await _context.DataMaterial.FindAsync(id);
                 if (material == null)
                 {
                     return NotFound($"El material con ID {id} no fue encontrado, por eso no se puede exportar en Excel.");
                 }
 
-                using var package = new ExcelPackage();
-                var worksheet = package.Workbook.Worksheets.Add("Material");
+                // Obtener información del usuario que agregó el material desde la base de datos.
+                var usuario = await _context.Users.FindAsync(material.UserID);
+                if (usuario == null)
+                {
+                    return NotFound($"El usuario con ID {material.UserID} no fue encontrado.");
+                }
 
-                // Agregando un título arriba de la tabla
+                using var package = new ExcelPackage();
+                var worksheet = package.Workbook.Worksheets.Add($"Material_{id}");
+
+                // Título
                 worksheet.Cells[1, 1].Value = $"Reporte del Material {id}";
                 worksheet.Cells[1, 1].Style.Font.Size = 20;
                 worksheet.Cells[1, 1].Style.Font.Bold = true;
+                worksheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 1, 1, 3].Merge = true; // Fusionar celdas para el título
 
-                // Cargar los datos en la fila 3 para dejar espacio para el título
-                var materialList = new List<Material> { material };
-                worksheet.Cells[3, 1].LoadFromCollection(materialList, true);
+                // Descargar la imagen del logo
+                using var client = new HttpClient();
+                var logoBytes = await client.GetByteArrayAsync("https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02");
 
-                // Dar formato a la tabla Reporte de Productos
-                var dataRange = worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column];
-                var table = worksheet.Tables.Add(dataRange, "Material");
-                table.ShowHeader = true;
-                table.TableStyle = TableStyles.Light6;
+                // Agregar la imagen al archivo Excel
+                var image = worksheet.Drawings.AddPicture("Logo", new MemoryStream(logoBytes));
+                image.SetPosition(0, 15, 3, 0); // Coloca el logo en la fila 1, columna E
+                image.SetSize(100, 100);  // Establece el tamaño de la imagen
 
-                // Estilo para los encabezados de las columnas 
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Font.Bold = true;
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
-                worksheet.Cells[3, 1, 3, worksheet.Dimension.End.Column].Style.Font.Color.SetColor(System.Drawing.Color.DarkBlue);
 
-                // Ajustar el ancho de las columnas automáticamente
+                // Espacio para el título
+                worksheet.Cells[3, 1].Value = "Detalles del Material:";
+                worksheet.Cells[3, 1].Style.Font.Bold = true;
+                worksheet.Cells[3, 1].Style.Font.Size = 16;
+
+                // Llenar datos en filas
+                int filaDatos = 5; // Número de fila donde comienzas a llenar los datos
+                worksheet.Cells[filaDatos, 1].Value = "Código del Material:";
+                worksheet.Cells[filaDatos, 2].Value = material.Id;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Modelo:";
+                worksheet.Cells[filaDatos, 2].Value = material.Modelo;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Nombre de Tela:";
+                worksheet.Cells[filaDatos, 2].Value = material.NombreTela;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Precio por Metro:";
+                worksheet.Cells[filaDatos, 2].Value = material.Precio.HasValue ? material.Precio.Value.ToString("C2") : "N/A";
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Cantidad (metros):";
+                worksheet.Cells[filaDatos, 2].Value = material.Cantidad.ToString();
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Precio Total:";
+                worksheet.Cells[filaDatos, 2].Value = material.PrecioTotal.HasValue ? material.PrecioTotal.Value.ToString("C2") : "N/A";
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Proveedor:";
+                worksheet.Cells[filaDatos, 2].Value = material.Proveedor;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Proveedor de Contacto:";
+                worksheet.Cells[filaDatos, 2].Value = material.ProveedorContacto;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Fecha de Registro:";
+                worksheet.Cells[filaDatos, 2].Value = material.FechaRegistro != null ? ((DateTime)material.FechaRegistro).ToString("dd/MM/yyyy") : "N/A";
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Fecha de Actualización:";
+                worksheet.Cells[filaDatos, 2].Value = material.FechaActualizacion.HasValue ? material.FechaActualizacion.Value.ToString("dd/MM/yyyy") : "N/A";
+
+                // Sección de telas
+                filaDatos += 2; // Espacio entre secciones
+                worksheet.Cells[filaDatos, 1].Value = "Información del Usuario:";
+                worksheet.Cells[filaDatos, 1].Style.Font.Bold = true;
+                worksheet.Cells[filaDatos, 1].Style.Font.Size = 16;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Nombre Completo Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = $"{usuario.Nombres} {usuario.ApellidoPat} {usuario.ApellidoMat}";
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Email Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.Email;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Numero de Documento Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.NumeroDocumento;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Celular Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.Celular;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Fecha de Registro Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.fechaDeRegistro.HasValue ? usuario.fechaDeRegistro.Value.ToString("dd/MM/yyyy") : "N/A";
+
+
+
+                // Estilo de las celdas
+                for (int i = 5; i <= 14; i++)
+                {
+                    worksheet.Cells[i, 1].Style.Font.Bold = true;
+                    worksheet.Cells[i, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[i, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Estilo de las celdas
+                for (int i = 17; i <= 21; i++)
+                {
+                    worksheet.Cells[i, 1].Style.Font.Bold = true;
+                    worksheet.Cells[i, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[i, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+
+
+                // Ajustar ancho de las columnas
                 worksheet.Cells.AutoFitColumns();
 
                 var stream = new MemoryStream();
                 package.SaveAs(stream);
 
-                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Material{id}.xlsx");
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Material_{id}.xlsx");
             }
             catch (Exception ex)
             {
@@ -727,6 +1072,7 @@ namespace proyecto.Controllers
                 return StatusCode(500, $"Ocurrió un error al exportar el material {id} a Excel. Por favor, inténtelo de nuevo más tarde.");
             }
         }
+
 
         /* metodo para buscar */
 
