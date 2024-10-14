@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Identity
-@model proyecto.Models.UserRegistrationViewModel
+@model proyecto.Models.UserEditViewModel
 @{
     ViewData["Title"] = "ROL: GERENTE";
 }
@@ -103,7 +103,7 @@
             <div class="input">
                 <span>Numero de Documento</span>
                 <input asp-for="NumeroDocumento" id="NumeroDocumento" autocomplete="on" aria-required="true"
-                    placeholder="Ejm. 76543210" />
+                    placeholder="Ejm. 76543210" readonly/>
                 <span class="error-message"></span>
                 <span asp-validation-for="NumeroDocumento" class="text-danger"></span>
             </div>
@@ -122,28 +122,29 @@
             </div>
             <div class="input">
                 <span>Correo Electrónico</span>
-                <input asp-for="Email" autocomplete="username" aria-required="true" placeholder="nombre@ejemplo.com" />
+                <input asp-for="Email" autocomplete="username" aria-required="true" placeholder="nombre@ejemplo.com" readonly/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
         </div>
 
-        <div class="inputBox">
-            <div class="input">
-                <span>Contraseña</span>
-                <input asp-for="Password" autocomplete="new-password" aria-required="true" placeholder="************" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="input">
-                <span>Confirmar Contraseña</span>
-                <input asp-for="ConfirmPassword" autocomplete="new-password" aria-required="true"
-                    placeholder="************" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+        @*<div class="inputBox">
+        <div class="input">
+        <span>Contraseña</span>
+        <input asp-for="Password" autocomplete="new-password" aria-required="true" placeholder="************" />
+        <span asp-validation-for="Password" class="text-danger"></span>
         </div>
+        <div class="input">
+        <span>Confirmar Contraseña</span>
+        <input asp-for="ConfirmPassword" autocomplete="new-password" aria-required="true"
+        placeholder="************" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+        </div>*@
         <div class="inputBox">
             <input type="submit" value="Actualizar" class="btn">
-            <a class="btn" onclick="window.history.back()">Cancelar</a>
+            <a asp-controller="Admin" asp-action="VolverAtras" asp-route-id="@Model.Id" class="btn">Cancelar</a>
         </div>
+
         <br>
 
 
@@ -178,5 +179,5 @@
 </div>
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }
