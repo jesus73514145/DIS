@@ -851,31 +851,35 @@ namespace proyecto.Controllers
             <body>
                 <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' class='logo'/>
                 <h1>Reporte de Material {id}</h1>
+
                 <h2>Información del Material</h2>
                 <table>
                     <tr>
-                        <th>ID</th>
-                        <th>Modelo</th>
-                        <th>Nombre de Tela</th>
-                        <th>Precio por Metro</th>
-                        <th>Cantidad (metros)</th>
-                        <th>Precio Total</th>
-                        <th>Proveedor</th>
-                        <th>Proveedor de Contacto</th>
-                        <th>Fecha de Registro</th>
-                        <th>Fecha de Actualización</th>
+                        <th colspan='2' style='background-color: #dcdcdc; font-weight: bold;'>Modelo</th>
                     </tr>
                     <tr>
-                        <td>{material.Id}</td>
                         <td>{material.Modelo}</td>
+                    </tr>
+                    <tr>
+                        <th colspan='2' style='background-color: #dcdcdc; font-weight: bold;'>Información de la Tela</th>
+                    </tr>
+                    <tr>
                         <td>{material.NombreTela}</td>
+                    </tr>
+                    <tr>
                         <td>{material.Precio:C2}</td>
+                    </tr>
+                    <tr>
                         <td>{material.Cantidad}</td>
-                        <td>{material.PrecioTotal:C2}</td>
+                    </tr>
+                    <tr>
+                        <th colspan='2' style='background-color: #dcdcdc; font-weight: bold;'>Información del Proveedor</th>
+                    </tr>
+                    <tr>
                         <td>{material.Proveedor}</td>
+                    </tr>
+                    <tr>
                         <td>{material.ProveedorContacto}</td>
-                        <td>{material.FechaRegistro:dd/MM/yyyy}</td>
-                        <td>{material.FechaActualizacion?.ToString("dd/MM/yyyy") ?? "N/A"}</td>
                     </tr>
                 </table>
 
