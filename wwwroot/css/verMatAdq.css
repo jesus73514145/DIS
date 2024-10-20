@@ -12,7 +12,6 @@ table {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px; /* Ajusta el ancho según sea necesario */
     border: none;
 }
 
@@ -20,7 +19,7 @@ table {
 .dialog-container {
     background-color: white;
     padding: 20px;
-    width: 300px;
+    width: 350px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
