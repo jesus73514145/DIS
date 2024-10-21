@@ -1157,6 +1157,58 @@ namespace proyecto.Controllers
             }
         }
 
+        public async Task<ActionResult> IngresoPrenda()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegistrarPrenda(Prenda model)
+        {
+            // Convertir valores nulos a 0 antes de realizar cualquier cálculo
+
+            model.UserID = _userManager.GetUserId(User);
+            model.FechaRegistro = DateTime.Now.ToUniversalTime();
+            model.FechaActualizacion = null;
+
+
+            // Revisar si el ModelState es válido después de las validaciones personalizadas
+            if (ModelState.IsValid)
+            {
+
+                try
+                {
+                    _logger.LogInformation("Guardando el modelo en la base de datos.");
+                    _context.DataPrenda.Add(model);
+                    await _context.SaveChangesAsync();
+
+                    // Establecer un mensaje de éxito en TempData
+                    string successMessage = "success|Prenda registrado exitosamente.";
+                    TempData["MessageDeRespuesta"] = successMessage;
+
+                    // Registrar el mensaje en consola
+                    _logger.LogInformation(successMessage);
+
+                    // Redirigir a la vista "Index" del controlador "Gerente"
+                    return RedirectToAction("Index", "Gerente");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Ocurrió un error al registrar el material.");
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el material: " + ex.Message;
+                    return RedirectToAction("Index", "Gerente");
+                }
+            }
+
+            // Obtener todos los errores del ModelState y convertirlos en una cadena.
+            var errorMessages = ModelState.Values
+                                          .SelectMany(v => v.Errors)
+                                          .Select(e => e.ErrorMessage)
+                                          .ToList();
+            //TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+            // Si algo falla, devolver el modelo con los errores y los datos de vuelta a la vista
+            return View("IngresoPrenda", model);
+        }
 
 
 

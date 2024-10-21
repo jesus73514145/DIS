@@ -83,7 +83,8 @@ roles = await UserManager.GetRolesAsync(myidentity);
                         data-bs-target="#exampleModal1"
                         style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">COSTEO
                         DE PRENDAS</a>
-                    <a href="/Textil/Gerente/SalPrend" class="boton"
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal3" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal3"
                         style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">SALIDA
                         DE PRENDAS</a>
                 </div>
@@ -92,6 +93,7 @@ roles = await UserManager.GetRolesAsync(myidentity);
                 <!-- Aquí incluyes la vista parcial del modal -->
                 @await Html.PartialAsync("_IngMat")
                 @await Html.PartialAsync("_CostPren")
+                @await Html.PartialAsync("_SalidaPrendasModal")
             }
 
             @* Verifica si el usuario es Empleado *@
