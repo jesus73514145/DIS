@@ -1,0 +1,122 @@
+@model proyecto.Models.Prenda
+<link rel="stylesheet" href="~/css/costeo.css" />
+<meta charset="utf-8">
+<!-- Agrega los estilos personalizados -->
+<link rel="stylesheet" href="~/css/costeo-modal.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Función para calcular el costo de Tela 1
+        $('#PrecioUnitario, #Cantidad').on('input', function () {
+            var precioTela = parseFloat($('#PrecioUnitario').val()) || 0;
+            var cantidadTela = parseFloat($('#Cantidad').val()) || 0;
+            var costoTela = precioTela * cantidadTela;
+            $('#CostoTotal').val(costoTela.toFixed(2)); // Cambia de PrecioTotal a CostoTotal
+        });
+    });
+</script>
+<!-- Página de Costeo -->
+<div class="container mt-5" style="min-height: 80vh; ">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">INGRESAR PRENDA</h1>
+        </div>
+    </div>
+
+    <form asp-controller="Gerente" asp-action="RegistrarPrenda" method="POST" id="costeoForm">
+
+
+        <!-- Segunda fila: Nombre de la empresa y prendas -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Modelo">Modelo</label>
+                    <input type="text" asp-for="Modelo" class="form-control" id="Modelo" placeholder="Modelo">
+                    <span asp-validation-for="Modelo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Modelo">Cliente</label>
+                    <input type="text" asp-for="Cliente" class="form-control" id="Cliente" placeholder="Cliente">
+                    <span asp-validation-for="Cliente" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tercera fila: Tela 1 -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <h2>Información de la Prenda</h2>
+            </div>
+            <hr>
+        </div>
+
+        <!-- Fila: Precio, cantidad y costo -->
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="PrecioUnitario">Precio Unitario</label>
+                    <input type="number" min="0" step="0.01" asp-for="PrecioUnitario" class="form-control" id="PrecioUnitario"
+                           placeholder="PrecioUnitario">
+                    <span asp-validation-for="PrecioUnitario" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="Cantidad">Cantidad</label>
+                    <input type="number" min="0" step="0.01" asp-for="Cantidad" class="form-control" id="Cantidad"
+                           placeholder="Cantidad">
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila: Nombre de la tela 2 y botón convertir -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="PrecioTotal">Costo Total</label>
+                    <input type="number" step="0.01" asp-for="CostoTotal" class="form-control" id="CostoTotal"
+                           placeholder="Costo Total" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila: botones -->
+        <div class="row">
+            <div class="col-md-4 text-end">
+                <a href="/Textil/Gerente" class="btn btn-secondary">Cerrar</a>
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                    Cambios
+                </button>
+            </div>
+        </div>
+    </form>
+    @if (TempData["MessageDeRespuesta"] != null)
+    {
+        var mensaje = TempData["MessageDeRespuesta"].ToString();
+        var partesMensaje = mensaje.Split('|');
+
+        // Verificar que el mensaje contiene al menos dos partes
+        if (partesMensaje.Length == 2)
+        {
+            var tipoMensaje = partesMensaje[0]; // "success" o "error"
+            var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+            var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+    <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+        @textoMensaje
+    </div>
+        }
+        else
+        {
+            // Si no hay dos partes, mostrar el mensaje directamente
+    <div class="alert alert-warning" id="MensajesVerdeRojo">
+        @mensaje
+    </div>
+        }
+    }
+</div>
