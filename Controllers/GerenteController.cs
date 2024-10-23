@@ -1210,7 +1210,105 @@ namespace proyecto.Controllers
             return View("IngresoPrenda", model);
         }
 
+        public async Task<ActionResult> VerPrendasAnt(int? page)
+        {
+            var userId = _userManager.GetUserId(User); // sesión
 
+            if (userId == null)
+            {
+                // no se ha logueado
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
+                Console.WriteLine("Usuario no logueado, redirigiendo a la página de inicio."); // Console log
+                return View("~/Views/Home/Index.cshtml");
+            }
+            else
+            {
+                int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
+                int pageSize = 6; // máximo 6 materiales por página
+
+                pageNumber = Math.Max(pageNumber, 1); // Asegura que pageNumber nunca sea menor que 1
+
+                try
+                {
+                    // Elimina el filtro Where para obtener todos los registros
+                    var prendas = _context.DataPrenda;
+
+                    // Aplicar paginación
+                    var listaPaginada = await prendas.ToPagedListAsync(pageNumber, pageSize);
+
+                    // Mensaje de éxito al cargar los materiales
+                    TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
+                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+
+                    return View("VerPrendasAnt", listaPaginada);
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error al obtener los materiales
+                    _logger.LogError(ex, "Ocurrió un error al cargar los materiales.");
+                    Console.WriteLine("Error al cargar los materiales: " + ex.Message); // Console log
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar los materiales: " + ex.Message;
+                    return View("VerPrendasAnt", null); // o redirigir a otra vista si lo prefieres
+                }
+            }
+        }
+
+        public async Task<IActionResult> BuscarPrenda(string query)
+        {
+            // Declara la variable materialPagedList una sola vez aquí
+            IPagedList<Prenda> prendaPagedList;
+
+            // Obtén el ID del usuario logueado
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
+            {
+                // Si no hay sesión de usuario activa, muestra un mensaje y redirige
+                TempData["MessageDeRespuesta"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+                return View("~/Views/Home/Index.cshtml");
+            }
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
+                    //var todosLosMateriales = await _context.DataMaterial.ToListAsync();
+                    //materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+
+                    // Si el query está vacío o solo contiene espacios, muestra un mensaje al usuario
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1); // Lista vacía
+                }
+                else
+                {
+                    // Si hay una búsqueda, aplica el filtro solo en el campo Modelo
+                    query = query.ToUpper();
+                    var prendas = await _context.DataPrenda
+                        .Where(p => p.Modelo.ToUpper().Contains(query)) // Filtra solo por la búsqueda
+                        .ToListAsync();
+
+                    if (!prendas.Any())
+                    {
+                        TempData["MessageDeRespuesta"] = "error|No se encontraron materiales que coincidan con la búsqueda.";
+                        prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1);
+                    }
+                    else
+                    {
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron materiales que coinciden con la búsqueda."; // Mensaje de éxito
+                        prendaPagedList = prendas.ToPagedList(1, prendas.Count);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar el material. Por favor, inténtalo de nuevo más tarde.";
+                prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1);
+            }
+
+            // Retorna la vista con materialPagedList, que siempre tendrá un valor asignado.
+            return View("VerPrendasAnt", prendaPagedList);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
