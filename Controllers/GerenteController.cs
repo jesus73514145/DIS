@@ -1290,24 +1290,43 @@ namespace proyecto.Controllers
 
                     if (!prendas.Any())
                     {
-                        TempData["MessageDeRespuesta"] = "error|No se encontraron materiales que coincidan con la búsqueda.";
+                        TempData["MessageDeRespuesta"] = "error|No se encontraron prendas que coincidan con la búsqueda.";
                         prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1);
                     }
                     else
                     {
-                        TempData["MessageDeRespuesta"] = "success|Se encontraron materiales que coinciden con la búsqueda."; // Mensaje de éxito
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron prendas que coinciden con la búsqueda."; // Mensaje de éxito
                         prendaPagedList = prendas.ToPagedList(1, prendas.Count);
                     }
                 }
             }
             catch (Exception ex)
             {
-                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar el material. Por favor, inténtalo de nuevo más tarde.";
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar la prenda. Por favor, inténtalo de nuevo más tarde.";
                 prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1);
             }
 
             // Retorna la vista con materialPagedList, que siempre tendrá un valor asignado.
             return View("VerPrendasAnt", prendaPagedList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarPrenda(int id)
+        {
+            var prenda = await _context.DataPrenda.FindAsync(id);
+
+            if (prenda != null)
+            {
+                _context.DataPrenda.Remove(prenda);
+                await _context.SaveChangesAsync();
+                TempData["MessageDeRespuesta"] = "success|La prenda ha sido eliminado correctamente.";
+                return RedirectToAction(nameof(VerPrendasAnt));
+            }
+            else
+            {
+                TempData["MessageDeRespuesta"] = "error|No se pudo eliminar la prenda, no fue encontrada.";
+                return RedirectToAction(nameof(VerPrendasAnt));
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
