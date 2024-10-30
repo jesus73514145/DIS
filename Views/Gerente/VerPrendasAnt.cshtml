@@ -402,9 +402,9 @@ roles = await UserManager.GetRolesAsync(myidentity);
                                         </tr>
                                     </table>
                                     <div class="button-container">
-                                        <a asp-controller="Gerente" asp-action="ExportarUnSoloMaterialEnExcel"
+                                        <a asp-controller="Gerente" asp-action="ExportarUnaSolaPrendaEnExcel"
                                            asp-route-id="@prenda.Id" class="excel-btn">Excel</a>
-                                        <a asp-controller="Gerente" asp-action="ExportarUnSoloMaterialEnPDF"
+                                        <a asp-controller="Gerente" asp-action="ExportarUnaSolaPrendaEnPDF"
                                            asp-route-id="@prenda.Id" class="pdf-btn">PDF</a>
                                     </div>
                                 </dialog>
