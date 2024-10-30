@@ -382,32 +382,29 @@ roles = await UserManager.GetRolesAsync(myidentity);
                                         </tr>
 
                                         <tr class="exportTableTitle">
-                                            <th colspan="2">Información de la Tela</th>
-                                        </tr>
-                                        <tr class="exportTableContent">
-                                            <td>Nombre de la Tela</td>
-                                        </tr>
-                                        <tr class="exportTableContent">
-                                            <td>Precio por Metro</td>
-                                        </tr>
-                                        <tr class="exportTableContent">
-                                            <td>Cantidad de Metros Comprada</td>
-                                        </tr>
-
-                                        <tr class="exportTableTitle">
-                                            <th colspan="2">Información del Proveedor</th>
+                                            <th colspan="2">Cliente</th>
                                         </tr>
                                         <tr class="exportTableContent">
                                             <td>Nombre de la Empresa</td>
                                         </tr>
+
+                                        <tr class="exportTableTitle">
+                                            <th colspan="2">Información de Prenda</th>
+                                        </tr>
                                         <tr class="exportTableContent">
-                                            <td>Contacto de la Empresa</td>
+                                            <td>Precio Unitario de la Prenda</td>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Cantidad de Prendas Realizadas</td>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Costo Total del Pedido</td>
                                         </tr>
                                     </table>
                                     <div class="button-container">
-                                        <a asp-controller="Gerente" asp-action="ExportarUnSoloMaterialEnExcel"
+                                        <a asp-controller="Gerente" asp-action="ExportarUnaSolaPrendaEnExcel"
                                            asp-route-id="@prenda.Id" class="excel-btn">Excel</a>
-                                        <a asp-controller="Gerente" asp-action="ExportarUnSoloMaterialEnPDF"
+                                        <a asp-controller="Gerente" asp-action="ExportarUnaSolaPrendaEnPDF"
                                            asp-route-id="@prenda.Id" class="pdf-btn">PDF</a>
                                     </div>
                                 </dialog>
