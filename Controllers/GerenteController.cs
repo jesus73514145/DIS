@@ -123,7 +123,7 @@ namespace proyecto.Controllers
                     var listaPaginada = await costeos.ToPagedListAsync(pageNumber, pageSize);
 
                     // Mensaje de éxito al cargar los materiales
-                    TempData["MessageDeRespuesta"] = "success|Costeos cargados con éxito.";
+                    //TempData["MessageDeRespuesta"] = "success|Costeos cargados con éxito.";
                     Console.WriteLine("Materiales cargados con éxito."); // Console log
 
                     return View("VerCostPrev", listaPaginada);
@@ -761,7 +761,7 @@ namespace proyecto.Controllers
                     var listaPaginada = await materiales.ToPagedListAsync(pageNumber, pageSize);
 
                     // Mensaje de éxito al cargar los materiales
-                    TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
+                    //TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
                     Console.WriteLine("Materiales cargados con éxito."); // Console log
 
                     return View("VerMatAdq", listaPaginada);
@@ -1237,7 +1237,7 @@ namespace proyecto.Controllers
                     var listaPaginada = await prendas.ToPagedListAsync(pageNumber, pageSize);
 
                     // Mensaje de éxito al cargar los materiales
-                    TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
+                    //TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
                     Console.WriteLine("Materiales cargados con éxito."); // Console log
 
                     return View("VerPrendasAnt", listaPaginada);
