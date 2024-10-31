@@ -803,7 +803,7 @@ namespace proyecto.Controllers
                     </tr>
                 </table>
 
-                <h2>Información del Usuario que Agregó el Material</h2>
+                <h2>Información del Usuario que Agregó la Prenda</h2>
                 <table>
                     <tr>
                         <th>Nombre Completo</th>

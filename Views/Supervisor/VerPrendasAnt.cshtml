@@ -314,19 +314,19 @@ roles = await UserManager.GetRolesAsync(myidentity);
 
 
                 <h1 class="heading">
-                    <a href="@Url.Action("VerMatAdq", "Gerente")" style="text-decoration: none; color: inherit;">
+                    <a href="@Url.Action("VerMatAdq", "Supervisor")" style="text-decoration: none; color: inherit;">
                         <span>PRENDAS ANTERIORES</span>
                     </a>
                 </h1>
 
                 <div class="Buscador">
                     <span>Buscar Prenda por Modelo</span>
-                    <form asp-controller="Gerente" asp-action="BuscarPrenda" method="get">
+                    <form asp-controller="Supervisor" asp-action="BuscarPrenda" method="get">
                         <input type="text" name="query" />
                         <button type="submit" class="btnBuscar">Buscar</button>
                     </form>
 
-                    <a style="text-decoration: none;" asp-area="" asp-controller="Gerente" asp-action="Index"
+                    <a style="text-decoration: none;" asp-area="" asp-controller="Supervisor" asp-action="Index"
                        class="btnExcel">Volver</a>
                 </div>
                 <br>
