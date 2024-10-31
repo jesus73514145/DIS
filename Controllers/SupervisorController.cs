@@ -531,6 +531,441 @@ namespace proyecto.Controllers
             }
         }
 
+        public async Task<ActionResult> IngresoPrenda()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegistrarPrenda(Prenda model)
+        {
+            // Convertir valores nulos a 0 antes de realizar cualquier cálculo
+
+            model.UserID = _userManager.GetUserId(User);
+            model.FechaRegistro = DateTime.Now.ToUniversalTime();
+            model.FechaActualizacion = null;
+
+
+            // Revisar si el ModelState es válido después de las validaciones personalizadas
+            if (ModelState.IsValid)
+            {
+
+                try
+                {
+                    _logger.LogInformation("Guardando el modelo en la base de datos.");
+                    _context.DataPrenda.Add(model);
+                    await _context.SaveChangesAsync();
+
+                    // Establecer un mensaje de éxito en TempData
+                    string successMessage = "success|Prenda registrado exitosamente.";
+                    TempData["MessageDeRespuesta"] = successMessage;
+
+                    // Registrar el mensaje en consola
+                    _logger.LogInformation(successMessage);
+
+                    // Redirigir a la vista "Index" del controlador "Gerente"
+                    return RedirectToAction("Index", "Gerente");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Ocurrió un error al registrar el material.");
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el material: " + ex.Message;
+                    return RedirectToAction("Index", "Gerente");
+                }
+            }
+
+            // Obtener todos los errores del ModelState y convertirlos en una cadena.
+            var errorMessages = ModelState.Values
+                                          .SelectMany(v => v.Errors)
+                                          .Select(e => e.ErrorMessage)
+                                          .ToList();
+            //TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+            // Si algo falla, devolver el modelo con los errores y los datos de vuelta a la vista
+            return View("IngresoPrenda", model);
+        }
+
+        public async Task<ActionResult> VerPrendasAnt(int? page)
+        {
+            var userId = _userManager.GetUserId(User); // sesión
+
+            if (userId == null)
+            {
+                // no se ha logueado
+                TempData["MessageDeRespuesta"] = "Por favor, debe iniciar sesión antes de continuar.";
+                Console.WriteLine("Usuario no logueado, redirigiendo a la página de inicio."); // Console log
+                return View("~/Views/Home/Index.cshtml");
+            }
+            else
+            {
+                int pageNumber = (page ?? 1); // Si no se especifica la página, asume la página 1
+                int pageSize = 6; // máximo 6 materiales por página
+
+                pageNumber = Math.Max(pageNumber, 1); // Asegura que pageNumber nunca sea menor que 1
+
+                try
+                {
+                    // Elimina el filtro Where para obtener todos los registros
+                    var prendas = _context.DataPrenda;
+
+                    // Aplicar paginación
+                    var listaPaginada = await prendas.ToPagedListAsync(pageNumber, pageSize);
+
+                    // Mensaje de éxito al cargar los materiales
+                    TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
+                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+
+                    return View("VerPrendasAnt", listaPaginada);
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error al obtener los materiales
+                    _logger.LogError(ex, "Ocurrió un error al cargar los materiales.");
+                    Console.WriteLine("Error al cargar los materiales: " + ex.Message); // Console log
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar los materiales: " + ex.Message;
+                    return View("VerPrendasAnt", null); // o redirigir a otra vista si lo prefieres
+                }
+            }
+        }
+
+        public async Task<IActionResult> BuscarPrenda(string query)
+        {
+            // Declara la variable materialPagedList una sola vez aquí
+            IPagedList<Prenda> prendaPagedList;
+
+            // Obtén el ID del usuario logueado
+            var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
+            {
+                // Si no hay sesión de usuario activa, muestra un mensaje y redirige
+                TempData["MessageDeRespuesta"] = "Por favor debe loguearse antes de realizar una búsqueda.";
+                return View("~/Views/Home/Index.cshtml");
+            }
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    // Si no hay búsqueda, obtener todos los materiales sin filtrar por usuario
+                    //var todosLosMateriales = await _context.DataMaterial.ToListAsync();
+                    //materialPagedList = todosLosMateriales.ToPagedList(1, todosLosMateriales.Count);
+
+                    // Si el query está vacío o solo contiene espacios, muestra un mensaje al usuario
+                    TempData["MessageDeRespuesta"] = "Por favor, ingresa un término de búsqueda.";
+                    prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1); // Lista vacía
+                }
+                else
+                {
+                    // Si hay una búsqueda, aplica el filtro solo en el campo Modelo
+                    query = query.ToUpper();
+                    var prendas = await _context.DataPrenda
+                        .Where(p => p.Modelo.ToUpper().Contains(query)) // Filtra solo por la búsqueda
+                        .ToListAsync();
+
+                    if (!prendas.Any())
+                    {
+                        TempData["MessageDeRespuesta"] = "error|No se encontraron prendas que coincidan con la búsqueda.";
+                        prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1);
+                    }
+                    else
+                    {
+                        TempData["MessageDeRespuesta"] = "success|Se encontraron prendas que coinciden con la búsqueda."; // Mensaje de éxito
+                        prendaPagedList = prendas.ToPagedList(1, prendas.Count);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al buscar la prenda. Por favor, inténtalo de nuevo más tarde.";
+                prendaPagedList = new PagedList<Prenda>(new List<Prenda>(), 1, 1);
+            }
+
+            // Retorna la vista con materialPagedList, que siempre tendrá un valor asignado.
+            return View("VerPrendasAnt", prendaPagedList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EliminarPrenda(int id)
+        {
+            var prenda = await _context.DataPrenda.FindAsync(id);
+
+            if (prenda != null)
+            {
+                _context.DataPrenda.Remove(prenda);
+                await _context.SaveChangesAsync();
+                TempData["MessageDeRespuesta"] = "success|La prenda ha sido eliminado correctamente.";
+                return RedirectToAction(nameof(VerPrendasAnt));
+            }
+            else
+            {
+                TempData["MessageDeRespuesta"] = "error|No se pudo eliminar la prenda, no fue encontrada.";
+                return RedirectToAction(nameof(VerPrendasAnt));
+            }
+        }
+
+        public async Task<IActionResult> ExportarUnaSolaPrendaEnPDF(int id)
+        {
+            try
+            {
+                var prenda = await _context.DataPrenda.FindAsync(id);
+                if (prenda == null)
+                {
+                    return NotFound($"La prenda con ID {id} no fue encontrado, por eso no se puede exportar en PDF.");
+                }
+
+                // Obtener información del usuario que agregó el material desde la base de datos.
+                var usuario = await _context.Users.FindAsync(prenda.UserID);
+                if (usuario == null)
+                {
+                    return NotFound($"El usuario con ID {prenda.UserID} no fue encontrado.");
+                }
+
+                var html = $@"
+        <html>
+            <head>
+                <meta charset='UTF-8'>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        margin: 20px;
+                        background-color: #f8f8f8;
+                    }}
+                    h1 {{
+                        color: #000000; /* Color celeste */
+                        text-align: center;
+                    }}
+                    h2 {{
+                        color: #333;
+                        text-align: left;
+                        margin-top: 40px;
+                    }}
+                    table {{
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin: 20px 0;
+                    }}
+                    th, td {{
+                        border: 1px solid #ddd;
+                        padding: 12px;
+                        text-align: left;
+                    }}
+                    th {{
+                        background-color: #000000; /* Color celeste */
+                        color: white;
+                        font-weight: bold;
+                    }}
+                    tr:nth-child(even) {{
+                        background-color: #f9f9f9; /* Color de fila alternada */
+                    }}
+                    tr:hover {{
+                        background-color: #e0f7fa; /* Color de fila al pasar el ratón */
+                    }}
+                    img.logo {{
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        border-radius: 50%;
+                        height: 50px;
+                        width: 50px;
+                    }}
+                </style>
+            </head>
+            <body>
+                <img src='https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02' alt='Logo' class='logo'/>
+                <h1>Reporte de Material {id}</h1>
+
+                <h2>Información del Material</h2>
+                <table>
+                    <tr>
+                        <th colspan='2' style='background-color: #dcdcdc; font-weight: bold;'>Nombre del Modelo</th>
+                    </tr>
+                    <tr>
+                        <td>{prenda.Modelo}</td>
+                    </tr>
+                    <tr>
+                        <th colspan='2' style='background-color: #dcdcdc; font-weight: bold;'>Cliente</th>
+                    </tr>
+                    <tr>
+                        <td>{prenda.Cliente}</td>
+                    </tr>
+                    <tr>
+                        <th colspan='2' style='background-color: #dcdcdc; font-weight: bold;'>Información de Prenda</th>
+                    </tr>
+                    <tr>
+                        <td>Precio Unitario: {prenda.PrecioUnitario}</td>
+                    </tr>
+                    <tr>
+                        <td>Cantidad: {prenda.Cantidad}</td>
+                    </tr>
+                    <tr>
+                        <td>Cantidad: {prenda.CostoTotal}</td>
+                    </tr>
+                </table>
+
+                <h2>Información del Usuario que Agregó el Material</h2>
+                <table>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Email</th>
+                        <th>Numero de Documento</th>
+                        <th>Celular</th>
+                        <th>Fecha de Registro</th>  
+                    </tr>
+                    <tr>
+                        <td>{usuario.Nombres} {usuario.ApellidoPat} {usuario.ApellidoMat}</td>
+                        <td>{usuario.Email}</td>
+                        <td>{usuario.NumeroDocumento}</td>
+                        <td>{usuario.Celular}</td>
+                        <td>{usuario.fechaDeRegistro:dd/MM/yyyy}</td>
+                    </tr>
+                </table>
+            </body>
+        </html>";
+
+                var globalSettings = new GlobalSettings
+                {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                };
+                var objectSettings = new ObjectSettings
+                {
+                    HtmlContent = html
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                var file = _converter.Convert(pdf);
+                return File(file, "application/pdf", $"Prenda_{id}.pdf");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al exportar la prenda {id} a PDF");
+                return StatusCode(500, $"Ocurrió un error al exportar la prenda {id} a PDF. Por favor, inténtelo de nuevo más tarde.");
+            }
+        }
+
+
+        public async Task<IActionResult> ExportarUnaSolaPrendaEnExcel(int id)
+        {
+            try
+            {
+                var prenda = await _context.DataPrenda.FindAsync(id);
+                if (prenda == null)
+                {
+                    return NotFound($"La prenda con ID {id} no fue encontrada, por eso no se puede exportar en Excel.");
+                }
+
+                // Obtener información del usuario que agregó la prenda desde la base de datos.
+                var usuario = await _context.Users.FindAsync(prenda.UserID);
+                if (usuario == null)
+                {
+                    return NotFound($"El usuario con ID {prenda.UserID} no fue encontrado.");
+                }
+
+                using var package = new ExcelPackage();
+                var worksheet = package.Workbook.Worksheets.Add($"Prenda_{id}");
+
+                // Título
+                worksheet.Cells[1, 1].Value = $"Reporte de la Prenda {id}";
+                worksheet.Cells[1, 1].Style.Font.Size = 20;
+                worksheet.Cells[1, 1].Style.Font.Bold = true;
+                worksheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 1, 1, 3].Merge = true; // Fusionar celdas para el título
+
+                // Descargar la imagen del logo
+                using var client = new HttpClient();
+                var logoBytes = await client.GetByteArrayAsync("https://firebasestorage.googleapis.com/v0/b/proyecto20112023-6e784.appspot.com/o/Fotos_Perfil%2FALZEN_logo.png?alt=media&token=93d06622-a34b-4fdf-96ca-6a8e95839c02");
+
+                // Agregar la imagen al archivo Excel
+                var image = worksheet.Drawings.AddPicture("Logo", new MemoryStream(logoBytes));
+                image.SetPosition(0, 15, 3, 0); // Coloca el logo en la fila 1, columna E
+                image.SetSize(100, 100);  // Establece el tamaño de la imagen
+
+                // Espacio para el título
+                worksheet.Cells[3, 1].Value = "Detalles de la Prenda:";
+                worksheet.Cells[3, 1].Style.Font.Bold = true;
+                worksheet.Cells[3, 1].Style.Font.Size = 16;
+
+                // Llenar datos en filas
+                int filaDatos = 5; // Número de fila donde comienzas a llenar los datos
+                worksheet.Cells[filaDatos, 1].Value = "Código de la Prenda:";
+                worksheet.Cells[filaDatos, 2].Value = prenda.Id;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Modelo:";
+                worksheet.Cells[filaDatos, 2].Value = prenda.Modelo;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Cliente:";
+                worksheet.Cells[filaDatos, 2].Value = prenda.Cliente;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Precio Unitario:";
+                worksheet.Cells[filaDatos, 2].Value = prenda.PrecioUnitario.ToString();
+
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Cantidad:";
+                worksheet.Cells[filaDatos, 2].Value = prenda.Cantidad.ToString();
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Costo Total:";
+                worksheet.Cells[filaDatos, 2].Value = prenda.CostoTotal.ToString();
+
+                // Sección de información del usuario
+                filaDatos += 2; // Espacio entre secciones
+                worksheet.Cells[filaDatos, 1].Value = "Información del Usuario:";
+                worksheet.Cells[filaDatos, 1].Style.Font.Bold = true;
+                worksheet.Cells[filaDatos, 1].Style.Font.Size = 16;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Nombre Completo Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = $"{usuario.Nombres} {usuario.ApellidoPat} {usuario.ApellidoMat}";
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Email Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.Email;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Número de Documento Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.NumeroDocumento;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Celular Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.Celular;
+
+                filaDatos++;
+                worksheet.Cells[filaDatos, 1].Value = "Fecha de Registro Usuario:";
+                worksheet.Cells[filaDatos, 2].Value = usuario.fechaDeRegistro.HasValue ? usuario.fechaDeRegistro.Value.ToString("dd/MM/yyyy") : "N/A";
+
+                // Estilo de las celdas
+                for (int i = 5; i <= filaDatos; i++)
+                {
+                    worksheet.Cells[i, 1].Style.Font.Bold = true;
+                    worksheet.Cells[i, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[i, 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Ajustar ancho de las columnas
+                worksheet.Cells.AutoFitColumns();
+
+                var stream = new MemoryStream();
+                package.SaveAs(stream);
+
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Prenda_{id}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                // Loguear el error para obtener más detalles
+                _logger.LogError(ex, $"Error al exportar la prenda {id} a Excel");
+                // Retornar un mensaje de error al usuario
+                return StatusCode(500, $"Ocurrió un error al exportar la prenda {id} a Excel. Por favor, inténtelo de nuevo más tarde.");
+            }
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
