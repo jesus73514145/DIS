@@ -1,0 +1,492 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Fluent;
+
+@model IPagedList<Prenda>
+
+    @{
+    ViewData["Title"] = "MATERIALES ADQUIRIDOS";
+    }
+
+@{
+    @*ApplicationUser myidentity = null;
+IList<string> roles = new List<string>();
+
+if (User.Identity.IsAuthenticated)
+{
+myidentity = await UserManager.GetUserAsync(User);
+if (myidentity != null)
+{
+roles = await UserManager.GetRolesAsync(myidentity);
+}
+}*@
+    ApplicationUser myidentity = null;
+    string rolId = null;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        myidentity = await UserManager.GetUserAsync(User);
+        if (myidentity != null)
+        {
+            rolId = myidentity.RolId; // Obtiene el RolId directamente del usuario
+        }
+    }
+}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <link rel="stylesheet" href="~/css/boton.css" />
+    <link rel="stylesheet" href="~/css/verMatAdq.css" />
+
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+        :root {
+            --my-blue: #000000;
+            --light-my-blue: #6FA6FF;
+            /* Aquí defines el tono más claro */
+            --celeste: #40E0D0;
+            --light-celeste: hsl(177, 72%, 70%);
+            --amarillo: #f9d806;
+            --light-amarillo: #ffee80;
+            --rojo: #FF0000;
+            --light-rojo: #FFAFAF;
+            --verde: #369681;
+            --light-verde: #00B050;
+            --black: #130f40;
+            --light-color: #666;
+            --border: .1rem solid rgba(0, 0, 0, .1);
+            --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+        }
+
+        section {
+            padding: 2rem 6%;
+        }
+
+        /* esto es para los productos */
+
+        .heading {
+            text-align: center;
+            padding-bottom: 2rem;
+            font-size: 4.5rem;
+            color: var(--black);
+        }
+
+            .heading span {
+                position: relative;
+                z-index: 0;
+            }
+
+
+
+        /* estilos para la tabla productos */
+        body {
+            background: #eee;
+        }
+
+        .table-product-form-container {
+            align-items: center;
+            justify-content: center;
+        }
+
+            .table-product-form-container table {
+                background-color: white;
+                text-align: center;
+                border-collapse: collapse;
+            }
+
+            .table-product-form-container th,
+            td {
+                padding: 10px;
+                /* Aumenta el espaciado para mejorar la legibilidad */
+                border: 1px solid #ddd;
+                /* Agrega un borde en todas las celdas */
+                font-size: 1.5rem;
+            }
+
+            .table-product-form-container thead {
+                background-color: #000000;
+                /*#246355*/
+                border-bottom: solid 5px var(--light-celeste);
+                color: white;
+            }
+
+        .table {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .table-product-form-container tr:nth-child(even) {
+            background-color: #ddd;
+        }
+
+        .table-product-form-container tr:hover {
+            background-color: var(--my-blue);
+            color: white;
+        }
+
+            .table-product-form-container tr:hover td a {
+                color: white;
+            }
+
+        /* los buscadores */
+        .listar_product .table-product-form-container .Buscador {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--my-blue);
+            border-radius: 0.5rem;
+            box-shadow: var(--box-shadow);
+            padding: 10px;
+            /* Agregar margen superior para separar del encabezado */
+        }
+
+            .listar_product .table-product-form-container .Buscador span {
+                font-weight: bold;
+                margin: 10px;
+                font-size: 16px;
+                color: #ffffff;
+                border: none;
+            }
+
+            .listar_product .table-product-form-container .Buscador .btnBuscar {
+                display: inline-block;
+                margin-top: 1rem;
+                border-radius: .5rem;
+                background: var(--light-celeste);
+                color: var(--black);
+                font-weight: 500;
+                font-size: 1.7rem;
+                cursor: pointer;
+                padding: .5rem 1.5rem;
+            }
+
+                .listar_product .table-product-form-container .Buscador .btnBuscar:hover {
+                    background: var(--celeste);
+                }
+
+            .listar_product .table-product-form-container .Buscador .btnAgregar {
+                display: inline-block;
+                margin-top: 1rem;
+                border-radius: .5rem;
+                background: var(--light-amarillo);
+                color: var(--black);
+                font-weight: 500;
+                font-size: 1.7rem;
+                cursor: pointer;
+                padding: .5rem 1.5rem;
+            }
+
+                .listar_product .table-product-form-container .Buscador .btnAgregar:hover {
+                    background: var(--amarillo);
+                }
+
+
+            .listar_product .table-product-form-container .Buscador .btnPDF {
+                display: inline-block;
+                margin-top: 1rem;
+                border-radius: .5rem;
+                background: var(--light-rojo);
+                color: var(--black);
+                font-weight: 500;
+                font-size: 1.7rem;
+                cursor: pointer;
+                padding: .5rem 1.5rem;
+            }
+
+                .listar_product .table-product-form-container .Buscador .btnPDF:hover {
+                    background: var(--rojo);
+                }
+
+            .listar_product .table-product-form-container .Buscador .btnExcel {
+                display: inline-block;
+                margin-top: 1rem;
+                border-radius: .5rem;
+                background: var(--light-verde);
+                color: var(--black);
+                font-weight: 500;
+                font-size: 1.7rem;
+                cursor: pointer;
+                padding: .5rem 1.5rem;
+            }
+
+                .listar_product .table-product-form-container .Buscador .btnExcel:hover {
+                    background: var(--verde);
+                }
+
+            .listar_product .table-product-form-container .Buscador input[type="text"] {
+                flex: 0.5;
+                padding: 8px;
+                border: none;
+                border-radius: 0.5rem;
+                margin-right: 10px;
+                font-weight: 500;
+                font-size: 1.7rem;
+            }
+
+
+        /* Personalización de la Paginación */
+        .pagination-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination {
+            display: inline-block;
+        }
+
+            .pagination li {
+                display: inline;
+            }
+
+                .pagination li a,
+                .pagination li span {
+                    color: black;
+                    float: left;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    border: 1px solid #ddd;
+                    font-size: 18px;
+                    /* Ajusta el tamaño de la fuente aquí */
+                }
+
+                .pagination li.active a,
+                .pagination li.active span {
+                    background-color: #4CAF50;
+                    color: white;
+                    border: 1px solid #4CAF50;
+                }
+
+                .pagination li a:hover:not(.active) {
+                    background-color: #ddd;
+                }
+
+                .pagination li.disabled a,
+                .pagination li.disabled span {
+                    color: #ccc;
+                    cursor: not-allowed;
+                }
+
+        /* estilo para el boton editar y eliminar */
+
+        .btnEditar {
+            display: inline-block;
+            margin-top: 1rem;
+            border-radius: .5rem;
+            background: var(--light-verde);
+            color: var(--black);
+            font-size: 1.7rem;
+            cursor: pointer;
+            padding: .2rem 1rem;
+        }
+
+            .btnEditar:hover {
+                background: var(--verde);
+            }
+
+        .btnEliminar {
+            display: inline-block;
+            margin-top: 1rem;
+            border-radius: .5rem;
+            background: var(--light-rojo);
+            color: var(--black);
+            font-size: 1.7rem;
+            cursor: pointer;
+            padding: .2rem 1rem;
+        }
+
+            .btnEliminar:hover {
+                background: var(--rojo);
+                color: white;
+            }
+
+        /* hasta aqui */
+    </style>
+
+
+    <body>
+        <!---------------------------- listar producto stars  ---------------------------->
+        <section class="listar_product" id="listar_product">
+            <div class="table-product-form-container">
+
+
+                <h1 class="heading">
+                    <a href="@Url.Action("VerMatAdq", "Gerente")" style="text-decoration: none; color: inherit;">
+                        <span>PRENDAS ANTERIORES</span>
+                    </a>
+                </h1>
+
+                <div class="Buscador">
+                    <span>Buscar Prenda por Modelo</span>
+                    <form asp-controller="Gerente" asp-action="BuscarPrenda" method="get">
+                        <input type="text" name="query" />
+                        <button type="submit" class="btnBuscar">Buscar</button>
+                    </form>
+
+                    <a style="text-decoration: none;" asp-area="" asp-controller="Gerente" asp-action="Index"
+                       class="btnExcel">Volver</a>
+                </div>
+                <br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Modelo</th>
+                            <th>Cliente</th>
+                            <th>Precio Unitario</th>
+                            <th>Cantidad</th>
+                            <th>Costo Total</th>
+                            <th>Acciones de exportar</th>
+                            @if (rolId == "2") // Si el RolId es "Gerente"
+                            {
+                            <th>Eliminar</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var prenda in Model)
+                    {
+                        <tr>
+                            <td>@prenda.Modelo</td>
+                            <td>@prenda.Cliente</td>
+                            <td>S/. @prenda.PrecioUnitario</td>
+                            <td>@prenda.Cantidad</td>
+                            <td>@prenda.CostoTotal</td>
+
+                            <td>
+
+                                <span class="showModalExportar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1z" />
+                                        <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708z" />
+                                    </svg>
+                                </span>
+                                <dialog class="modalExportar dialog-container">
+                                    <span class="closeModalExportar">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                                        </svg>
+                                    </span>
+
+                                    <h3>Exportar</h3>
+                                    <p>A continuación se mostrará la estructura de la información exportada</p>
+
+                                    <table>
+                                        <tr class="exportTableTitle">
+                                            <th colspan="2">Modelo</th>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Nombre del Modelo</td>
+                                        </tr>
+
+                                        <tr class="exportTableTitle">
+                                            <th colspan="2">Cliente</th>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Nombre de la Empresa</td>
+                                        </tr>
+
+                                        <tr class="exportTableTitle">
+                                            <th colspan="2">Información de Prenda</th>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Precio Unitario de la Prenda</td>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Cantidad de Prendas Realizadas</td>
+                                        </tr>
+                                        <tr class="exportTableContent">
+                                            <td>Costo Total del Pedido</td>
+                                        </tr>
+                                    </table>
+                                    <div class="button-container">
+                                        <a asp-controller="Gerente" asp-action="ExportarUnaSolaPrendaEnExcel"
+                                           asp-route-id="@prenda.Id" class="excel-btn">Excel</a>
+                                        <a asp-controller="Gerente" asp-action="ExportarUnaSolaPrendaEnPDF"
+                                           asp-route-id="@prenda.Id" class="pdf-btn">PDF</a>
+                                    </div>
+                                </dialog>
+                            </td>
+                            @if (rolId == "2") // Si el RolId es "Gerente"
+                            {
+                            <td>
+                                <!-- Botón de Eliminar -->
+                                <form asp-controller="Gerente" asp-action="EliminarPrenda" asp-route-id="@prenda.Id"
+                                      method="post"
+                                      onsubmit="return confirm('¿Está seguro de que desea eliminar esta prenda?')"
+                                      class="d-inline-block">
+                                    <button type="submit" class="btnEliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            }
+
+
+
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <br><br>
+                <div class="pagination-container">
+                    <ul class="pagination">
+                        <li class="page-item @(Model.IsFirstPage ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("VerMatAdq", new { page = 1 })">Primera</a>
+                        </li>
+                        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                            <a class="page-link"
+                               href="@Url.Action("VerMatAdq", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                        </li>
+                        @for (var pageNumber = 1; pageNumber <= Model.PageCount; pageNumber++)
+                    {
+                        <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("VerMatAdq", new { page = pageNumber })">@pageNumber</a>
+                        </li>
+                    }
+                        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                            <a class="page-link"
+                               href="@Url.Action("VerMatAdq", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                        </li>
+                        <li class="page-item @(Model.IsLastPage ? "disabled" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("VerMatAdq", new { page = Model.PageCount })">&Uacute;ltima</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            @if (TempData["MessageDeRespuesta"] != null)
+        {
+            var mensaje = TempData["MessageDeRespuesta"].ToString();
+            var partesMensaje = mensaje.Split('|');
+
+            // Verificar que el mensaje contiene al menos dos partes
+            if (partesMensaje.Length == 2)
+            {
+                var tipoMensaje = partesMensaje[0]; // "success" o "error"
+                var textoMensaje = partesMensaje[1]; // El texto del mensaje
+
+                var claseAlerta = tipoMensaje == "success" ? "alert-success" : "alert-danger";
+
+            <div class="alert @claseAlerta" id="MensajesVerdeRojo">
+                @textoMensaje
+            </div>
+            }
+            else
+            {
+                // Si no hay dos partes, mostrar el mensaje directamente
+            <div class="alert alert-warning" id="MensajesVerdeRojo">
+                @mensaje
+            </div>
+            }
+        }
+        </section>
+        <!---------------------------- listar producto ends  ---------------------------->
+        <!---------------------------- javascript  stars  ---------------------------->
+        <script src="https://kit.fontawesome.com/c37024d023.js" crossorigin="anonymous"></script>
+        <script src="~/js/verMatAdq.js"></script>
+        <!---------------------------- javascript  ends  ---------------------------->
+
+    </body>

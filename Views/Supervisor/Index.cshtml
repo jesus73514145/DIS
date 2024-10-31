@@ -56,14 +56,21 @@ roles = await UserManager.GetRolesAsync(myidentity);
                 <p class="codigo">COD. DE USUARIO: @user.NumeroDocumento</p>
                 <div class="boton-container">
                     <a href="javascript:void(0);" class="boton" id="btnOpenModal3" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal3"
-                        style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">INGRESO
-                        DE MATERIALES</a>
+                       data-bs-target="#exampleModal3"
+                       style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">
+                        INGRESO DE MATERIALES
+                    </a>
+                    <a href="javascript:void(0);" class="boton" id="btnOpenModal5" data-bs-toggle="modal"
+                       data-bs-target="#exampleModal5"
+                       style="background-color: #BCCDE2; height: 15vh; display: flex; justify-content: center; align-items: center; font-weight: bold;font-size: x-large;">
+                        SALIDA DE PRENDAS
+                    </a>
                 </div>
 
 
                 <!-- Aquí incluyes la vista parcial del modal -->
                 @await Html.PartialAsync("_IngMatSup")
+                @await Html.PartialAsync("_SalidaPrendasModalSup")
 
             }
         }
