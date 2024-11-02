@@ -16,16 +16,16 @@ dotnet ef migrations add CosteoMigration
 
 # DIS BASE DE DATOS
 
-PGPASSWORD=s9bPbPdxZUHnJ9v6zxr9sPR4YRicKpK8 psql -h dpg-cs3inhjv2p9s73egbf60-a.oregon-postgres.render.com -U alzen_db_user alzen_db
+PGPASSWORD=kyxGwnH3jOlnDTzuHCdznsfTncW9XKwo psql -h dpg-csj4ddjtq21c73d8u6m0-a.oregon-postgres.render.com -U alzen_user alzen_db_awjf
 
 
-HOST: dpg-cs3inhjv2p9s73egbf60-a.oregon-postgres.render.com
+HOST: dpg-csj4ddjtq21c73d8u6m0-a.oregon-postgres.render.com
 
-USERNAME:  alzen_db_user
+USERNAME:  alzen_user
 
-PASSWORD:  s9bPbPdxZUHnJ9v6zxr9sPR4YRicKpK8
+PASSWORD:  kyxGwnH3jOlnDTzuHCdznsfTncW9XKwo
 
-DATABASE:  alzen_db
+DATABASE:  alzen_db_awjf
 
 
 Esta base de datos fue creada el 09/10/2024 asi que puede que se venza el proximo mes que es 07/11/2024, asi que hay que guardar la info con tiempo para luego pasar la data copiando y pegando.

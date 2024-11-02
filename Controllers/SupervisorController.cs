@@ -568,8 +568,8 @@ namespace proyecto.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Ocurrió un error al registrar el material.");
-                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el material: " + ex.Message;
+                    _logger.LogError(ex, "Ocurrió un error al registrar la prenda.");
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar la prenda: " + ex.Message;
                     return RedirectToAction("Index", "Gerente");
                 }
             }
@@ -612,16 +612,16 @@ namespace proyecto.Controllers
 
                     // Mensaje de éxito al cargar los materiales
                     //TempData["MessageDeRespuesta"] = "success|Materiales cargados con éxito.";
-                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+                    Console.WriteLine("Prendas cargadas con éxito."); // Console log
 
                     return View("VerPrendasAnt", listaPaginada);
                 }
                 catch (Exception ex)
                 {
                     // En caso de error al obtener los materiales
-                    _logger.LogError(ex, "Ocurrió un error al cargar los materiales.");
-                    Console.WriteLine("Error al cargar los materiales: " + ex.Message); // Console log
-                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar los materiales: " + ex.Message;
+                    _logger.LogError(ex, "Ocurrió un error al cargar las prendas.");
+                    Console.WriteLine("Error al cargar los prendas: " + ex.Message); // Console log
+                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar las prendas: " + ex.Message;
                     return View("VerPrendasAnt", null); // o redirigir a otra vista si lo prefieres
                 }
             }

@@ -1237,16 +1237,16 @@ namespace proyecto.Controllers
                     var listaPaginada = await prendas.ToPagedListAsync(pageNumber, pageSize);
 
                     // Mensaje de éxito al cargar los materiales
-                    TempData["MessageDeRespuesta"] = "success|Prendas cargados con éxito.";
-                    Console.WriteLine("Materiales cargados con éxito."); // Console log
+                    //TempData["MessageDeRespuesta"] = "success|Prendas cargados con éxito.";
+                    Console.WriteLine("Prendas cargadas con éxito."); // Console log
 
                     return View("VerPrendasAnt", listaPaginada);
                 }
                 catch (Exception ex)
                 {
                     // En caso de error al obtener los materiales
-                    _logger.LogError(ex, "Ocurrió un error al cargar los materiales.");
-                    Console.WriteLine("Error al cargar los materiales: " + ex.Message); // Console log
+                    _logger.LogError(ex, "Ocurrió un error al cargar las prendas.");
+                    Console.WriteLine("Error al cargar los prendas: " + ex.Message); // Console log
                     TempData["MessageDeRespuesta"] = "error|Ocurrió un error al cargar las prendas: " + ex.Message;
                     return View("VerPrendasAnt", null); // o redirigir a otra vista si lo prefieres
                 }
