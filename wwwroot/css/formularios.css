@@ -208,3 +208,8 @@
 #line {
     margin: 1.75rem 0;
 }
+
+.select {
+    height: 30px;
+    font-size: 15px;
+}

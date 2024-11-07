@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using proyecto.Data;
@@ -11,9 +12,11 @@ using proyecto.Data;
 namespace proyecto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241107081246_NombreDeLaMigracion")]
+    partial class NombreDeLaMigracion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +242,6 @@ namespace proyecto.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<int?>("SedeId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("TipoDocumento")
                         .IsRequired()
                         .HasColumnType("text");
@@ -268,8 +268,6 @@ namespace proyecto.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
-
-                    b.HasIndex("SedeId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -545,20 +543,6 @@ namespace proyecto.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("proyecto.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("proyecto.Models.Sedes", "Sede")
-                        .WithMany("Usuarios")
-                        .HasForeignKey("SedeId");
-
-                    b.Navigation("Sede");
-                });
-
-            modelBuilder.Entity("proyecto.Models.Sedes", b =>
-                {
-                    b.Navigation("Usuarios");
                 });
 #pragma warning restore 612, 618
         }

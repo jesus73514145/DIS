@@ -10,10 +10,8 @@ using Microsoft.AspNetCore.Mvc.Rendering; // Añadir esta línea
 namespace proyecto.Models
 {
     public class UserRegistrationViewModel
-    
     {
         public string? Id { get; set; }
-
 
         [Required(ErrorMessage = "El campo de correo electrónico es obligatorio.")]
         [EmailAddress(ErrorMessage = "El formato del correo electrónico es inválido.")]
@@ -64,6 +62,12 @@ namespace proyecto.Models
         [Required]
         public bool Activo { get; set; }
 
+        // Nueva propiedad para la Sede
+        [Required(ErrorMessage = "La Sede es obligatoria.")]
+        [Display(Name = "Sede")]
+        public int SedeId { get; set; } // Puede ser de tipo int si el ID de la sede es entero
 
+        public List<SelectListItem>? Sedes { get; set; }
     }
+
 }

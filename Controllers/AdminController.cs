@@ -171,7 +171,7 @@ namespace proyecto.Controllers
                 Celular = usuario.Celular
                 //Password = usuario.PasswordHash, // Nota: Considera no exponer la contraseña
                 //ConfirmPassword = usuario.PasswordHash // Nota: Considera no exponer la contraseña
-                                                       // Agrega otras propiedades según sea necesario
+                // Agrega otras propiedades según sea necesario
             };
 
             return View("EditarUsuario", usuarioEditar); // Pasa el ViewModel a la vista
@@ -180,11 +180,135 @@ namespace proyecto.Controllers
 
 
 
-      /*  [HttpPost]
+        /*  [HttpPost]
+          public async Task<IActionResult> GuardarUsuarioEditado(UserEditViewModel usuarioDTO)
+          {
+              _logger.LogInformation("Iniciando la edición del usuario con ID: {UserId}", usuarioDTO.Id);
+
+
+              // Verificar si el modelo es válido
+              if (!ModelState.IsValid)
+              {
+                  // Registrar los errores del modelo
+                  _logger.LogWarning("Modelo no es válido.");
+                  foreach (var error in ModelState)
+                  {
+                      if (error.Value.Errors.Count > 0)
+                      {
+                          _logger.LogWarning("Error en el campo {Field}: {ErrorMessage}", error.Key, error.Value.Errors.First().ErrorMessage);
+                      }
+                  }
+                  TempData["MessageDeRespuesta"] = "error|Hay errores en el formulario. Por favor, corrígelos."; // Mensaje de error
+                  return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
+              }
+              // Buscar el usuario en la base de datos
+              ApplicationUser? user = await _context.Users.FindAsync(usuarioDTO.Id);
+
+              if (user == null)
+              {
+                  _logger.LogWarning("El usuario con ID {UserId} no fue encontrado.", usuarioDTO.Id);
+                  TempData["MessageDeRespuesta"] = "error|El usuario no fue encontrado."; // Mensaje de error
+                  ModelState.AddModelError(string.Empty, "El usuario no fue encontrado.");
+                  return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
+              }
+
+              // Validar unicidad del número de documento
+              var existingUserByDoc = await _context.Users
+                  .FirstOrDefaultAsync(u => u.NumeroDocumento == usuarioDTO.NumeroDocumento && u.Id != usuarioDTO.Id);
+
+              if (existingUserByDoc != null)
+              {
+                  ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
+                  _logger.LogWarning("Número de documento ya está en uso.");
+                  TempData["MessageDeRespuesta"] = "El número de documento ya está en uso."; // Mensaje de error
+                  return View("EditarUsuario", usuarioDTO);
+              }
+
+              // Validar unicidad del correo electrónico
+              var existingUserByEmail = await _userManager.FindByEmailAsync(usuarioDTO.Email);
+
+              if (existingUserByEmail != null && existingUserByEmail.Id != usuarioDTO.Id)
+              {
+                  ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
+                  _logger.LogWarning("Correo electrónico ya está en uso.");
+                  TempData["MessageDeRespuesta"] = "El correo electrónico ya está en uso."; // Mensaje de error
+                  return View("EditarUsuario", usuarioDTO);
+              }
+
+              // Actualizar los datos del usuario
+              user.Nombres = usuarioDTO.Nombres;
+              user.ApellidoPat = usuarioDTO.ApellidoPat;
+              user.ApellidoMat = usuarioDTO.ApellidoMat;
+              user.TipoDocumento = usuarioDTO.TipoDocumento;
+              user.NumeroDocumento = usuarioDTO.NumeroDocumento;
+              user.Email = usuarioDTO.Email; // Asegúrate de actualizar el email
+              user.Celular = usuarioDTO.Celular;
+              user.Genero = usuarioDTO.Genero;
+              user.fechaDeActualizacion = DateTime.Now.ToUniversalTime();
+              user.Activo = true;
+
+              // Verificar si se debe actualizar la contraseña
+              if (!string.IsNullOrEmpty(usuarioDTO.Password) || !string.IsNullOrEmpty(usuarioDTO.ConfirmPassword))
+              {
+                  if (usuarioDTO.Password != usuarioDTO.ConfirmPassword)
+                  {
+                      ModelState.AddModelError(string.Empty, "Las contraseñas no coinciden.");
+                      _logger.LogWarning("Las contraseñas no coinciden.");
+                      TempData["MessageDeRespuesta"] = "error|Las contraseñas no coinciden."; // Mensaje de error
+                      return View("EditarUsuario", usuarioDTO);
+                  }
+
+                  // Validar la complejidad de la contraseña (por ejemplo, longitud mínima)
+                  if (usuarioDTO.Password.Length < 6) // Cambia esto según tus requisitos de complejidad
+                  {
+                      ModelState.AddModelError(string.Empty, "La contraseña debe tener al menos 6 caracteres.");
+                      _logger.LogWarning("La contraseña no cumple con los requisitos de complejidad.");
+                      TempData["MessageDeRespuesta"] = "error|La contraseña debe tener al menos 6 caracteres."; // Mensaje de error
+                      return View("EditarUsuario", usuarioDTO);
+                  }
+
+                  // Establecer la nueva contraseña
+                  var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                  var result = await _userManager.ResetPasswordAsync(user, token, usuarioDTO.Password);
+
+                  if (!result.Succeeded)
+                  {
+                      foreach (var error in result.Errors)
+                      {
+                          ModelState.AddModelError(string.Empty, error.Description);
+                      }
+                      TempData["MessageDeRespuesta"] = "error|Ocurrió un error al restablecer la contraseña."; // Mensaje de error
+                      return View("EditarUsuario", usuarioDTO);
+                  }
+              }
+
+              try
+              {
+                  // Actualizar el usuario en el contexto
+                  _context.Users.Update(user);
+                  await _context.SaveChangesAsync(); // Guardar cambios de manera asíncrona
+
+                  _logger.LogInformation("Usuario con ID {UserId} editado exitosamente.", usuarioDTO.Id);
+                  TempData["MessageActualizandoUsuario"] = "success|Se actualizaron exitosamente los datos."; // Mensaje de éxito
+                  return RedirectToAction("EditarUsuario", new { id = usuarioDTO.Id });
+              }
+              catch (Exception ex)
+              {
+                  // Manejar errores de base de datos
+                  _logger.LogError("Error al guardar los cambios para el usuario con ID {UserId}: {ErrorMessage}", usuarioDTO.Id, ex.Message);
+                  ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los cambios: " + ex.Message);
+                  TempData["MessageDeRespuesta"] = "error|Ocurrió un error al guardar los cambios: " + ex.Message; // Mensaje de error
+              }
+
+              // Si hay errores de validación, vuelve a cargar la vista con el modelo
+              return View("EditarUsuario", usuarioDTO);
+          }*/
+
+        [HttpPost]
         public async Task<IActionResult> GuardarUsuarioEditado(UserEditViewModel usuarioDTO)
         {
             _logger.LogInformation("Iniciando la edición del usuario con ID: {UserId}", usuarioDTO.Id);
-            
+
 
             // Verificar si el modelo es válido
             if (!ModelState.IsValid)
@@ -247,131 +371,7 @@ namespace proyecto.Controllers
             user.fechaDeActualizacion = DateTime.Now.ToUniversalTime();
             user.Activo = true;
 
-            // Verificar si se debe actualizar la contraseña
-            if (!string.IsNullOrEmpty(usuarioDTO.Password) || !string.IsNullOrEmpty(usuarioDTO.ConfirmPassword))
-            {
-                if (usuarioDTO.Password != usuarioDTO.ConfirmPassword)
-                {
-                    ModelState.AddModelError(string.Empty, "Las contraseñas no coinciden.");
-                    _logger.LogWarning("Las contraseñas no coinciden.");
-                    TempData["MessageDeRespuesta"] = "error|Las contraseñas no coinciden."; // Mensaje de error
-                    return View("EditarUsuario", usuarioDTO);
-                }
 
-                // Validar la complejidad de la contraseña (por ejemplo, longitud mínima)
-                if (usuarioDTO.Password.Length < 6) // Cambia esto según tus requisitos de complejidad
-                {
-                    ModelState.AddModelError(string.Empty, "La contraseña debe tener al menos 6 caracteres.");
-                    _logger.LogWarning("La contraseña no cumple con los requisitos de complejidad.");
-                    TempData["MessageDeRespuesta"] = "error|La contraseña debe tener al menos 6 caracteres."; // Mensaje de error
-                    return View("EditarUsuario", usuarioDTO);
-                }
-
-                // Establecer la nueva contraseña
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, token, usuarioDTO.Password);
-
-                if (!result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    TempData["MessageDeRespuesta"] = "error|Ocurrió un error al restablecer la contraseña."; // Mensaje de error
-                    return View("EditarUsuario", usuarioDTO);
-                }
-            }
-
-            try
-            {
-                // Actualizar el usuario en el contexto
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync(); // Guardar cambios de manera asíncrona
-
-                _logger.LogInformation("Usuario con ID {UserId} editado exitosamente.", usuarioDTO.Id);
-                TempData["MessageActualizandoUsuario"] = "success|Se actualizaron exitosamente los datos."; // Mensaje de éxito
-                return RedirectToAction("EditarUsuario", new { id = usuarioDTO.Id });
-            }
-            catch (Exception ex)
-            {
-                // Manejar errores de base de datos
-                _logger.LogError("Error al guardar los cambios para el usuario con ID {UserId}: {ErrorMessage}", usuarioDTO.Id, ex.Message);
-                ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los cambios: " + ex.Message);
-                TempData["MessageDeRespuesta"] = "error|Ocurrió un error al guardar los cambios: " + ex.Message; // Mensaje de error
-            }
-
-            // Si hay errores de validación, vuelve a cargar la vista con el modelo
-            return View("EditarUsuario", usuarioDTO);
-        }*/
-
-         [HttpPost]
-        public async Task<IActionResult> GuardarUsuarioEditado(UserEditViewModel usuarioDTO)
-        {
-            _logger.LogInformation("Iniciando la edición del usuario con ID: {UserId}", usuarioDTO.Id);
-            
-
-            // Verificar si el modelo es válido
-            if (!ModelState.IsValid)
-            {
-                // Registrar los errores del modelo
-                _logger.LogWarning("Modelo no es válido.");
-                foreach (var error in ModelState)
-                {
-                    if (error.Value.Errors.Count > 0)
-                    {
-                        _logger.LogWarning("Error en el campo {Field}: {ErrorMessage}", error.Key, error.Value.Errors.First().ErrorMessage);
-                    }
-                }
-                TempData["MessageDeRespuesta"] = "error|Hay errores en el formulario. Por favor, corrígelos."; // Mensaje de error
-                return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
-            }
-            // Buscar el usuario en la base de datos
-            ApplicationUser? user = await _context.Users.FindAsync(usuarioDTO.Id);
-
-            if (user == null)
-            {
-                _logger.LogWarning("El usuario con ID {UserId} no fue encontrado.", usuarioDTO.Id);
-                TempData["MessageDeRespuesta"] = "error|El usuario no fue encontrado."; // Mensaje de error
-                ModelState.AddModelError(string.Empty, "El usuario no fue encontrado.");
-                return View("EditarUsuario", usuarioDTO); // Regresar a la vista con el modelo
-            }
-
-            // Validar unicidad del número de documento
-            var existingUserByDoc = await _context.Users
-                .FirstOrDefaultAsync(u => u.NumeroDocumento == usuarioDTO.NumeroDocumento && u.Id != usuarioDTO.Id);
-
-            if (existingUserByDoc != null)
-            {
-                ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
-                _logger.LogWarning("Número de documento ya está en uso.");
-                TempData["MessageDeRespuesta"] = "El número de documento ya está en uso."; // Mensaje de error
-                return View("EditarUsuario", usuarioDTO);
-            }
-
-            // Validar unicidad del correo electrónico
-            var existingUserByEmail = await _userManager.FindByEmailAsync(usuarioDTO.Email);
-
-            if (existingUserByEmail != null && existingUserByEmail.Id != usuarioDTO.Id)
-            {
-                ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
-                _logger.LogWarning("Correo electrónico ya está en uso.");
-                TempData["MessageDeRespuesta"] = "El correo electrónico ya está en uso."; // Mensaje de error
-                return View("EditarUsuario", usuarioDTO);
-            }
-
-            // Actualizar los datos del usuario
-            user.Nombres = usuarioDTO.Nombres;
-            user.ApellidoPat = usuarioDTO.ApellidoPat;
-            user.ApellidoMat = usuarioDTO.ApellidoMat;
-            user.TipoDocumento = usuarioDTO.TipoDocumento;
-            user.NumeroDocumento = usuarioDTO.NumeroDocumento;
-            user.Email = usuarioDTO.Email; // Asegúrate de actualizar el email
-            user.Celular = usuarioDTO.Celular;
-            user.Genero = usuarioDTO.Genero;
-            user.fechaDeActualizacion = DateTime.Now.ToUniversalTime();
-            user.Activo = true;
-
-           
 
             try
             {
@@ -552,20 +552,42 @@ namespace proyecto.Controllers
         }
 
         [HttpGet]
-        public IActionResult AgregUsuGer()
+        public async Task<IActionResult> AgregUsuGer()
         {
+            var sedes = await _context.DataSedes.ToListAsync();
+            // Obtiene las sedes de la base de datos y las asigna a ViewData
+            ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
 
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AgregUsuGer(UserRegistrationViewModel model)
         {
             _logger.LogInformation("Iniciando el registro de usuario.");
 
+            // Obtener y asignar las sedes disponibles a la vista
+            var sedes = await _context.DataSedes.ToListAsync();
+            ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
+
+            // Verificar si el modelo es válido
             if (!ModelState.IsValid)
             {
-                // Registrar los errores del modelo
                 _logger.LogWarning("Modelo no es válido.");
                 foreach (var error in ModelState)
                 {
@@ -574,7 +596,6 @@ namespace proyecto.Controllers
                         _logger.LogWarning("Error en el campo {0}: {1}", error.Key, error.Value.Errors.First().ErrorMessage);
                     }
                 }
-
                 TempData["MessageDeRespuesta"] = "error|Por favor, corrija los errores en el formulario."; // Mensaje unificado
                 return View();
             }
@@ -587,26 +608,24 @@ namespace proyecto.Controllers
             {
                 ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
                 _logger.LogWarning("Número de documento ya está en uso.");
-
                 TempData["MessageDeRespuesta"] = "error|El número de documento ya está en uso."; // Mensaje unificado
                 return View();
             }
 
-            // Verificar si el correo electrónico ya existe
+            // Verificar si el correo electrónico ya está en uso
             var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
 
             if (existingUserByEmail != null)
             {
                 ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
                 _logger.LogWarning("Correo electrónico ya está en uso.");
-
                 TempData["MessageDeRespuesta"] = "error|El correo electrónico ya está en uso."; // Mensaje unificado
                 return View();
             }
 
             // Crear el nuevo usuario
             var user = Activator.CreateInstance<ApplicationUser>();
-            user.UserName = model.Email;  // Se debe establecer el UserName para Identity
+            user.UserName = model.Email;
             user.Email = model.Email;
             user.Nombres = model.Nombres;
             user.ApellidoPat = model.ApellidoPat;
@@ -615,10 +634,11 @@ namespace proyecto.Controllers
             user.NumeroDocumento = model.NumeroDocumento;
             user.Celular = model.Celular;
             user.Genero = model.Genero;
-            user.RolId = "2";  // Almacenar el RolId en el ApplicationUser
+            user.RolId = "2";  // Asignar rol de Gerente (asegúrate de que el rol sea correcto)
             user.fechaDeRegistro = DateTime.Now.ToUniversalTime();
             user.fechaDeActualizacion = null;
             user.Activo = true;
+            user.SedeId = model.SedeId;  // Asignar la sede seleccionada
 
             // Crear el usuario en la base de datos
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -662,18 +682,30 @@ namespace proyecto.Controllers
 
 
 
+
         [HttpGet]
-        public IActionResult AgregUsuSup()
+        public async Task<IActionResult> AgregUsuSup()
         {
+            var sedes = await _context.DataSedes.ToListAsync();
+            // Obtiene las sedes de la base de datos y las asigna a ViewData
+            ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
 
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AgregUsuSup(UserRegistrationViewModel model)
         {
             _logger.LogInformation("Iniciando el registro de usuario.");
-
+            var sedes = await _context.DataSedes.ToListAsync();
             if (!ModelState.IsValid)
             {
                 // Registrar los errores del modelo
@@ -685,9 +717,16 @@ namespace proyecto.Controllers
                         _logger.LogWarning("Error en el campo {0}: {1}", error.Key, error.Value.Errors.First().ErrorMessage);
                     }
                 }
-
+                ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
                 TempData["MessageDeRespuesta"] = "error|Por favor, corrija los errores en el formulario."; // Mensaje unificado
-                return View();
+                return View(model);
             }
 
             // Verificar si el número de documento ya existe
@@ -698,9 +737,16 @@ namespace proyecto.Controllers
             {
                 ModelState.AddModelError(string.Empty, "El número de documento ya está en uso.");
                 _logger.LogWarning("Número de documento ya está en uso.");
-
+                ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
                 TempData["MessageDeRespuesta"] = "error|El número de documento ya está en uso."; // Mensaje unificado
-                return View();
+                return View(model);
             }
 
             // Verificar si el correo electrónico ya existe
@@ -710,9 +756,16 @@ namespace proyecto.Controllers
             {
                 ModelState.AddModelError(string.Empty, "El correo electrónico ya está en uso.");
                 _logger.LogWarning("Correo electrónico ya está en uso.");
-
+                ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
                 TempData["MessageDeRespuesta"] = "error|El correo electrónico ya está en uso."; // Mensaje unificado
-                return View();
+                return View(model);
             }
 
             // Crear el nuevo usuario
@@ -730,6 +783,7 @@ namespace proyecto.Controllers
             user.fechaDeRegistro = DateTime.Now.ToUniversalTime();
             user.fechaDeActualizacion = null;
             user.Activo = true;
+            user.SedeId = model.SedeId; // Asignar la sede seleccionada
 
             // Crear el usuario en la base de datos
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -744,6 +798,14 @@ namespace proyecto.Controllers
 
                 if (confirmResult.Succeeded)
                 {
+                    ViewData["Sedes"] = sedes
+                    .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.NombreSede
+                    })
+                    .ToList();
                     _logger.LogInformation("Usuario registrado con éxito y correo confirmado automáticamente.");
                     TempData["MessageDeRespuesta"] = "success|Usuario rol supervisor agregado con éxito."; // Mensaje unificado
                     return RedirectToAction("Index");
@@ -766,10 +828,19 @@ namespace proyecto.Controllers
                 }
                 TempData["MessageDeRespuesta"] = "error|Ocurrió un error al registrar el usuario."; // Mensaje unificado
             }
-
+            // Obtiene las sedes de la base de datos y las asigna a ViewData
+            ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
             // Si hay errores de validación, vuelve a cargar la vista con el modelo
-            return View();
+            return View(model);
         }
+
 
         public async Task<IActionResult> VolverAtras(string? id)
         {

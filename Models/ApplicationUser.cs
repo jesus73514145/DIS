@@ -57,6 +57,11 @@ namespace proyecto.Models
 
 
         // Método de validación personalizado
+        // Relación con Sedes: cada usuario pertenece a una sede
+        [ForeignKey("Sede")]
+        public int? SedeId { get; set; } // Relación con Sedes (si es nulo, el usuario no tiene sede asignada)
+
+        public virtual Sedes? Sede { get; set; } // Propiedad de navegación
 
     }
 

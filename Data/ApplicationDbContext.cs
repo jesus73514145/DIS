@@ -14,5 +14,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
     public DbSet<Costeo> DataCosteo { get; set; }
     public DbSet<Material> DataMaterial { get; set; }
     public DbSet<Prenda> DataPrenda { get; set; }
+    public DbSet<Sedes> DataSedes { get; set; }
 
 }
