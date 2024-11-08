@@ -157,6 +157,18 @@ namespace proyecto.Controllers
             Console.WriteLine($"Celular: {usuario.Celular}");
             Console.WriteLine($"PasswordHash: {usuario.PasswordHash}");
 
+            var sedes = await _context.DataSedes.ToListAsync();
+            // Obtiene las sedes de la base de datos y las asigna a ViewData
+            ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
+
+
             // Crea un nuevo objeto UserRegistrationViewModel y mapea las propiedades
             UserEditViewModel usuarioEditar = new UserEditViewModel
             {
@@ -168,7 +180,8 @@ namespace proyecto.Controllers
                 NumeroDocumento = usuario.NumeroDocumento,
                 Genero = usuario.Genero,
                 Email = usuario.Email,
-                Celular = usuario.Celular
+                Celular = usuario.Celular,
+                SedeId = usuario.SedeId ?? 0,
                 //Password = usuario.PasswordHash, // Nota: Considera no exponer la contraseña
                 //ConfirmPassword = usuario.PasswordHash // Nota: Considera no exponer la contraseña
                 // Agrega otras propiedades según sea necesario
@@ -308,7 +321,16 @@ namespace proyecto.Controllers
         public async Task<IActionResult> GuardarUsuarioEditado(UserEditViewModel usuarioDTO)
         {
             _logger.LogInformation("Iniciando la edición del usuario con ID: {UserId}", usuarioDTO.Id);
-
+            var sedes = await _context.DataSedes.ToListAsync();
+            // Obtiene las sedes de la base de datos y las asigna a ViewData
+            ViewData["Sedes"] = sedes
+                .OrderBy(s => s.NombreSede)  // Ordena por el nombre de la sede
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.NombreSede
+                })
+                .ToList();
 
             // Verificar si el modelo es válido
             if (!ModelState.IsValid)
@@ -370,6 +392,7 @@ namespace proyecto.Controllers
             user.Genero = usuarioDTO.Genero;
             user.fechaDeActualizacion = DateTime.Now.ToUniversalTime();
             user.Activo = true;
+            user.SedeId = usuarioDTO.SedeId;
 
 
 
