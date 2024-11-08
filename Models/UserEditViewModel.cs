@@ -20,8 +20,6 @@ namespace proyecto.Models
         [Display(Name = "Correo Electrónico")]
         public string Email { get; set; }
 
-    
-
         [Required(ErrorMessage = "El campo Nombres es obligatorio.")]
         [Display(Name = "Nombres")]
         public string Nombres { get; set; }
@@ -54,6 +52,11 @@ namespace proyecto.Models
         [Required]
         public bool Activo { get; set; }
 
+        [Required(ErrorMessage = "Por favor, selecciona una sede.")]
+        [Display(Name = "Sede")]
+        public int SedeId { get; set; }
+
+        public List<SelectListItem>? Sedes { get; set; }
 
     }
 }
