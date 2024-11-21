@@ -130,6 +130,7 @@ roles = await UserManager.GetRolesAsync(myidentity);
                 <span class="wellcome">Bienvenido</span>
             </h1>
         }
+        <br>
         @if (TempData["MessageDeRespuesta"] != null)
         {
             var mensaje = TempData["MessageDeRespuesta"].ToString();
