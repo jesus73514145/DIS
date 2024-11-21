@@ -315,7 +315,7 @@
                         <th>Proveedor</th>
                         <th>Telefono</th>
                         <th>Acciones de exportar</th>
-                        <th>Eliminar</th>
+                        @*<th>Eliminar</th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -335,7 +335,7 @@
                                     asp-route-id="@material.Id">EXcel</a>
                             </td>
 
-                            <td>
+                            @*<td>
                                 <!-- Botón de Eliminar -->
                                 <form asp-controller="Supervisor" asp-action="EliminarMaterial" asp-route-id="@material.Id"
                                     method="post"
@@ -345,7 +345,7 @@
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
-                            </td>
+                            </td>*@
 
 
 
